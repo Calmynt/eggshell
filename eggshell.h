@@ -7,7 +7,16 @@ char HOME[128];
 char TTY[128];
 char EXEC[1024];
 
+typedef struct variable Var;
+typedef struct variables Vars;
+
 void getExecPath(char*);
 void checkVars();
-void initVars();
+void initEggshell();
+void createVar();
+void displayUserVars();
+void showShellVars();
+char* variableValue(char*);
+Var* retrieveVar(char*);
 int getExitcode();
+int parseLine();

@@ -1,12 +1,16 @@
 #include "eggshell.h"
+#include "linenoise/linenoise.h"
+#include <stdio.h>
 
 int main(int argc, char *argv[]){
-  initVars();
-  checkVars();
-
-  // while((line = linenoise(PROMPT)) != NULL) {
-  //   getcwd(CWD, sizeof(CWD));
-  //   printf("You wrote: %s\n", line);
-  //   linenoiseFree(line); /* Or just free(line) if you use libc malloc. */
-  // }
+  initEggshell();
+  char *prompt = variableValue("PROMPT");
+  while((line = linenoise(prompt)) != NULL) {
+    int parsed = parseLine(line);
+    if(parsed == 1){
+      createVar(line);
+    }
+    showShellVars();
+    linenoiseFree(line); /* Or just free(line) if you use libc malloc. */
+  }
 }
