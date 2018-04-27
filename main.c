@@ -4,7 +4,7 @@
 
 int main(int argc, char *argv[]){
   initEggshell();
-  char *prompt = variableValue("PROMPT");
+  char *prompt = value("PROMPT");
   while((line = linenoise(prompt)) != NULL) {
     int parsed = parseLine(line);
     if(parsed == 1){

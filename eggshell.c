@@ -25,38 +25,41 @@ char *line;
 
 Vars *variables;
 
-// Works -- Retruns the path to the eggshell executable
+/* Static method declarations */
+static Var* retrieveVar(char*);
+
 void getExecPath(char *PATH){
   char p[128];
   pid_t pid = getpid();
-  sprintf(p, "/proc/%d/exe", pid);
+  sprintf(p, "/proc/%d/exe", pid); // reads path from file
   if (readlink(p, PATH, PATH_MAX) == -1)
-    perror("readlink");
+    perror("readlink"); // returns error if reading aborts
 }
 
-// Works -- Displays all global variables for testing
 void showShellVars(){
-   printf("CWD=%s\n", variableValue("CWD"));
-   printf("PATH=%s\n", variableValue("PATH"));
-   printf("PROMPT=%s\n", variableValue("PROMPT"));
-   printf("USER=%s\n", variableValue("USER"));
-   printf("HOME=%s\n", variableValue("HOME"));
-   printf("TERMINAL=%s\n", variableValue("TERMINAL"));
-   printf("EXEC=%s \n", variableValue("EXEC"));
+   printf("CWD=%s\n", value("CWD"));
+   printf("PATH=%s\n", value("PATH"));
+   printf("PROMPT=%s\n", value("PROMPT"));
+   printf("USER=%s\n", value("USER"));
+   printf("HOME=%s\n", value("HOME"));
+   printf("TERMINAL=%s\n", value("TERMINAL"));
+   printf("EXEC=%s \n", value("EXEC"));
 }
 
-// Works -- Initialises the eggshell
 void initEggshell(){
+  // Sets execution path and current working directory
   char *exec = malloc(1024 * sizeof(char));
   getExecPath(exec);
   char cwd[1024];
   getcwd(cwd, sizeof(cwd));
 
+  // Initialises variables array
   variables = (Vars *) malloc(sizeof(Vars));
   variables->vars = (Var **) calloc(1, sizeof(Var));
   variables->vars[0] = (Var *) malloc(sizeof(Var));
   variables->amount = 0;
 
+  // Initialises shell variable-injection strings
   char *a, *b, *c, *d, *e, *f, *g;
   a = malloc(1024 * sizeof(char));
   b = malloc(1024 * sizeof(char));
@@ -66,16 +69,16 @@ void initEggshell(){
   f = malloc(1024 * sizeof(char));
   g = malloc(1024 * sizeof(char));
 
-  printf("AAAAA\n");
+  // Creates strings to set shell variables
   sprintf(a,"PATH=%s", getenv("PATH"));
-  sprintf(b,"USER=%s", getenv("USERNAME"));
+  sprintf(b,"USER=%s", getenv("USER"));
   sprintf(c,"HOME=%s", getenv("HOME"));
   sprintf(d,"PROMPT=%s", "eggshell-1.0 > ");
   sprintf(e,"CWD=%s", cwd);
   sprintf(f,"TERMINAL=%s", ttyname(STDIN_FILENO));
   sprintf(g,"EXEC=%s", exec);
-  printf("BBBBB\n");
 
+  // Sets shell variables using above strings
   createVar(a);
   createVar(b);
   createVar(c);
@@ -85,7 +88,6 @@ void initEggshell(){
   createVar(g);
 }
 
-// TODO : Need to check
 int getExitcode(pid_t p){
   int status;
 
@@ -99,14 +101,9 @@ int getExitcode(pid_t p){
     return es;
   }
 }
-  char delimiter[2] = " ";
 
-/* Returns a 'Parse Code' that deciphers what the line is trying to achieve.
-   1    = 'Assignment'
-   2    = 'Print'
-   -1   = 'Error in parsing'
-   100  = 'External command' */
 int parseLine(char* line){
+  char delimiter[2] = " ";
   if(strcmp(line, "exit") == 0) exit(0);
 
   // Parse check for assignment
@@ -133,7 +130,7 @@ int parseLine(char* line){
 
   char *command = strtok(line, delimiter);
 
-  if(strcmp(command, "print") == 0) return 2;
+  if(strcmp(command, "print") == 0) return 2; // checks for print command
 
   return 100;
 }
@@ -145,17 +142,20 @@ void createVar(char* line){
   int i = 0;
   int before;
 
+  // Sets 'i' to a pointer to the '=' symbol
   for(i = 0; i < strlen(line); i++){
     if(line[i] == '='){break;}
   }
 
+  // Sets variable name to lefthand side of the assignment
   for(before = 0; before < i; before++){
     name[before] = line[before];
   }
 
+  // Null terminates the name
   name[before+1] = '\0';
 
-
+  // Retrieves righthand side of the assignment
   int j = 0;
   for(int x = i+1; x < strlen(line); x++){
     str[j] = line[x];
@@ -163,13 +163,21 @@ void createVar(char* line){
   }
   str[j] = '\0';
 
+  // Checks whether variable with name already exists
   Var *variable = retrieveVar(name);
 
+  // Checks for existing variable.
+  // If variable exists, it is overwritten.
   if(variable != 0){
+    // Checks whether assignment uses variable.
+    // Does this by checking whether the first character is '$'
     if(str[0] != '$'){
       variable->varname = name;
       variable->value = str;
     }
+    // Retrieves variable from list.
+    // If no variable exists, assignment is aborted and error is printed.
+    // Else, the value of the mentioned variable overwrites the variable.
     else{
       memmove(str, str+1, strlen(str));
       Var *var = retrieveVar(str);
@@ -180,6 +188,10 @@ void createVar(char* line){
     return;
   }
 
+  // Checks whether the right side of the assignment mentions a variable.
+  // If so, the variable is retrieved.
+  // If no such variable exists, an error is printed and the assignment aborts.
+  // Else, the new variable is assigned.
   if(str[0] == '$'){
     memmove(str, str+1, strlen(str));
     Var *var = retrieveVar(str);
@@ -189,21 +201,22 @@ void createVar(char* line){
 
   int a = variables->amount;
 
+  // Adds new variable to list
   variables->vars[a] = (Var*)malloc(sizeof(Var));
   variables->vars[a]->value = str;
-
-
   variables->vars[a]->varname = name;
 
+  // Increments amount of variables
   variables->amount++;
   a = variables->amount;
 
+  // Reallocates memory to list of variables, preparing for new variable.
   Var** vars = (Var**) realloc(variables->vars, a*sizeof(Var));
   variables->vars = vars;
   variables->vars[a] = (Var *) malloc(sizeof(Var));
 }
 
-Var* retrieveVar(char* varname){
+static Var* retrieveVar(char* varname){
   for(int i = 0; i < variables->amount; i++){
     if(strcmp(variables->vars[i]->varname, varname) == 0){
       return variables->vars[i];
@@ -212,15 +225,15 @@ Var* retrieveVar(char* varname){
   return 0;
 }
 
+char* value(char* varname){
+  Var *variable = retrieveVar(varname);
+  return variable->value;
+}
+
 void displayUserVars(){
   printf("--- VARIABLES ---\n");
   for(int x = 7; x < variables->amount; x++){
     if(variables->vars[x] == 0){ printf("ERR\n"); return;}
     printf("%s=%s\n", variables->vars[x]->varname, variables->vars[x]->value);
   }
-}
-
-char* variableValue(char* varname){
-  Var *variable = retrieveVar(varname);
-  return variable->value;
 }
