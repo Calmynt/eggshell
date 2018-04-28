@@ -3,7 +3,7 @@ language: c
 script:
   - make
   - ./eggshell < testinput.txt
-  - gcov eggshell.c
+  - gcov main.c
 
 after_success:
   - bash <(curl -s https://codecov.io/bash)
