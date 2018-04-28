@@ -120,7 +120,7 @@ int parseLine(char* line){
       for(int j = i-1; j >= 0; j--){
         // Returns error code if variable name is invalid
         if(line[j] < 65 || line[j] > 90){
-          fprintf(stderr, "Invalid assignment - Variable names should be capitalised and alphanumeric!\nEx. 'HOME=3'\n");
+          fprintf(stderr, "\nInvalid assignment - Variable names should be capitalised and alphanumeric!\nEx. 'HOME=3'\n\n");
           return -1;
         }
       }
@@ -130,7 +130,7 @@ int parseLine(char* line){
 
     // Returns error code if spaces surround =
     else if(line[i] == '=' && (line[i-1] == ' ' || line[i+1] == ' ')){
-      fprintf(stderr, "Invalid assignment - No spaces surround '='\nEx. 'HOME=3'\n");
+      fprintf(stderr, "\nInvalid assignment - No spaces surround '='\nEx. 'HOME=3'\n\n");
       return -1;
     }
 
@@ -139,6 +139,7 @@ int parseLine(char* line){
   char *command = strtok(line, delimiter);
 
   if(strcmp(command, "print") == 0) return 2; // checks for print command
+  if(strcmp(command, "all") == 0) return 3; // checks for all command
 
   return 100;
 }

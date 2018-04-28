@@ -4,13 +4,18 @@
 
 int main(int argc, char *argv[]){
   initEggshell();
+
   char *prompt = value("PROMPT");
+
   while((line = linenoise(prompt)) != NULL) {
     int parsed = parseLine(line);
     if(parsed == 1){
+      printf("--- Assignment Detected ---\n");
       createVar(line);
     }
-    showShellVars();
-    linenoiseFree(line); /* Or just free(line) if you use libc malloc. */
+    else if(parsed == 3){
+      showShellVars();
+    }
+    linenoiseFree(line);
   }
 }
