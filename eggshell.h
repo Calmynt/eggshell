@@ -28,9 +28,6 @@ void showShellVars();
 /* Retrieves the value of a variable by using the parameter */
 char* value(char*);
 
-/* Returns exit code of previous program - TODO: Check function */
-int getExitcode();
-
 /* Returns a 'Parse Code' that deciphers what the line is trying to achieve.
    1    = 'Assignment'
    2    = 'Print'
