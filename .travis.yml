@@ -2,7 +2,7 @@ language: c
 
 script:
   - make
-  - ./eggshell
+  - ./eggshell < testinput.txt
   - gcov eggshell.c
 
 after_success:

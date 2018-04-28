@@ -1,0 +1,5 @@
+all
+vars
+VAR=ASSIGN
+USER=travis
+CURRENTUSER=$USER
