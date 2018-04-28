@@ -1,2 +1,3 @@
 ignore:
-  - ../linenoise.c
+  - "../linenoise.c"
+  - "linenoise.c"
