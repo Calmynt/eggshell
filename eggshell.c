@@ -237,3 +237,47 @@ void displayUserVars(){
     printf("%s=%s\n", variables->vars[x]->varname, variables->vars[x]->value);
   }
 }
+
+long sizeOfText(FILE *f){
+    long pos = ftell(f);
+    fseek(f,0,SEEK_END); //sets the pointer to the end of the file
+    long length = ftell(f); //sets length to the pointer position at the end
+    fseek(f,pos,SEEK_SET); //sets the pointer back to the beginning of the file
+    return length;
+}
+
+void testShell(){
+  FILE *testfile = fopen("testinput.txt", "r");
+  if(testfile == NULL){
+    fprintf(stderr, "--- No test file found, aborting... ---");
+    exit(-1);
+  }
+
+  long size = sizeOfText(testfile);
+
+  line = malloc(1024 * sizeof(char));
+
+  int lineNo = 0;
+
+  while(fgets(line, 1024, testfile) != NULL){
+    printf("--------------------\n");
+    printf("READING LINE %d : %s", lineNo, line);
+    printf("--------------------\n");
+    line[strlen(line)-2] = '\0';
+    int parsed = parseLine(line);
+    if(parsed == 1){
+      printf("--- Assignment Detected ---\n");
+      createVar(line);
+    }
+    else if(parsed == 3){
+      showShellVars();
+    }
+    else if(parsed == 4){
+      displayUserVars();
+    }
+    lineNo++;
+  }
+
+  printf("--- Testing Complete ---\n");
+  exit(0);
+}

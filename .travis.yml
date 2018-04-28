@@ -4,7 +4,7 @@ script:
   - cd ci
   - make
   - cd ..
-  - ./eggshell < testinput.txt
+  - ./eggshell test
   - gcov main.c
 
 after_success:

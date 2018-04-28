@@ -12,6 +12,9 @@ void initEggshell();
 /* Creates a variable using an assignment line */
 void createVar(char*);
 
+/* Tests the shell using a testfile called "testinput.txt" */
+void testShell();
+
 /* Displays all user variables initialised within the shell */
 void displayUserVars();
 
@@ -27,3 +30,5 @@ char* value(char*);
    -1   = 'Error in parsing'
    100  = 'External command' */
 int parseLine();
+
+Var* APIRetrieve(char*);

@@ -1,7 +1,7 @@
 all
-vars
 VAR=ASSIGN
 USER=travis
 NOSPACE = BADASSIGN
 bad=ERROR
 CURRENTUSER=$USER
+vars
