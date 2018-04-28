@@ -1,7 +1,9 @@
 language: c
 
 script:
+  - cd ci
   - make
+  - cd ..
   - ./eggshell < testinput.txt
   - gcov main.c
 
