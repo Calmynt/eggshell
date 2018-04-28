@@ -1,5 +1,5 @@
 #include "eggshell.h"
-#include "linenoise/linenoise.h"
+#include "linenoise.h"
 #include <stdio.h>
 
 int main(int argc, char *argv[]){
