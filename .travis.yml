@@ -1,6 +1,9 @@
 language: c
 
-script: make
+script:
+  - make
+  - ./eggshell
+  - gcov eggshell.c
 
 after_success:
   - bash <(curl -s https://codecov.io/bash)
