@@ -30,5 +30,3 @@ char* value(char*);
    -1   = 'Error in parsing'
    100  = 'External command' */
 int parseLine();
-
-Var* APIRetrieve(char*);
