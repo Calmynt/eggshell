@@ -5,7 +5,7 @@
 #include <limits.h>
 #include <sys/wait.h>
 #include "eggshell.h"
-#include "linenoise/linenoise.h"
+#include "linenoise.h"
 
 #define ARRLEN(x) (sizeof(x)/sizeof(x[0]))
 
