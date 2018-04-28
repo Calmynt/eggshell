@@ -91,6 +91,9 @@ void initEggshell(){
   createVar(f);
   createVar(g);
   createVar(h);
+
+  // Frees now-useless injection strings
+  free(a); free(b); free(c); free(d); free(e); free(f); free(g); free(h);
 }
 
 static char* setExitcode(pid_t p){
