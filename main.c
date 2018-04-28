@@ -16,6 +16,9 @@ int main(int argc, char *argv[]){
     else if(parsed == 3){
       showShellVars();
     }
+    else if(parsed == 4){
+      displayUserVars();
+    }
     linenoiseFree(line);
   }
 }

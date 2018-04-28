@@ -143,6 +143,7 @@ int parseLine(char* line){
 
   if(strcmp(command, "print") == 0) return 2; // checks for print command
   if(strcmp(command, "all") == 0) return 3; // checks for all command
+  if(strcmp(command, "vars") == 0) return 4; // checks for debug vars command
 
   return 100;
 }
@@ -150,30 +151,17 @@ int parseLine(char* line){
 void createVar(char* line){
   char* name = malloc(50 * sizeof(char));
   char* str = malloc(200 * sizeof(char));
+  char* token;
 
   int i = 0;
   int before;
+  char delimiter[2] = "=";
 
-  // Sets 'i' to a pointer to the '=' symbol
-  for(i = 0; i < strlen(line); i++){
-    if(line[i] == '='){break;}
-  }
-
-  // Sets variable name to lefthand side of the assignment
-  for(before = 0; before < i; before++){
-    name[before] = line[before];
-  }
-
-  // Null terminates the name
-  name[before+1] = '\0';
-
-  // Retrieves righthand side of the assignment
-  int j = 0;
-  for(int x = i+1; x < strlen(line); x++){
-    str[j] = line[x];
-    j++;
-  }
-  str[j] = '\0';
+  // Retrieves name of variable and value using tokenization
+  token = strtok(line, delimiter);
+  strcpy(name, token);
+  token = strtok(NULL, delimiter);
+  strcpy(str, token);
 
   // Checks whether variable with name already exists
   Var *variable = retrieveVar(name);
