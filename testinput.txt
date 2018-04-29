@@ -5,3 +5,5 @@ NOSPACE = BADASSIGN
 bad=ERROR
 CURRENTUSER=$USER
 vars
+print
+exit

@@ -114,6 +114,7 @@ static char* setExitcode(pid_t p){
 }
 
 int parseLine(char* line){
+  int PARSECODE = 0;
   char delimiter[2] = " ";
   if(strcmp(line, "exit") == 0) exit(0);
 
@@ -128,7 +129,7 @@ int parseLine(char* line){
         }
       }
 
-      return 1;
+      return PARSECODE+=1;
     }
 
     // Returns error code if spaces surround =
@@ -141,11 +142,11 @@ int parseLine(char* line){
 
   char *command = strtok(line, delimiter);
 
-  if(strcmp(command, "print") == 0) return 2; // checks for print command
-  if(strcmp(command, "all") == 0) return 3; // checks for all command
-  if(strcmp(command, "vars") == 0) return 4; // checks for debug vars command
+  if(strcmp(command, "print") == 0) return PARSECODE+=2; // checks for print command
+  if(strcmp(command, "all") == 0) return PARSECODE+=3; // checks for all command
+  if(strcmp(command, "vars") == 0) return PARSECODE+=4; // checks for debug vars command
 
-  return 100;
+  return -2;
 }
 
 void createVar(char* line){
@@ -238,8 +239,8 @@ void displayUserVars(){
   }
 }
 
-void testShell(){
-  FILE *testfile = fopen("testinput.txt", "r");
+void runScript(char* filename){
+  FILE *testfile = fopen(filename, "r");
   if(testfile == NULL){
     fprintf(stderr, "--- No test file found, aborting... ---");
     exit(-1);
@@ -250,9 +251,7 @@ void testShell(){
   int lineNo = 0;
 
   while(fgets(line, 1024, testfile) != NULL){
-    printf("--------------------\n");
-    printf("READING LINE %d : %s", lineNo, line);
-    printf("--------------------\n\n");
+    printf("%s%s", value("PROMPT"), line);
 
     //Terminates line at right place to simulate input
     line[strlen(line)-2] = '\0';
@@ -268,9 +267,5 @@ void testShell(){
       displayUserVars();
     }
     lineNo++;
-    printf("\n");
   }
-
-  printf("--- Testing Complete ---\n");
-  exit(0);
 }

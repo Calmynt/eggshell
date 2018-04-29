@@ -9,7 +9,8 @@ int main(int argc, char *argv[]){
 
   if(argc == 2){
     if(strcmp(argv[1], "test") == 0){
-      testShell();
+      runScript("testinput.txt");
+      exit(0);
     }
     else{
       fprintf(stderr, "Invalid argument, aborting...\n");
@@ -34,6 +35,9 @@ int main(int argc, char *argv[]){
     }
     else if(parsed == 4){
       displayUserVars();
+    }
+    else if(parsed == -2){
+      printf("Command '%s' does not exist.\n", line);
     }
 
     linenoiseFree(line);
