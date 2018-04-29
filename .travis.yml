@@ -1,0 +1,11 @@
+language: c
+
+script:
+  - cd ci
+  - make
+  - cd ..
+  - ./eggshell test
+  - gcov main.c
+
+after_success:
+  - bash <(curl -s https://codecov.io/bash)

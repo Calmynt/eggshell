@@ -1,0 +1,9 @@
+all
+VAR=ASSIGN
+USER=travis
+NOSPACE = BADASSIGN
+bad=ERROR
+CURRENTUSER=$USER
+vars
+print
+exit
