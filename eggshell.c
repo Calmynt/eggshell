@@ -27,7 +27,7 @@ Vars *variables;
 
 /* Static method declarations */
 static Var* retrieveVar(char*);
-static char* setExitcode(); //TODO: Implement setting of exit code
+static char* setExitcode(int); //TODO: Implement setting of exit code
 
 void getExecPath(char *PATH){
   char p[128];
@@ -44,7 +44,7 @@ void showShellVars(){
    printf("USER=%s\n", value("USER"));
    printf("HOME=%s\n", value("HOME"));
    printf("TERMINAL=%s\n", value("TERMINAL"));
-   printf("EXEC=%s \n", value("EXEC"));
+   printf("SHELL=%s \n", value("SHELL"));
    printf("EXITCODE=%s \n", value("EXITCODE"));
 }
 
@@ -55,6 +55,7 @@ void initEggshell(){
   char cwd[1024];
   getcwd(cwd, sizeof(cwd));
 
+  printf("Before initialising variables...\n");
   // Initialises variables array
   variables = (Vars *) malloc(sizeof(Vars));
   variables->vars = (Var **) calloc(1, sizeof(Var));
@@ -72,6 +73,7 @@ void initEggshell(){
   g = malloc(1024 * sizeof(char));
   h = malloc(1024 * sizeof(char));
 
+  printf("Before string setting...\n");
   // Creates strings to set shell variables
   sprintf(a,"PATH=%s", getenv("PATH"));
   sprintf(b,"USER=%s", getenv("USER"));
@@ -79,9 +81,10 @@ void initEggshell(){
   sprintf(d,"PROMPT=%s", "eggshell-1.0 > ");
   sprintf(e,"CWD=%s", cwd);
   sprintf(f,"TERMINAL=%s", ttyname(STDIN_FILENO));
-  sprintf(g,"EXEC=%s", exec);
+  sprintf(g,"SHELL=%s", exec);
   sprintf(h,"EXITCODE=%s", "(none)");
 
+  printf("Creating vars....\n");
   // Sets shell variables using above strings
   createVar(a);
   createVar(b);
@@ -92,25 +95,18 @@ void initEggshell(){
   createVar(g);
   createVar(h);
 
+  printf("Before free...\n");
   // Frees now-useless injection strings
   free(a); free(b); free(c); free(d); free(e); free(f); free(g); free(h);
 }
 
-static char* setExitcode(pid_t p){
+static char* setExitcode(int ec){
   int status;
   char *exitcode;
 
-  if ( waitpid(p, &status, 0) == -1 ) {
-    perror("Failure in function 'getExitcode'");
-    sprintf(exitcode, "%d", -1);
-    return exitcode;
-  }
-
-  if ( WIFEXITED(status) ) {
-    int es = WEXITSTATUS(status);
-    sprintf(exitcode, "%d", es);
-    return exitcode;
-  }
+  Var *exit = retrieveVar("EXITCODE");
+  printf("%d\n", ec);
+  sprintf(exit->value, "%d", ec);;
 }
 
 int parseLine(char* line){
@@ -125,6 +121,7 @@ int parseLine(char* line){
         // Returns error code if variable name is invalid
         if(line[j] < 65 || line[j] > 90){
           fprintf(stderr, "\nInvalid assignment - Variable names should be capitalised and alphanumeric!\nEx. 'HOME=3'\n\n");
+          setExitcode(-1);
           return -1;
         }
       }
@@ -135,6 +132,7 @@ int parseLine(char* line){
     // Returns error code if spaces surround =
     else if(line[i] == '=' && (line[i-1] == ' ' || line[i+1] == ' ')){
       fprintf(stderr, "\nInvalid assignment - No spaces surround '='\nEx. 'HOME=3'\n\n");
+      setExitcode(-1);
       return -1;
     }
 
@@ -182,7 +180,7 @@ void createVar(char* line){
     else{
       memmove(str, str+1, strlen(str));
       Var *var = retrieveVar(str);
-      if(var == 0){fprintf(stderr, "Variable does not exist!\n"); return;}
+      if(var == 0){fprintf(stderr, "Variable does not exist!\n"); setExitcode(-1); return;}
       variable->varname = name;
       strcpy(variable->value, var->value);
     }
@@ -196,7 +194,7 @@ void createVar(char* line){
   if(str[0] == '$'){
     memmove(str, str+1, strlen(str));
     Var *var = retrieveVar(str);
-    if(var == 0){fprintf(stderr, "Variable does not exist!\n"); return;}
+    if(var == 0){fprintf(stderr, "Variable does not exist!\n"); setExitcode(-1); return;}
     strcpy(str, var->value);
   }
 
@@ -215,6 +213,11 @@ void createVar(char* line){
   Var** vars = (Var**) realloc(variables->vars, a*sizeof(Var));
   variables->vars = vars;
   variables->vars[a] = (Var *) malloc(sizeof(Var));
+
+  if(retrieveVar("EXITCODE") == 0){
+    return;
+  }
+  setExitcode(0);
 }
 
 static Var* retrieveVar(char* varname){
@@ -234,16 +237,26 @@ char* value(char* varname){
 void displayUserVars(){
   printf("--- VARIABLES ---\n");
   for(int x = 8; x < variables->amount; x++){
-    if(variables->vars[x] == 0){ printf("ERR\n"); return;}
+    if(variables->vars[x] == 0){ printf("ERR\n"); setExitcode(-1); return;}
     printf("%s=%s\n", variables->vars[x]->varname, variables->vars[x]->value);
   }
+  setExitcode(0);
+}
+
+void printLine(char* line){
+  char *lineFragment; //TODO: continue implementing the print function
 }
 
 void runScript(char* filename){
   FILE *testfile = fopen(filename, "r");
-  if(testfile == NULL){
+  if(testfile == NULL && strcmp(filename, "testinput.txt") == 0){
     fprintf(stderr, "--- No test file found, aborting... ---");
     exit(-1);
+  }
+  else if(testfile == NULL){
+    fprintf(stderr, "No file '%s' found!", filename);
+    setExitcode(-1);
+    return;
   }
 
   line = malloc(1024 * sizeof(char));
@@ -268,4 +281,6 @@ void runScript(char* filename){
     }
     lineNo++;
   }
+
+  setExitcode(0);
 }

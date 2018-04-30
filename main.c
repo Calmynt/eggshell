@@ -5,6 +5,7 @@
 #include <string.h>
 
 int main(int argc, char *argv[]){
+  printf("Before init...\n");
   initEggshell();
 
   if(argc == 2){
@@ -21,6 +22,8 @@ int main(int argc, char *argv[]){
     fprintf(stderr, "Invalid number of arguments, aborting... \n");
     exit(-1);
   }
+
+
 
   char *prompt = value("PROMPT");
 
