@@ -24,6 +24,9 @@ void showShellVars();
 /* Retrieves the value of a variable by using the parameter */
 char* value(char*);
 
+/* Prints a line, incl. variable support */
+void printLine(char*);
+
 /* Returns a 'Parse Code' that deciphers what the line is trying to achieve.
    1    = 'variable'
    2    = 'print'

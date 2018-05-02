@@ -55,7 +55,6 @@ void initEggshell(){
   char cwd[1024];
   getcwd(cwd, sizeof(cwd));
 
-  printf("Before initialising variables...\n");
   // Initialises variables array
   variables = (Vars *) malloc(sizeof(Vars));
   variables->vars = (Var **) calloc(1, sizeof(Var));
@@ -73,7 +72,6 @@ void initEggshell(){
   g = malloc(1024 * sizeof(char));
   h = malloc(1024 * sizeof(char));
 
-  printf("Before string setting...\n");
   // Creates strings to set shell variables
   sprintf(a,"PATH=%s", getenv("PATH"));
   sprintf(b,"USER=%s", getenv("USER"));
@@ -84,7 +82,6 @@ void initEggshell(){
   sprintf(g,"SHELL=%s", exec);
   sprintf(h,"EXITCODE=%s", "(none)");
 
-  printf("Creating vars....\n");
   // Sets shell variables using above strings
   createVar(a);
   createVar(b);
@@ -95,7 +92,6 @@ void initEggshell(){
   createVar(g);
   createVar(h);
 
-  printf("Before free...\n");
   // Frees now-useless injection strings
   free(a); free(b); free(c); free(d); free(e); free(f); free(g); free(h);
 }
@@ -112,6 +108,7 @@ static char* setExitcode(int ec){
 int parseLine(char* line){
   int PARSECODE = 0;
   char delimiter[2] = " ";
+  char rest[2] = "\0";
   if(strcmp(line, "exit") == 0) exit(0);
 
   // Parse check for assignment
@@ -138,7 +135,17 @@ int parseLine(char* line){
 
   }
 
-  char *command = strtok(line, delimiter);
+  char *pline = strpbrk(line, " ");
+  char *command = malloc(sizeof(char) * 256);
+
+  if(pline != NULL){
+    *pline = '\0';
+    strcpy(command, line);
+    strcpy(line, pline+1);
+  }
+  else{
+    strcpy(command, line);
+  }
 
   if(strcmp(command, "print") == 0) return PARSECODE+=2; // checks for print command
   if(strcmp(command, "all") == 0) return PARSECODE+=3; // checks for all command
@@ -244,7 +251,37 @@ void displayUserVars(){
 }
 
 void printLine(char* line){
-  char *lineFragment; //TODO: continue implementing the print function
+  char delimiter[2] = " ";
+  int escaped = 0;
+
+  while(char *word = strtok(line, delimiter)){
+    if(escaped == 1){
+      if(word[0] == '\"'){
+        escaped = 0;
+      }
+      else{
+        if (word[strlen(word)-2] == '\"'){
+          word[strlen(word)-2] = 0;
+        }
+        print("%s", word);
+      }
+    }
+
+    if(escaped == 0){
+      if(word[0] = '$'){
+        char *varname = word;
+        varname++;
+        Var *printVar = retrieveVar(varname);
+        if(printVar == 0){
+
+        }
+      }
+    }
+  }
+
+  printf("PRINTED : %s\n", display);
+
+  setExitcode(0);
 }
 
 void runScript(char* filename){

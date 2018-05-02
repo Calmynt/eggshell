@@ -33,6 +33,9 @@ int main(int argc, char *argv[]){
       printf("--- Assignment Detected ---\n");
       createVar(line);
     }
+    else if(parsed == 2){
+      printLine(line);
+    }
     else if(parsed == 3){
       showShellVars();
     }
