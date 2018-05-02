@@ -101,7 +101,7 @@ static char* setExitcode(int ec){
   char *exitcode;
 
   Var *exit = retrieveVar("EXITCODE");
-  printf("%d\n", ec);
+  // printf("%d\n", ec);
   sprintf(exit->value, "%d", ec);;
 }
 
@@ -250,38 +250,68 @@ void displayUserVars(){
   setExitcode(0);
 }
 
-void printLine(char* line){
+char* printLine(char* line){
+  char *word;
   char delimiter[2] = " ";
   int escaped = 0;
 
-  while(char *word = strtok(line, delimiter)){
-    if(escaped == 1){
-      if(word[0] == '\"'){
-        escaped = 0;
+  char *toPrint = malloc(8192);
+
+  int switchEscape = 0;
+
+  word = strtok(line, delimiter);
+
+  while(word != 0){
+    char *locCom;
+    while ((locCom = strchr(word, '\"')) != 0){
+      switchEscape = 1;
+      escaped = (escaped-1)*-1;
+      locCom = '\0';
+      if(escaped == 1){
+        strcat(toPrint, word);
+      }
+      else if(escaped == 0){
+        if(word[0] == '$'){
+          char *varname = word+1;
+          Var* printvar = retrieveVar(varname);
+          if(printvar == 0){
+            strcat(toPrint, word);
+          }
+          else{
+            strcat(toPrint, printvar->value);
+          }
+        }
+        else{
+          strcat(toPrint, word);
+        }
+      }
+
+    }
+
+    if(switchEscape == 0){
+      if(word[0] == '$'){
+        char *varname = word+1;
+        Var* printvar = retrieveVar(varname);
+        if(printvar == 0){
+          strcat(toPrint, word);
+        }
+        else{
+          strcat(toPrint, printvar->value);
+        }
       }
       else{
-        if (word[strlen(word)-2] == '\"'){
-          word[strlen(word)-2] = 0;
-        }
-        print("%s", word);
+        strcat(toPrint, word);
       }
     }
 
-    if(escaped == 0){
-      if(word[0] = '$'){
-        char *varname = word;
-        varname++;
-        Var *printVar = retrieveVar(varname);
-        if(printVar == 0){
+    word = strtok(NULL, delimiter);
 
-        }
-      }
-    }
+    switchEscape = 0;
   }
 
-  printf("PRINTED : %s\n", display);
-
   setExitcode(0);
+
+  return toPrint;
 }
 
 void runScript(char* filename){

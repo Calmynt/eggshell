@@ -25,7 +25,7 @@ void showShellVars();
 char* value(char*);
 
 /* Prints a line, incl. variable support */
-void printLine(char*);
+char* printLine(char*);
 
 /* Returns a 'Parse Code' that deciphers what the line is trying to achieve.
    1    = 'variable'

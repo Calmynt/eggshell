@@ -34,7 +34,8 @@ int main(int argc, char *argv[]){
       createVar(line);
     }
     else if(parsed == 2){
-      printLine(line);
+      char *printer = printLine(line);
+      printf("%s\n", printer);
     }
     else if(parsed == 3){
       showShellVars();
