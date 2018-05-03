@@ -5,5 +5,8 @@ NOSPACE = BADASSIGN
 bad=ERROR
 CURRENTUSER=$USER
 vars
-print
+print nice
+print hello there bud
+print $VAR
+print "$VAR"
 exit

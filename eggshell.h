@@ -1,28 +1,12 @@
 char *line;
 
-typedef struct variable Var;
-typedef struct variables Vars;
-
-/* Sets parameter to the path of the program */
-void getExecPath(char*);
+#include "variables.h"
 
 /* Initialises the eggshell */
 void initEggshell();
 
-/* Creates a variable using an assignment line */
-void createVar(char*);
-
 /* Tests the shell using a testfile called "testinput.txt" */
 void runScript(char*);
-
-/* Displays all user variables initialised within the shell */
-void displayUserVars();
-
-/* Displays all shell variables */
-void showShellVars();
-
-/* Retrieves the value of a variable by using the parameter */
-char* value(char*);
 
 /* Prints a line, incl. variable support */
 char* printLine(char*);
