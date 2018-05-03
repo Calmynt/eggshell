@@ -50,8 +50,11 @@ void parseLine(char* line){
   char *command = strsep(&line, delimiter);
 
   if(strcmp(command, "print") == 0) printLine(line); // checks for print command
-  if(strcmp(command, "all") == 0) showShellVars(); // checks for all command
-  if(strcmp(command, "vars") == 0) displayUserVars(); // checks for debug vars command
+  else if(strcmp(command, "all") == 0) showShellVars(); // checks for all command
+  else if(strcmp(command, "vars") == 0) displayUserVars(); // checks for debug vars command
+  else if(strcmp(command, "chdir") == 0) changeDirectory(line);
+  else if(strcmp(command, "source") == 0) runScript(line);
+  else externalCommand(command, line);
 }
 
 void runScript(char* filename){
@@ -82,4 +85,19 @@ void runScript(char* filename){
   }
 
   setExitcode(0);
+}
+
+void changeDirectory(char* directory){
+  printf("DIRECTORY : %s\n", directory);
+  char delimiter[2] = "/";
+
+  int exitcode = chdir(directory);
+
+  if(exitcode == 0){
+    updateCWD();
+    printf("Current directory is now '%s'\n", value("CWD"));
+  }
+  else{
+    perror("Changing directory");
+  }
 }

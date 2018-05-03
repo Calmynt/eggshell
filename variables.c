@@ -17,6 +17,13 @@ typedef struct variables{
 
 Vars *variables;
 
+void updateCWD(){
+  Var *cwdVar = retrieveVar("CWD");
+  char cwd[1024];
+  getcwd(cwd, sizeof(cwd));
+  strcpy(cwdVar->value, cwd);
+}
+
 void initShellVars(){
   // Sets execution path and current working directory
   char *exec = malloc(1024 * sizeof(char));

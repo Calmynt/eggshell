@@ -5,6 +5,7 @@ void initShellVars();
 void showShellVars();
 void createVar(char* line);
 void getExecPath(char* PATH);
+void updateCWD();
 Var* retrieveVar(char* varname);
 char* value(char* varname);
 void displayUserVars();

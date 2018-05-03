@@ -2,6 +2,7 @@ char *line;
 
 #include "variables.h"
 #include "printer.h"
+#include "externalcmd.h"
 
 /* Initialises the eggshell */
 void initEggshell();
@@ -9,7 +10,7 @@ void initEggshell();
 /* Tests the shell using a testfile called "testinput.txt" */
 void runScript(char*);
 
-
+void changeDirectory(char*);
 
 /* Returns a 'Parse Code' that deciphers what the line is trying to achieve.
    1    = 'variable'
