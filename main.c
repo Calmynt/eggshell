@@ -28,24 +28,7 @@ int main(int argc, char *argv[]){
   char *prompt = value("PROMPT");
 
   while((line = linenoise(prompt)) != NULL) {
-    int parsed = parseLine(line);
-    if(parsed == 1){
-      printf("--- Assignment Detected ---\n");
-      createVar(line);
-    }
-    else if(parsed == 2){
-      char *printer = printLine(line);
-      printf("%s\n", printer);
-    }
-    else if(parsed == 3){
-      showShellVars();
-    }
-    else if(parsed == 4){
-      displayUserVars();
-    }
-    else if(parsed == -2){
-      printf("Command '%s' does not exist.\n", line);
-    }
+    parseLine(line);
 
     linenoiseFree(line);
   }

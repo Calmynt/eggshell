@@ -1,6 +1,7 @@
 char *line;
 
 #include "variables.h"
+#include "printer.h"
 
 /* Initialises the eggshell */
 void initEggshell();
@@ -8,8 +9,7 @@ void initEggshell();
 /* Tests the shell using a testfile called "testinput.txt" */
 void runScript(char*);
 
-/* Prints a line, incl. variable support */
-char* printLine(char*);
+
 
 /* Returns a 'Parse Code' that deciphers what the line is trying to achieve.
    1    = 'variable'
@@ -26,4 +26,4 @@ char* printLine(char*);
    300       = Piping
 
    Piping has a single number, as it might contain several commands. */
-int parseLine();
+void parseLine();
