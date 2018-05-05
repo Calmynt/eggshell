@@ -29,8 +29,16 @@ int main(int argc, char *argv[]){
 
   char *prompt = value("PROMPT");
 
+  linenoiseHistorySetMaxLen(10);
+  
+
   while((line = linenoise(prompt)) != NULL) {
+    char *history_line = malloc(300);
+    strcpy(history_line, line);
+
     parseLine(line);
+
+    linenoiseHistoryAdd(history_line);
 
     linenoiseFree(line);
   }

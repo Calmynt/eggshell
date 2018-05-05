@@ -62,13 +62,13 @@ void parseLine(char* line){
 
   char *command = strsep(&line, delimiter);
 
-  if(strcmp(command, "print") == 0) printLine(line); // checks for print command
-  else if(strcmp(command, "all") == 0) showShellVars(); // checks for all command
-  else if(strcmp(command, "vars") == 0) displayUserVars(); // checks for debug vars command
-  else if(strcmp(command, "chdir") == 0) changeDirectory(line);
-  else if(strcmp(command, "source") == 0) runScript(line);
-  else if(strcmp(command, "fg") == 0) resumeProcessSignal(FOREGROUND);
-  else if(strcmp(command, "bg") == 0) resumeProcessSignal(BACKGROUND);
+  if(strcmp(command, "print") == 0) {printLine(line); return;} // checks for print command
+  else if(strcmp(command, "all") == 0) {showShellVars(); return;} // checks for all command
+  else if(strcmp(command, "vars") == 0) {displayUserVars(); return;}  // checks for debug vars command
+  else if(strcmp(command, "chdir") == 0) {changeDirectory(line); return;} 
+  else if(strcmp(command, "source") == 0) {runScript(line); return;}
+  else if(strcmp(command, "fg") == 0) {resumeProcessSignal(FOREGROUND); return;}
+  else if(strcmp(command, "bg") == 0) {resumeProcessSignal(BACKGROUND); return;}
 
   if(signal(SIGINT, signal_handler) == SIG_ERR)
     printf("Couldn't catch SIGINT - Interrupt Signal\n");
