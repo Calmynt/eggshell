@@ -31,12 +31,15 @@ int main(int argc, char *argv[]){
 
   linenoiseHistorySetMaxLen(10);
   
+  runLine("clear", "");
+
+  printf("\t\t-----=====<<<<!!! Welcome to Eggshell !!!>>>>=====-----\n\n");
 
   while((line = linenoise(prompt)) != NULL) {
     char *history_line = malloc(300);
     strcpy(history_line, line);
 
-    parseLine(line);
+    execute(line);
 
     linenoiseHistoryAdd(history_line);
 

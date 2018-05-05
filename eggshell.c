@@ -4,6 +4,7 @@
 #include <unistd.h>
 #include <limits.h>
 #include <sys/wait.h>
+#include <fcntl.h>
 #include <signal.h>
 #include "eggshell.h"
 #include "linenoise.h"
@@ -18,7 +19,7 @@ void initEggshell(){
   initShellVars();
 }
 
-void parseLine(char* line){
+void execute(char* line){
   int PARSECODE = 0;
   char delimiter[2] = " ";
   char rest[2] = "\0";
@@ -60,22 +61,41 @@ void parseLine(char* line){
       }
   }
 
+  char *filename;
+  char* redirect_to_file = strstr(line, ">");
+  char* append_to_file   = strstr(line, ">>");
+
+  int redirect, append;
+
+  if(append_to_file != 0 || redirect_to_file != 0){
+    if(append_to_file != 0){
+      filename = append_to_file+2;
+      append = 1;
+    }
+    else{
+      filename = redirect_to_file+1;
+      redirect = 1;
+    }
+    line = strsep(&line, ">");
+    line[strlen(line)-1] = 0;
+
+    while(filename[0] == ' '){
+      filename++;
+    }
+  }
+
   char *command = strsep(&line, delimiter);
 
-  if(strcmp(command, "print") == 0) {printLine(line); return;} // checks for print command
-  else if(strcmp(command, "all") == 0) {showShellVars(); return;} // checks for all command
-  else if(strcmp(command, "vars") == 0) {displayUserVars(); return;}  // checks for debug vars command
-  else if(strcmp(command, "chdir") == 0) {changeDirectory(line); return;} 
-  else if(strcmp(command, "source") == 0) {runScript(line); return;}
-  else if(strcmp(command, "fg") == 0) {resumeProcessSignal(FOREGROUND); return;}
-  else if(strcmp(command, "bg") == 0) {resumeProcessSignal(BACKGROUND); return;}
+  int filefd;
 
-  if(signal(SIGINT, signal_handler) == SIG_ERR)
-    printf("Couldn't catch SIGINT - Interrupt Signal\n");
-  if(signal(SIGTSTP, signal_handler) == SIG_ERR)
-    printf("Couldn't catch SIGTSTP - Suspension Signal\n");
+  if(append == 1){
+    filefd = open(filename, O_WRONLY|O_APPEND, 0666);
+  }
+  else if(redirect == 1){
+    filefd = open(filename, O_WRONLY|O_CREAT, 0666);
+  }
 
-  else externalCommand(command, line);
+  runLine(command, line);
 }
 
 void runScript(char* filename){
@@ -100,7 +120,7 @@ void runScript(char* filename){
     //Terminates line at right place to simulate input
     line[strlen(line)-2] = '\0';
 
-    parseLine(line);
+    execute(line);
 
     lineNo++;
   }
@@ -122,4 +142,21 @@ void changeDirectory(char* directory){
     perror("Changing directory");
     setExitcode(exitcode);
   }
+}
+
+void runLine(char *command, char *line){
+  if(strcmp(command, "print") == 0) {printLine(line); return;} // checks for print command
+  else if(strcmp(command, "all") == 0) {showShellVars(); return;} // checks for all command
+  else if(strcmp(command, "vars") == 0) {displayUserVars(); return;}  // checks for debug vars command
+  else if(strcmp(command, "chdir") == 0) {changeDirectory(line); return;} 
+  else if(strcmp(command, "source") == 0) {runScript(line); return;}
+  else if(strcmp(command, "fg") == 0) {resumeProcessSignal(FOREGROUND); return;}
+  else if(strcmp(command, "bg") == 0) {resumeProcessSignal(BACKGROUND); return;}
+
+  if(signal(SIGINT, signal_handler) == SIG_ERR)
+    printf("Couldn't catch SIGINT - Interrupt Signal\n");
+  if(signal(SIGTSTP, signal_handler) == SIG_ERR)
+    printf("Couldn't catch SIGTSTP - Suspension Signal\n");
+
+  else externalCommand(command, line);
 }
