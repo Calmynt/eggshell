@@ -62,6 +62,12 @@ void parseLine(char* line){
 
   char *command = strsep(&line, delimiter);
 
+  struct sigaction handle;
+  handle.sa_handler = signal_handler;
+  
+  sigaction(SIGINT, &handle, NULL);
+  sigaction(SIGTSTP, &handle, NULL);
+
   if(strcmp(command, "print") == 0) {printLine(line); return;} // checks for print command
   else if(strcmp(command, "all") == 0) {showShellVars(); return;} // checks for all command
   else if(strcmp(command, "vars") == 0) {displayUserVars(); return;}  // checks for debug vars command
@@ -69,12 +75,6 @@ void parseLine(char* line){
   else if(strcmp(command, "source") == 0) {runScript(line); return;}
   else if(strcmp(command, "fg") == 0) {resumeProcessSignal(FOREGROUND); return;}
   else if(strcmp(command, "bg") == 0) {resumeProcessSignal(BACKGROUND); return;}
-
-  if(signal(SIGINT, signal_handler) == SIG_ERR)
-    printf("Couldn't catch SIGINT - Interrupt Signal\n");
-  if(signal(SIGTSTP, signal_handler) == SIG_ERR)
-    printf("Couldn't catch SIGTSTP - Suspension Signal\n");
-
   else externalCommand(command, line);
 }
 

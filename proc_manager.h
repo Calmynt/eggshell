@@ -4,6 +4,7 @@
 #include "variables.h"
 
 int resuspended;
+int usr_interrupt;
 
 // Executes an external command, not present in eggshell.
 // command contains the command to be executed.

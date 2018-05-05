@@ -10,7 +10,12 @@
 pid_t current_pid;
 int status;
 
+
+
 void externalCommand(char *command, char *varargs){
+  struct sigaction handle;
+  handle.sa_handler = signal_handler;
+
   char **args = (char**) calloc(1, 80);
   int argc = 1;
   char *arg;
@@ -40,16 +45,12 @@ void externalCommand(char *command, char *varargs){
     }
   }
 
-  // printf("PID = %d\n", pid);
+  usr_interrupt = 0;
 
   if(pid == 0){ // Child
-    // printf("WITHIN CHILD...\n");
     for(int i = 0; i < pathn; i++){
       args[0] = (char*) malloc(80);
       args[0] = paths[i];
-
-      // printf("WITHIN LOOP FOR EXECUTION --- LOOP %d\n", i);
-      // printf("PATHN : %d, and PATH : %s\n", pathn, paths[i]);
 
       // Executes command path[i] with arguments args with environment envp
       execve(paths[i], args, envp);
@@ -58,20 +59,24 @@ void externalCommand(char *command, char *varargs){
     exit(0);
   }
   else if(pid > 0){ //Parent
-    // printf("WITHIN PARENT...\n");
     current_pid = pid;
 
     if(BACKGROUND == 0){
-      if(signal(SIGCHLD, signal_handler) == SIG_ERR)
-        printf("Couldn't catch SIGCHLD --- Child Exit Signal\n");
-      pause(); // Pauses until signal is recieved
-      //
-        if(WIFEXITED(status)){
-          setExitcode(WEXITSTATUS(status));
-        }
-        else if(WIFSIGNALED(status)){
-          printf("Process received SIGNAL %d\n", WTERMSIG(status));
-        }
+      sigaction(SIGCHLD, &handle, NULL);
+      
+      sigset_t mask, oldmask;
+      sigemptyset(&mask);
+      sigaddset(&mask, SIGCHLD);
+      sigprocmask(SIG_BLOCK, &mask, &oldmask);
+
+      while(usr_interrupt == 0) sigsuspend (&oldmask);
+
+      if(WIFEXITED(status)){
+        setExitcode(WEXITSTATUS(status));
+      }
+      else if(WIFSIGNALED(status)){
+        printf("Process received SIGNAL %d\n", WTERMSIG(status));
+      }
     }
   }
   else{
@@ -115,32 +120,34 @@ void process_status(int sigstat){
 }
 
 int resumeProcess(int state, pid_t process){
-  resuspended = 0;
+  struct sigaction handle;
+  handle.sa_handler = signal_handler;
+
+  usr_interrupt = 0;
   int wakestatus = kill(process, SIGCONT);
   if (wakestatus != 0){
-    fprintf(stderr, "Failed to resume process.\n"); 
     return 1;
   }
   
   current_pid = process;
 
   if(state == FOREGROUND){
-    if(signal(SIGCHLD, signal_handler) == SIG_ERR)
-      printf("Couldn't catch SIGCHLD --- Child Exit Signal\n");
-    pause();
+    sigaction(SIGCHLD, &handle, NULL);
+    
+      sigset_t mask, oldmask;
+      sigemptyset(&mask);
+      sigaddset(&mask, SIGCHLD);
+      sigprocmask(SIG_BLOCK, &mask, &oldmask);
+
+      while(usr_interrupt == 0) sigsuspend (&oldmask);
 
     if(WIFEXITED(status)){
       setExitcode(WEXITSTATUS(status));
     }
     else if(WIFSIGNALED(status)){
-      printf("Process received SIGNAL %d\n", WTERMSIG(status));
+      // printf("Process received SIGNAL %d\n", WTERMSIG(status));
     }
   }
 
-  if(resuspended == 0){
-    return 0;
-  }
-  else{
-    return 18;
-  }
+  return 0;
 }
