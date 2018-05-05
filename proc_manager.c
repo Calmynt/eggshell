@@ -5,7 +5,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <signal.h>
-#include "externalcmd.h"
+#include "proc_manager.h"
 
 pid_t current_pid;
 int status;
@@ -16,7 +16,7 @@ void externalCommand(char *command, char *varargs){
   char *arg;
   char arg_delimiter[2] = " ";
 
-  int BACKGROUND = 0;
+  int BG = 0;
 
   char **envp = environEGG();
 
@@ -30,7 +30,7 @@ void externalCommand(char *command, char *varargs){
     arg = strsep(&varargs, arg_delimiter);
 
     if(strcmp(arg, "&") == 0){
-      BACKGROUND = 1;
+      BG = 1;
     }
 
     else{
@@ -58,22 +58,21 @@ void externalCommand(char *command, char *varargs){
     exit(0);
   }
   else if(pid > 0){ //Parent
-    printf("WITHIN PARENT...\n");
+    // printf("WITHIN PARENT...\n");
     current_pid = pid;
 
     if(BACKGROUND == 0){
       if(signal(SIGCHLD, signal_handler) == SIG_ERR)
         printf("Couldn't catch SIGCHLD --- Child Exit Signal\n");
-      pause();
+      pause(); // Pauses until signal is recieved
       //
         if(WIFEXITED(status)){
           setExitcode(WEXITSTATUS(status));
         }
         else if(WIFSIGNALED(status)){
-          printf("Process terminated due to SIGNAL %d\n", WTERMSIG(status));
+          printf("Process received SIGNAL %d\n", WTERMSIG(status));
         }
     }
-    // exit(0);
   }
   else{
     perror("waitpid()");
@@ -113,4 +112,35 @@ pid_t currentpid(){
 
 void process_status(int sigstat){
   status = sigstat;
+}
+
+int resumeProcess(int state, pid_t process){
+  resuspended = 0;
+  int wakestatus = kill(process, SIGCONT);
+  if (wakestatus != 0){
+    fprintf(stderr, "Failed to resume process.\n"); 
+    return 1;
+  }
+  
+  current_pid = process;
+
+  if(state == FOREGROUND){
+    if(signal(SIGCHLD, signal_handler) == SIG_ERR)
+      printf("Couldn't catch SIGCHLD --- Child Exit Signal\n");
+    pause();
+
+    if(WIFEXITED(status)){
+      setExitcode(WEXITSTATUS(status));
+    }
+    else if(WIFSIGNALED(status)){
+      printf("Process received SIGNAL %d\n", WTERMSIG(status));
+    }
+  }
+
+  if(resuspended == 0){
+    return 0;
+  }
+  else{
+    return 18;
+  }
 }

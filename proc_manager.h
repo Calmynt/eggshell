@@ -3,6 +3,8 @@
 #include "sig_handler.h"
 #include "variables.h"
 
+int resuspended;
+
 // Executes an external command, not present in eggshell.
 // command contains the command to be executed.
 // line contains the arguments for the command.
@@ -17,3 +19,5 @@ char** pathsToCommArr(int *pathn, char* program);
 pid_t currentpid();
 
 void process_status(int sigstat);
+
+int resumeProcess(int state, pid_t process);

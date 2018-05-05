@@ -2,7 +2,7 @@ char *line;
 
 #include "variables.h"
 #include "printer.h"
-#include "externalcmd.h"
+#include "proc_manager.h"
 #include "sig_handler.h"
 
 /* Initialises the eggshell */

@@ -50,12 +50,12 @@ void parseLine(char* line){
         return;
       }
       else{
-        printf("VARNAME non CAPITAL\nVARNAME : %s\nVARTEST : %s\nSTRSTR : %s\n", varname, vartest, strstr(varname, " "));
+        // printf("VARNAME non CAPITAL\nVARNAME : %s\nVARTEST : %s\nSTRSTR : %s\n", varname, vartest, strstr(varname, " "));
         return;
       }
     }
           else{
-        printf("INVALID = PLACEMENT\nVARNAME : %s\nVARTEST : %s\nSTRSTR : %s\n", varname, vartest, strstr(varname, " "));
+        // printf("INVALID = PLACEMENT\nVARNAME : %s\nVARTEST : %s\nSTRSTR : %s\n", varname, vartest, strstr(varname, " "));
         return;
       }
   }
@@ -67,6 +67,8 @@ void parseLine(char* line){
   else if(strcmp(command, "vars") == 0) displayUserVars(); // checks for debug vars command
   else if(strcmp(command, "chdir") == 0) changeDirectory(line);
   else if(strcmp(command, "source") == 0) runScript(line);
+  else if(strcmp(command, "fg") == 0) resumeProcessSignal(FOREGROUND);
+  else if(strcmp(command, "bg") == 0) resumeProcessSignal(BACKGROUND);
 
   if(signal(SIGINT, signal_handler) == SIG_ERR)
     printf("Couldn't catch SIGINT - Interrupt Signal\n");
