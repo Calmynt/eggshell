@@ -17,3 +17,5 @@ void changeDirectory(char* directory);
 // This is what the user will use to execute any and all commands.
 // This method parses a line entered by the user, and runs the appropriate command.
 void parseLine(char* line);
+
+void signal_handler(int signal);

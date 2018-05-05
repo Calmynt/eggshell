@@ -52,7 +52,7 @@ void initShellVars(){
   sprintf(a,"PATH=%s", getenv("PATH"));
   sprintf(b,"USER=%s", getenv("USER"));
   sprintf(c,"HOME=%s", getenv("HOME"));
-  sprintf(d,"PROMPT=%s", "eggshell-1.0 > ");
+  sprintf(d,"PROMPT=%s", "< EggShell --> ");
   sprintf(e,"CWD=%s", cwd);
   sprintf(f,"TERMINAL=%s", ttyname(STDIN_FILENO));
   sprintf(g,"SHELL=%s", exec);

@@ -4,6 +4,7 @@
 #include <unistd.h>
 #include <limits.h>
 #include <sys/wait.h>
+#include <signal.h>
 #include "eggshell.h"
 #include "linenoise.h"
 
@@ -66,6 +67,10 @@ void parseLine(char* line){
   else if(strcmp(command, "vars") == 0) displayUserVars(); // checks for debug vars command
   else if(strcmp(command, "chdir") == 0) changeDirectory(line);
   else if(strcmp(command, "source") == 0) runScript(line);
+
+  if(signal(SIGINT, signal_handler) == SIG_ERR)
+    printf("error in catching signal");
+
   else externalCommand(command, line);
 }
 
@@ -112,4 +117,18 @@ void changeDirectory(char* directory){
   else{
     perror("Changing directory");
   }
+}
+
+void signal_handler(int signo){
+    pid_t process = currentpid();
+
+    if(signo == SIGINT){
+        printf("\n----------------------------\n");
+        printf("Interrupting Process [%d] with Signal [%d]...\n", process, SIGINT);
+        int success = kill(currentpid(), SIGTERM);
+        (success == 0)
+          ? printf("Interrupt was successful!\n")
+          : printf("Interrupt failed.\n");
+        printf("-----------------------------\n");
+    }
 }
