@@ -5,8 +5,6 @@
 #include <unistd.h>
 #include <limits.h>
 
-#define VARSIZE 1024
-
 typedef struct variable{
   char* varname;
   char* value;
@@ -91,6 +89,25 @@ void showShellVars(){
    printf("TERMINAL=%s\n", value("TERMINAL"));
    printf("SHELL=%s \n", value("SHELL"));
    printf("EXITCODE=%s \n", value("EXITCODE"));
+}
+
+char** environ(){
+  char **envp = calloc(8, VARSIZE);
+
+  for(int i = 0; i < 8; i++){
+    envp[i] = malloc(VARSIZE);
+  }
+
+   sprintf(envp[0], "CWD=%s", value("CWD"));
+   sprintf(envp[1], "PATH=%s", value("PATH"));
+   sprintf(envp[2], "PROMPT=%s", value("PROMPT"));
+   sprintf(envp[3], "USER=%s", value("USER"));
+   sprintf(envp[4], "HOME=%s", value("HOME"));
+   sprintf(envp[5], "TERMINAL=%s", value("TERMINAL"));
+   sprintf(envp[6], "SHELL=%s", value("SHELL"));
+   sprintf(envp[7], "EXITCODE=%s", value("EXITCODE"));
+
+  return envp;
 }
 
 void createVar(char* line){

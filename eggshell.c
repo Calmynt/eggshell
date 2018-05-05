@@ -34,10 +34,10 @@ void parseLine(char* line){
 
   // Checks for variable assignment
   if(vartest != 0){
-    if(vartest[0] != ' ' && strchr(varname, ' ') == 0){
+    if(vartest[0] != ' ' && strstr(varname, " ") == 0){
       assign_check = 1;
-      for(int i = 0; i < strlen(vartest); i++){
-        if(vartest[i] < 65 || vartest[i] > 90){
+      for(int i = 0; i < strlen(varname); i++){
+        if(varname[i] < 65 || varname[i] > 90){
           assign_check = 0;
           break;
         }
@@ -48,7 +48,15 @@ void parseLine(char* line){
         setExitcode(0);
         return;
       }
+      else{
+        printf("VARNAME non CAPITAL\nVARNAME : %s\nVARTEST : %s\nSTRSTR : %s\n", varname, vartest, strstr(varname, " "));
+        return;
+      }
     }
+          else{
+        printf("INVALID = PLACEMENT\nVARNAME : %s\nVARTEST : %s\nSTRSTR : %s\n", varname, vartest, strstr(varname, " "));
+        return;
+      }
   }
 
   char *command = strsep(&line, delimiter);

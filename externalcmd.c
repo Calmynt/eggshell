@@ -14,16 +14,14 @@ void externalCommand(char *command, char *varargs){
   char *arg;
   char arg_delimiter[2] = " ";
 
-
+  char **envp = environ();
 
   pid_t pid = fork();
   int status;
 
   if(pid == 0){
     int pathn;
-    printf("PATHN1 : %d\n", pathn);
     char **paths = pathsToCommArr(&pathn, command);
-    printf("PATHN2 : %d\n", pathn);
 
     while(varargs != 0){
       args[argc] = (char*) malloc(80);
@@ -36,12 +34,13 @@ void externalCommand(char *command, char *varargs){
     for(int i = 0; i < pathn; i++){
       args[0] = (char*) malloc(80);
       args[0] = paths[i];
-      printf("PATHS : %s", paths[i]);
-      execv(paths[i], args);
+      // printf("PATHS : %s\n", paths[i]);
+      execve(paths[i], args, envp);
     }
 
   }
   else if(pid > 0){ //Parent
+   waitpid(pid, &status, 0);
     if(WIFEXITED(status)){
       setExitcode(WEXITSTATUS(status));
     }
@@ -53,7 +52,7 @@ void externalCommand(char *command, char *varargs){
     perror("waitpid()");
   }
 
-  waitpid(pid, &status, 0);
+ 
 }
 
 char** pathsToCommArr(int *pathn, char *program){

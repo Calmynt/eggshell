@@ -28,3 +28,6 @@ The second command is equivalent to running the shell, and entering the command 
    
  - The shell also has external command support.
    - For example, if `ls` is run, `eggshell` will realise that it's not an internal command, and will redirect it to be executed by whichever shell is being used by the system its being run on.
+
+## Notes
+  - Doing `echo $[variable name]` will not work, as `echo` is an external command, and with all external commands, `$` is processed by a shell. However, the eggshell environment variables *ARE* still present, as can be proven by running the internal command `all`, and the external command `env`.
