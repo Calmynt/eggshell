@@ -3,6 +3,7 @@ char *line;
 #include "variables.h"
 #include "printer.h"
 #include "externalcmd.h"
+#include "sig_handler.h"
 
 /* Initialises the eggshell */
 void initEggshell();
@@ -17,5 +18,3 @@ void changeDirectory(char* directory);
 // This is what the user will use to execute any and all commands.
 // This method parses a line entered by the user, and runs the appropriate command.
 void parseLine(char* line);
-
-void signal_handler(int signal);

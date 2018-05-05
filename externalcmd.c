@@ -6,10 +6,9 @@
 #include <string.h>
 #include <signal.h>
 #include "externalcmd.h"
-#include "variables.h"
 
 pid_t current_pid;
-
+int status;
 
 void externalCommand(char *command, char *varargs){
   char **args = (char**) calloc(1, 80);
@@ -22,7 +21,6 @@ void externalCommand(char *command, char *varargs){
   char **envp = environEGG();
 
   pid_t pid = fork();
-  int status;
 
   int pathn;
   char **paths = pathsToCommArr(&pathn, command);
@@ -64,7 +62,10 @@ void externalCommand(char *command, char *varargs){
     current_pid = pid;
 
     if(BACKGROUND == 0){
-      waitpid(pid, &status, 0);
+      if(signal(SIGCHLD, signal_handler) == SIG_ERR)
+        printf("Couldn't catch SIGCHLD --- Child Exit Signal\n");
+      pause();
+      //
         if(WIFEXITED(status)){
           setExitcode(WEXITSTATUS(status));
         }
@@ -108,4 +109,8 @@ char** pathsToCommArr(int *pathn, char *program){
 
 pid_t currentpid(){
   return current_pid;
+}
+
+void process_status(int sigstat){
+  status = sigstat;
 }

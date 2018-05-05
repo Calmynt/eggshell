@@ -1,5 +1,8 @@
 #include <unistd.h>
 
+#include "sig_handler.h"
+#include "variables.h"
+
 // Executes an external command, not present in eggshell.
 // command contains the command to be executed.
 // line contains the arguments for the command.
@@ -12,3 +15,5 @@ void externalCommand(char* command, char* line);
 char** pathsToCommArr(int *pathn, char* program);
 
 pid_t currentpid();
+
+void process_status(int sigstat);
