@@ -8,23 +8,12 @@ char *line;
 void initEggshell();
 
 /* Tests the shell using a testfile called "testinput.txt" */
-void runScript(char*);
+void runScript(char* filename);
 
-void changeDirectory(char*);
+// Changes the directory of the eggshell
+void changeDirectory(char* directory);
 
-/* Returns a 'Parse Code' that deciphers what the line is trying to achieve.
-   1    = 'variable'
-   2    = 'print'
-   3    = 'all'
-   4    = 'vars'
-   -1   = 'Error in parsing'
-   -2  = 'External command'
-
-   There are also additional factors that determine whether a line contains
-   any redirection or piping.
-   101 - 104 = Output redirection
-   201 - 204 = Input redirection
-   300       = Piping
-
-   Piping has a single number, as it might contain several commands. */
-void parseLine();
+// The main execution core of the eggshell.
+// This is what the user will use to execute any and all commands.
+// This method parses a line entered by the user, and runs the appropriate command.
+void parseLine(char* line);
