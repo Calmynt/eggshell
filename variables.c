@@ -91,23 +91,20 @@ void showShellVars(){
    printf("EXITCODE=%s \n", value("EXITCODE"));
 }
 
-char** environ(){
-  char **envp = calloc(8, VARSIZE);
+char** environEGG(){
+  extern char **environ; // brings all environment variables
 
-  for(int i = 0; i < 8; i++){
-    envp[i] = malloc(VARSIZE);
-  }
+  char *TERMINAL = malloc(VARSIZE);
+  char *CWD = malloc(VARSIZE);
 
-   sprintf(envp[0], "CWD=%s", value("CWD"));
-   sprintf(envp[1], "PATH=%s", value("PATH"));
-   sprintf(envp[2], "PROMPT=%s", value("PROMPT"));
-   sprintf(envp[3], "USER=%s", value("USER"));
-   sprintf(envp[4], "HOME=%s", value("HOME"));
-   sprintf(envp[5], "TERMINAL=%s", value("TERMINAL"));
-   sprintf(envp[6], "SHELL=%s", value("SHELL"));
-   sprintf(envp[7], "EXITCODE=%s", value("EXITCODE"));
+  sprintf(TERMINAL, "TERMINAL=%s", value("TERMINAL"));
+  sprintf(CWD, "CWD=%s", value("CWD"));
 
-  return envp;
+  // Places the 'TERMINAL' and 'CMD' variables in the environment
+  putenv(TERMINAL);
+  putenv(CWD);
+
+  return environ;
 }
 
 void createVar(char* line){

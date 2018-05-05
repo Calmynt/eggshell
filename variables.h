@@ -13,5 +13,5 @@ char* value(char* varname);
 void displayUserVars();
 Var* retrieveVar(char*);
 char* setExitcode(int);
-char** environ();
+char** environEGG();
 int varExists(char* varname);

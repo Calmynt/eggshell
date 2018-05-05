@@ -14,7 +14,7 @@ void externalCommand(char *command, char *varargs){
   char *arg;
   char arg_delimiter[2] = " ";
 
-  char **envp = environ();
+  char **envp = environEGG();
 
   pid_t pid = fork();
   int status;
@@ -34,7 +34,8 @@ void externalCommand(char *command, char *varargs){
     for(int i = 0; i < pathn; i++){
       args[0] = (char*) malloc(80);
       args[0] = paths[i];
-      // printf("PATHS : %s\n", paths[i]);
+
+      // Executes command path[i] with arguments args with environment envp
       execve(paths[i], args, envp);
     }
 
@@ -52,7 +53,7 @@ void externalCommand(char *command, char *varargs){
     perror("waitpid()");
   }
 
- 
+  free(envp);
 }
 
 char** pathsToCommArr(int *pathn, char *program){

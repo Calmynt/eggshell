@@ -8,8 +8,8 @@
             "type": "shell",
             "command": "make",
             "group": {
-                "isDefault": true,
-                "kind": "build"
+                "kind": "build",
+                "isDefault": true
             }
         }
     ]

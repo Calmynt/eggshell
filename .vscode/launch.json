@@ -21,7 +21,29 @@
                     "text": "-enable-pretty-printing",
                     "ignoreFailures": true
                 }
-            ]
+            ],
+            "preLaunchTask": "build eggshell"
+        },
+        {
+            "name": "(gdb) Launch USER",
+            "type": "cppdbg",
+            "request": "launch",
+            "program": "${workspaceFolder}/eggshell",
+            "args": [],
+            "stopAtEntry": false,
+            "cwd": "${workspaceFolder}",
+            "environment": [],
+            "externalConsole": false,
+            "MIMode": "gdb",
+            "setupCommands": [
+                {
+                    "description": "Enable pretty-printing for gdb",
+                    "text": "-enable-pretty-printing",
+                    "ignoreFailures": true
+                }
+            ],
+            "preLaunchTask": "build eggshell"
         }
+
     ]
 }
