@@ -47,4 +47,7 @@ int main(int argc, char *argv[]){
 
     linenoiseFree(line);
   }
+
+  runLine("clear", "");
+  exit(EXIT_SUCCESS);
 }

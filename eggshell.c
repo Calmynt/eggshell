@@ -23,7 +23,7 @@ void execute(char* line){
   int PARSECODE = 0;
   char delimiter[2] = " ";
   char rest[2] = "\0";
-  if(strcmp(line, "exit") == 0) exit(0);
+  if(strcmp(line, "exit") == 0){runLine("clear", ""); exit(0);}
 
   int assign_check = 0;
 
@@ -65,7 +65,7 @@ void execute(char* line){
   char* redirect_to_file = strstr(line, ">");
   char* append_to_file   = strstr(line, ">>");
 
-  int redirect, append;
+  int redirect = 0, append = 0;
 
   if(append_to_file != 0 || redirect_to_file != 0){
     if(append_to_file != 0){
@@ -89,13 +89,35 @@ void execute(char* line){
   int filefd;
 
   if(append == 1){
-    filefd = open(filename, O_WRONLY|O_APPEND, 0666);
+    filefd = open(filename, O_WRONLY|O_CREAT|O_APPEND, 0666);
   }
   else if(redirect == 1){
-    filefd = open(filename, O_WRONLY|O_CREAT, 0666);
+    filefd = open(filename, O_WRONLY|O_CREAT|O_TRUNC, 0666);
+  }
+  else{
+    filename = 0;
   }
 
-  runLine(command, line);
+  if(filename != 0){
+    int save_out = dup(fileno(stdout));
+
+    if(dup2(filefd, fileno(stdout)) == -1){
+      perror("Failed in redirecting stdout");
+      setExitcode(255);
+      return;
+    }
+
+    runLine(command, line);
+
+    fflush(stdout);
+    close(filefd);
+
+    dup2(save_out, fileno(stdout));
+    close(save_out);
+  }
+  else{
+    runLine(command, line);
+  }
 }
 
 void runScript(char* filename){
