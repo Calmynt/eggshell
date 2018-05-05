@@ -4,6 +4,8 @@
 #include <stdlib.h>
 
 void printLine(char* line){
+  char *toPrint = malloc(8192); 
+
   char wordDelimiter[2] = " ";
   char segmDelimiter[2] = "\"";
 

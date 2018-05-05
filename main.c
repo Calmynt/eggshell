@@ -40,6 +40,8 @@ int main(int argc, char *argv[]){
 
     linenoiseHistoryAdd(history_line);
 
+    updatePrompt();
+
     linenoiseFree(line);
   }
 }

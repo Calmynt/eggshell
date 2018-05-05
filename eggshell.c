@@ -120,5 +120,6 @@ void changeDirectory(char* directory){
   }
   else{
     perror("Changing directory");
+    setExitcode(exitcode);
   }
 }

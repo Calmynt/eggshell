@@ -20,6 +20,8 @@ void getExecPath(char* PATH);
 // Used whenever the directory is changed.
 void updateCWD();
 
+void updatePrompt();
+
 // Retrieves a variable struct with the same name as the parameter.
 Var* retrieveVar(char* varname);
 

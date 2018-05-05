@@ -24,6 +24,11 @@ void updateCWD(){
   strcpy(cwdVar->value, cwd);
 }
 
+void updatePrompt(){
+  Var *prompt = retrieveVar("PROMPT");
+  sprintf(prompt->value, "<[%s] - [%s]> $ ", value("CWD"), value("EXITCODE"));
+}
+
 void initShellVars(){
   // Sets execution path and current working directory
   char *exec = malloc(VARSIZE * sizeof(char));
@@ -52,11 +57,11 @@ void initShellVars(){
   sprintf(a,"PATH=%s", getenv("PATH"));
   sprintf(b,"USER=%s", getenv("USER"));
   sprintf(c,"HOME=%s", getenv("HOME"));
-  sprintf(d,"PROMPT=%s", "< EggShell --> ");
   sprintf(e,"CWD=%s", cwd);
   sprintf(f,"TERMINAL=%s", ttyname(STDIN_FILENO));
   sprintf(g,"SHELL=%s", exec);
   sprintf(h,"EXITCODE=%s", "(none)");
+  sprintf(d,"PROMPT=<Welcome to Eggshell> $ ");
 
   // Sets shell variables using above strings
   createVar(a);

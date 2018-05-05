@@ -31,14 +31,11 @@ void signal_handler(int signo){
 
         resuspended = 1;
 
-        printf("DEBUGWATCH ---- SUSPENDED PROCESS ID BEFORE: %d\n", suspended_process);
         suspended_process = process;
-        printf("DEBUGWATCH ---- SUSPENDED PROCESS ID AFTER : %d\n", suspended_process);
     }
 }
 
 void resumeProcessSignal(int state){
-    printf("SUSPENDED PROCESS ID : %d\n", suspended_process);
     if(suspended_process < 0){
         fprintf(stderr, "No process currently suspended.\n");
         return;

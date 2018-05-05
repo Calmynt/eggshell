@@ -12,8 +12,9 @@ int status;
 
 void externalCommand(char *command, char *varargs){
   char **args = (char**) calloc(1, 80);
-  int argc = 1;
   char *arg;
+
+  int argc = 1;
   char arg_delimiter[2] = " ";
 
   int BG = 0;
@@ -40,16 +41,10 @@ void externalCommand(char *command, char *varargs){
     }
   }
 
-  // printf("PID = %d\n", pid);
-
   if(pid == 0){ // Child
-    // printf("WITHIN CHILD...\n");
     for(int i = 0; i < pathn; i++){
       args[0] = (char*) malloc(80);
       args[0] = paths[i];
-
-      // printf("WITHIN LOOP FOR EXECUTION --- LOOP %d\n", i);
-      // printf("PATHN : %d, and PATH : %s\n", pathn, paths[i]);
 
       // Executes command path[i] with arguments args with environment envp
       execve(paths[i], args, envp);
@@ -58,7 +53,6 @@ void externalCommand(char *command, char *varargs){
     exit(0);
   }
   else if(pid > 0){ //Parent
-    // printf("WITHIN PARENT...\n");
     current_pid = pid;
 
     if(BG == 0){
