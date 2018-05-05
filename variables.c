@@ -5,6 +5,8 @@
 #include <unistd.h>
 #include <limits.h>
 
+#define VARSIZE 1024
+
 typedef struct variable{
   char* varname;
   char* value;
@@ -19,16 +21,16 @@ Vars *variables;
 
 void updateCWD(){
   Var *cwdVar = retrieveVar("CWD");
-  char cwd[1024];
+  char cwd[VARSIZE];
   getcwd(cwd, sizeof(cwd));
   strcpy(cwdVar->value, cwd);
 }
 
 void initShellVars(){
   // Sets execution path and current working directory
-  char *exec = malloc(1024 * sizeof(char));
+  char *exec = malloc(VARSIZE * sizeof(char));
   getExecPath(exec);
-  char cwd[1024];
+  char cwd[VARSIZE];
   getcwd(cwd, sizeof(cwd));
 
   // Initialises variables array
@@ -39,14 +41,14 @@ void initShellVars(){
 
   // Initialises shell variable-injection strings
   char *a, *b, *c, *d, *e, *f, *g, *h;
-  a = malloc(1024 * sizeof(char));
-  b = malloc(1024 * sizeof(char));
-  c = malloc(1024 * sizeof(char));
-  d = malloc(1024 * sizeof(char));
-  e = malloc(1024 * sizeof(char));
-  f = malloc(1024 * sizeof(char));
-  g = malloc(1024 * sizeof(char));
-  h = malloc(1024 * sizeof(char));
+  a = malloc(VARSIZE * sizeof(char));
+  b = malloc(VARSIZE * sizeof(char));
+  c = malloc(VARSIZE * sizeof(char));
+  d = malloc(VARSIZE * sizeof(char));
+  e = malloc(VARSIZE * sizeof(char));
+  f = malloc(VARSIZE * sizeof(char));
+  g = malloc(VARSIZE * sizeof(char));
+  h = malloc(VARSIZE * sizeof(char));
 
   // Creates strings to set shell variables
   sprintf(a,"PATH=%s", getenv("PATH"));
@@ -93,7 +95,7 @@ void showShellVars(){
 
 void createVar(char* line){
   char* name = malloc(50 * sizeof(char));
-  char* str = malloc(200 * sizeof(char));
+  char* str = malloc(VARSIZE * sizeof(char));
   char* token;
 
   int i = 0;
@@ -154,7 +156,7 @@ void createVar(char* line){
   a = variables->amount;
 
   // Reallocates memory to list of variables, preparing for new variable.
-  Var** vars = (Var**) realloc(variables->vars, a*sizeof(Var));
+  Var** vars = (Var**) realloc(variables->vars, (a)*sizeof(Var));
   variables->vars = vars;
   variables->vars[a] = (Var *) malloc(sizeof(Var));
 

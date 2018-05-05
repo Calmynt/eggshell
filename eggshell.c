@@ -23,28 +23,32 @@ void parseLine(char* line){
   char rest[2] = "\0";
   if(strcmp(line, "exit") == 0) exit(0);
 
-  // Parse check for assignment
-  for(int i = 1; i < strlen(line); i++){
-    if(line[i] == '=' && line[i-1] != ' ' && line[i+1] != ' '){
-      for(int j = i-1; j >= 0; j--){
-        // Returns error code if variable name is invalid
-        if(line[j] < 65 || line[j] > 90){
-          fprintf(stderr, "\nInvalid assignment - Variable names should be capitalised and alphanumeric!\nEx. 'HOME=3'\n\n");
-          setExitcode(-1);
-          return;
+  int assign_check = 0;
+
+  char *vardelimiter = "=";
+
+  char *vartest = malloc(1000);
+  strcpy(vartest, line);
+
+  char *varname = strsep(&vartest, vardelimiter);
+
+  // Checks for variable assignment
+  if(vartest != 0){
+    if(vartest[0] != ' ' && strchr(varname, ' ') == 0){
+      assign_check = 1;
+      for(int i = 0; i < strlen(vartest); i++){
+        if(vartest[i] < 65 || vartest[i] > 90){
+          assign_check = 0;
+          break;
         }
       }
 
-      createVar(line);
+      if(assign_check == 1){
+        createVar(line);
+        setExitcode(0);
+        return;
+      }
     }
-
-    // Returns error code if spaces surround =
-    else if(line[i] == '=' && (line[i-1] == ' ' || line[i+1] == ' ')){
-      fprintf(stderr, "\nInvalid assignment - No spaces surround '='\nEx. 'HOME=3'\n\n");
-      setExitcode(-1);
-      return;
-    }
-
   }
 
   char *command = strsep(&line, delimiter);
