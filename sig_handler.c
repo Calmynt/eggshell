@@ -35,13 +35,6 @@ void signal_handler(int signo){
         suspended_process = process;
         printf("DEBUGWATCH ---- SUSPENDED PROCESS ID AFTER : %d\n", suspended_process);
     }
-
-    else if(signo == SIGCHLD){
-        int status;
-        waitpid(currentpid(), &status, WNOHANG);
-        process_status(status);
-        
-    }
 }
 
 void resumeProcessSignal(int state){

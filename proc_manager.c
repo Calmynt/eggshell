@@ -61,11 +61,9 @@ void externalCommand(char *command, char *varargs){
     // printf("WITHIN PARENT...\n");
     current_pid = pid;
 
-    if(BACKGROUND == 0){
-      if(signal(SIGCHLD, signal_handler) == SIG_ERR)
-        printf("Couldn't catch SIGCHLD --- Child Exit Signal\n");
-      pause(); // Pauses until signal is recieved
-      //
+    if(BG == 0){
+      waitpid(current_pid, &status, WUNTRACED);
+
         if(WIFEXITED(status)){
           setExitcode(WEXITSTATUS(status));
         }
@@ -125,9 +123,7 @@ int resumeProcess(int state, pid_t process){
   current_pid = process;
 
   if(state == FOREGROUND){
-    if(signal(SIGCHLD, signal_handler) == SIG_ERR)
-      printf("Couldn't catch SIGCHLD --- Child Exit Signal\n");
-    pause();
+    waitpid(current_pid, &status, WUNTRACED);
 
     if(WIFEXITED(status)){
       setExitcode(WEXITSTATUS(status));
