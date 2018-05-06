@@ -1,12 +1,12 @@
 all
-VAR=ASSIGN
-USER=travis
+vars
+VAR=value
 NOSPACE = BADASSIGN
 bad=ERROR
 CURRENTUSER=$USER
-vars
 print nice
 print hello there bud
 print $VAR
 print "$VAR"
-exit
+ls >> dir.txt
+chdir ..
