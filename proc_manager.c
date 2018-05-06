@@ -11,21 +11,23 @@ pid_t current_pid;
 int status;
 
 void externalCommand(char *command, char *varargs){
-  char **args = (char**) calloc(1, 80);
-  char *arg;
+  char **args = (char**) calloc(1, 80); // Array of arguments
+  char *arg; // Individual argument used to add to array
 
-  int argc = 1;
-  char arg_delimiter[2] = " ";
+  int argc = 1; // Counts how many arguments are present
+  char arg_delimiter[2] = " "; // To delimit the varargs
 
-  int BG = 0;
+  int BG = 0; // Runs process in background or foreground
 
-  char **envp = environEGG();
+  char **envp = environEGG(); // Retrieves env variables from eggshell
 
   pid_t pid = fork();
 
+  // Splits the path variable into an array of paths and stores them in 'paths'
   int pathn;
   char **paths = pathsToCommArr(&pathn, command);
 
+  // Loop for storing varargs into **args
   while(varargs != 0){
     args[argc] = (char*) malloc(80);
     arg = strsep(&varargs, arg_delimiter);
@@ -41,13 +43,23 @@ void externalCommand(char *command, char *varargs){
     }
   }
 
+  // Conditional block for fork-exec pattern
   if(pid == 0){ // Child
+    int exec_success = 0; // checks whether command executed correctly
+
+
+    // For loop for using all paths
     for(int i = 0; i < pathn; i++){
       args[0] = (char*) malloc(80);
       args[0] = paths[i];
 
       // Executes command path[i] with arguments args with environment envp
-      execve(paths[i], args, envp);
+      exec_success = execve(paths[i], args, envp);
+    }
+
+    if(exec_success == -1){
+      perror("Execution of external command failed");
+      exit(-1);
     }
 
     exit(0);
@@ -55,7 +67,9 @@ void externalCommand(char *command, char *varargs){
   else if(pid > 0){ //Parent
     current_pid = pid;
 
+    // Waits if background flag not activated.
     if(BG == 0){
+      // WUNTRACED used to stop waiting when suspended
       waitpid(current_pid, &status, WUNTRACED);
 
         if(WIFEXITED(status)){
@@ -72,7 +86,7 @@ void externalCommand(char *command, char *varargs){
 }
 
 char** pathsToCommArr(int *pathn, char *program){
-  char *pathORIG = value("PATH");
+  char *pathORIG = value("PATH"); // stores $PATH string
 
   char *paths = malloc(VARSIZE);
 
@@ -81,19 +95,22 @@ char** pathsToCommArr(int *pathn, char *program){
   char **patharr = (char**) calloc(1,100);
   char delimiter[2] = ":";
 
-  int pathnL = 0;
+  int pathnL = 0; // used for path indexing
 
   while(paths!=0){
     char *path = strsep(&paths, delimiter);
     patharr[pathnL] = (char*) malloc(100);
     strcpy(patharr[pathnL], path);
+
+    // Appends program to be run to the individual PATH
     strcat(patharr[pathnL], "/");
     strcat(patharr[pathnL], program);
+
     patharr = (char**) realloc(patharr, pathnL+1 * 100);
     pathnL++;
   }
 
-  *pathn = pathnL;
+  *pathn = pathnL; // stores length of path to pathn pointer
 
   return patharr;
 }
@@ -102,15 +119,15 @@ pid_t currentpid(){
   return current_pid;
 }
 
-void process_status(int sigstat){
-  status = sigstat;
-}
-
 int resumeProcess(int state, pid_t process){
   resuspended = 0;
+
+  // Sends SIGCONT signal to suspended process
   int wakestatus = kill(process, SIGCONT);
+
+  // If signal failed - abort function
   if (wakestatus != 0){
-    fprintf(stderr, "Failed to resume process.\n"); 
+    perror("Failed to resume process"); 
     return 1;
   }
   

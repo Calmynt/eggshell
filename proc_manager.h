@@ -16,8 +16,8 @@ void externalCommand(char* command, char* line);
 // MEANT to be used in conjunction with execve
 char** pathsToCommArr(int *pathn, char* program);
 
+// Returns the pid of the current process present in memory.
 pid_t currentpid();
 
-void process_status(int sigstat);
-
+// Used to resume the process that is currently suspended.
 int resumeProcess(int state, pid_t process);

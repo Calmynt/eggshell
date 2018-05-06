@@ -18,20 +18,27 @@ void printLine(char* line){
   int escaped = 0;
 
   while(line != 0){
+    // Splits line into words
     word = strsep(&line, wordDelimiter);
+    
+    // Splits words into segments [split by ""]
     segment = strsep(&word, segmDelimiter);
 
+    // Prints first segment
     printSeg(segment, escaped);
 
+    // Prints remaining segments
     while(word != 0){
       segment = strsep(&word, segmDelimiter);
       escaped = (escaped-1) * -1;
       printSeg(segment, escaped);
     }
 
+    // Prints a space to seperate words
     printf(" ");
   }
 
+  // Prints a newline so that the PROMPT appears in a new line
   printf("\n");
 
   setExitcode(0);
@@ -42,15 +49,20 @@ void printSeg(char* segment, int escaped){
     if(segment[0] == '$'){
       char *varname = malloc(200);
 
-      int i = 0;
-      int s = 0;
+      int i = 0; // To iterate over a loop
+      int s = 0; // Flag for possible string seperate from varname
 
       char *tempSeg = malloc(200);
 
       strcpy(tempSeg, segment);
 
       for(i = 0; 1 < strlen(tempSeg); i++){
-        memmove(tempSeg, tempSeg+1, sizeof(tempSeg));
+        tempSeg++;
+
+        // This condition checks whether the segment contains a string after the varname.
+        // For example, "$HOMEstring"
+        // In this case, the condition will break out of the loop once 's' appears.
+        // The varname would be 'HOME', and the tempSeg would contain 'string'.
         if(tempSeg[0] < 65 || tempSeg[0] > 90){
           strncpy(varname, segment+1, i);
           s = 1;
@@ -72,17 +84,9 @@ void printSeg(char* segment, int escaped){
         else{
           printf("%s", varvalue);
         }
-      }
-      else{
-        printf("%s", segment);
+        return;
       }
     }
-    else{
-      printf("%s", segment);
-    }
   }
-
-  else{
-    printf("%s", segment);
-  }
+  printf("%s", segment);
 }

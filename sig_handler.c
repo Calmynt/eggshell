@@ -10,6 +10,7 @@ pid_t suspended_process;
 void signal_handler(int signo){
     pid_t process = currentpid();
 
+    // Catches interrupt signal
     if(signo == SIGINT){
         printf("\n------------------------------------------------------\n");
         printf("Interrupting Process [%d] with Signal [%d]...\n", process, SIGINT);
@@ -20,6 +21,7 @@ void signal_handler(int signo){
         printf("------------------------------------------------------\n");
     }
 
+    // Catches suspend signal
     else if(signo == SIGTSTP){
         printf("\n------------------------------------------------------\n");
         printf("Suspending Process [%d] with Signal [%d]...\n", process, SIGTSTP);

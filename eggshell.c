@@ -48,25 +48,32 @@ void execute(char* line){
       if(assign_check == 1){
         createVar(line);
         setExitcode(0);
-        return;
       }
       else{
-        // printf("VARNAME non CAPITAL\nVARNAME : %s\nVARTEST : %s\nSTRSTR : %s\n", varname, vartest, strstr(varname, " "));
-        return;
+        printf("Assignment detected but line is invalid\n");
+        printf("[The variable name can only contain CAPITAL LETTERS]\n");
+        setExitcode(-1);
       }
     }
-          else{
-        // printf("INVALID = PLACEMENT\nVARNAME : %s\nVARTEST : %s\nSTRSTR : %s\n", varname, vartest, strstr(varname, " "));
-        return;
-      }
+    else{;
+      printf("Assignment detected but line is invalid\n");
+      printf("[The '=' should not be seperated with spaces]\n");
+      setExitcode(-1);
+    }
+    return;
   }
 
+  // Filename only used for redirection purposes
   char *filename;
+
+  // Checks for different output redirection symbols
   char* redirect_to_file = strstr(line, ">");
   char* append_to_file   = strstr(line, ">>");
 
-  int redirect = 0, append = 0;
+  int redirect = 0, append = 0; // variables for output redirection
+  int out = 0, in = 0; // flag variables for redirection
 
+  // If condition for seperating filename from the command
   if(append_to_file != 0 || redirect_to_file != 0){
     if(append_to_file != 0){
       filename = append_to_file+2;
@@ -84,21 +91,26 @@ void execute(char* line){
     }
   }
 
+  // Seperates the command from the arguments
   char *command = strsep(&line, delimiter);
 
   int filefd;
 
+  // Opens an output stream depending on the flags triggered
+  // If no output flag has been triggered, no stream is created.
   if(append == 1){
     filefd = open(filename, O_WRONLY|O_CREAT|O_APPEND, 0666);
+    out = 1;
   }
   else if(redirect == 1){
     filefd = open(filename, O_WRONLY|O_CREAT|O_TRUNC, 0666);
+    out = 1;
   }
   else{
     filename = 0;
   }
 
-  if(filename != 0){
+  if(out == 1){
     int save_out = dup(fileno(stdout));
 
     if(dup2(filefd, fileno(stdout)) == -1){
@@ -122,10 +134,13 @@ void execute(char* line){
 
 void runScript(char* filename){
   FILE *testfile = fopen(filename, "r");
+
+  // Special condition for test execution
   if(testfile == NULL && strcmp(filename, "testinput.txt") == 0){
     fprintf(stderr, "--- No test file found, aborting... ---");
     exit(-1);
   }
+  // Condition for nonexistent file
   else if(testfile == NULL){
     fprintf(stderr, "No file '%s' found!", filename);
     setExitcode(-1);
@@ -137,23 +152,20 @@ void runScript(char* filename){
   int lineNo = 0;
 
   while(fgets(line, 1024, testfile) != NULL){
-    printf("%s%s", value("PROMPT"), line);
+    printf("%s%s", value("PROMPT"), line); // Emulates the prompt
 
     //Terminates line at right place to simulate input
     line[strlen(line)-2] = '\0';
 
     execute(line);
 
-    lineNo++;
+    lineNo++; 
   }
 
   setExitcode(0);
 }
 
 void changeDirectory(char* directory){
-  printf("DIRECTORY : %s\n", directory);
-  char delimiter[2] = "/";
-
   int exitcode = chdir(directory);
 
   if(exitcode == 0){
@@ -170,15 +182,18 @@ void runLine(char *command, char *line){
   if(strcmp(command, "print") == 0) {printLine(line); return;} // checks for print command
   else if(strcmp(command, "all") == 0) {showShellVars(); return;} // checks for all command
   else if(strcmp(command, "vars") == 0) {displayUserVars(); return;}  // checks for debug vars command
-  else if(strcmp(command, "chdir") == 0) {changeDirectory(line); return;} 
-  else if(strcmp(command, "source") == 0) {runScript(line); return;}
-  else if(strcmp(command, "fg") == 0) {resumeProcessSignal(FOREGROUND); return;}
-  else if(strcmp(command, "bg") == 0) {resumeProcessSignal(BACKGROUND); return;}
+  else if(strcmp(command, "chdir") == 0) {changeDirectory(line); return;} // checks for chdir command
+  else if(strcmp(command, "source") == 0) {runScript(line); return;} // checks for source command
+  else if(strcmp(command, "fg") == 0) {resumeProcessSignal(FOREGROUND); return;} // recovers suspended process to fg
+  else if(strcmp(command, "bg") == 0) {resumeProcessSignal(BACKGROUND); return;} // recovers suspended process to bg
 
+  // If conditions for signal handling.
+  // Also creates 2 signal handlers in memory for the SIGINT and SIGTSTP
   if(signal(SIGINT, signal_handler) == SIG_ERR)
     printf("Couldn't catch SIGINT - Interrupt Signal\n");
   if(signal(SIGTSTP, signal_handler) == SIG_ERR)
     printf("Couldn't catch SIGTSTP - Suspension Signal\n");
 
+  // Runs external command seperate from the eggshell
   else externalCommand(command, line);
 }
