@@ -1,4 +1,7 @@
+#pragma once
+
 #include <unistd.h>
+#include <sys/types.h>
 
 #include "sig_handler.h"
 #include "variables.h"

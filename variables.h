@@ -1,5 +1,6 @@
 
 #pragma once
+
 typedef struct variable{
   char* varname;
   char* value;

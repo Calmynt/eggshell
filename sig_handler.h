@@ -1,3 +1,5 @@
+#pragma once
+
 #define FOREGROUND 1
 #define BACKGROUND 0
 

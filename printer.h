@@ -1,3 +1,5 @@
+#pragma once
+
 #include "variables.h"
 
 /* Prints a line, incl. variable support */

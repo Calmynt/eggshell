@@ -1,3 +1,5 @@
+#pragma once
+
 char *line;
 
 #include "variables.h"
