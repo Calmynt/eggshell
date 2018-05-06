@@ -1,7 +1,17 @@
-typedef struct variable Var;
-typedef struct variables Vars;
+
+#pragma once
+typedef struct variable{
+  char* varname;
+  char* value;
+}Var;
+
+typedef struct variables{
+  Var** vars;
+  int amount;
+}Vars;
 
 #define VARSIZE 1024
+#define PATHMAX 1024
 
 // Initialises the shell variables to be used.
 void initShellVars();
@@ -33,7 +43,7 @@ char* value(char* varname);
 void displayUserVars();
 
 // Sets the $EXITCODE variable to the parameter given.
-char* setExitcode(int ec);
+void setExitcode(int ec);
 
 // Retrieves all environment variables of the eggshell session.
 // Used by retrieving all env variables of the system, and appending eggshell specific vars.

@@ -3,17 +3,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <unistd.h>
-#include <limits.h>
-
-typedef struct variable{
-  char* varname;
-  char* value;
-}Var;
-
-typedef struct variables{
-  Var** vars;
-  int amount;
-}Vars;
+#include <sys/types.h>
 
 Vars *variables;
 
@@ -81,7 +71,7 @@ void getExecPath(char *PATH){
   char p[128];
   pid_t pid = getpid();
   sprintf(p, "/proc/%d/exe", pid); // reads path from file
-  if (readlink(p, PATH, PATH_MAX) == -1)
+  if (readlink(p, PATH, PATHMAX) == -1)
     perror("readlink"); // returns error if reading aborts
 }
 
@@ -213,7 +203,7 @@ void displayUserVars(){
   setExitcode(0);
 }
 
-char* setExitcode(int ec){
+void setExitcode(int ec){
   int status;
   char *exitcode;
 
