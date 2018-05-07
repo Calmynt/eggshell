@@ -33,7 +33,16 @@ int main(int argc, char *argv[]){
   
   runLine("clear", "");
 
-  printf("\t\t-----=====<<<<!!! Welcome to Eggshell !!!>>>>=====-----\n\n");
+  // Introduction screen, for the first time eggshell is booted up //
+  printf("\t\t-----=====<<<<!!!!!!!!!!!!!!!!!!!!!!!!!!!>>>>=====-----\n");
+  printf("\t\t-----=====<<<<!!!                     !!!>>>>=====-----\n");
+  printf("\t\t-----=====<<<<!!!       Welcome       !!!>>>>=====-----\n");
+  printf("\t\t-----=====<<<<!!!         t o         !!!>>>>=====-----\n");
+  printf("\t\t-----=====<<<<!!!   E G G S H E L L   !!!>>>>=====-----\n");
+  printf("\t\t-----=====<<<<!!!                     !!!>>>>=====-----\n");
+  printf("\t\t-----=====<<<<!!!!!!!!!!!!!!!!!!!!!!!!!!!>>>>=====-----\n");
+
+  printf("\n\n");
 
   while((line = linenoise(prompt)) != NULL) {
     char *history_line = malloc(300);
