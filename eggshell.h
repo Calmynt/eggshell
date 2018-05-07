@@ -2,6 +2,8 @@
 
 char *line;
 
+#include <stdio.h>
+
 #include "variables.h"
 #include "printer.h"
 #include "proc_manager.h"

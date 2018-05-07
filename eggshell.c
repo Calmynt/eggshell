@@ -6,6 +6,7 @@
 #include <sys/wait.h>
 #include <fcntl.h>
 #include <signal.h>
+
 #include "eggshell.h"
 #include "linenoise.h"
 
@@ -67,13 +68,16 @@ void execute(char* line){
   char *filename;
 
   // Checks for different output redirection symbols
-  char* redirect_to_file = strstr(line, ">");
-  char* append_to_file   = strstr(line, ">>");
+  char* redirect_to_file  = strstr(line, ">");
+  char* append_to_file    = strstr(line, ">>");
+  char* input_from_file   = strstr(line, "<");
+  char* input_here_string = strstr(line, "<<<");
 
   int redirect = 0, append = 0; // variables for output redirection
+  int inputfile = 0, inputhere = 0; // variables for input redirection
   int out = 0, in = 0; // flag variables for redirection
 
-  // If condition for seperating filename from the command
+  // If condition for seperating filename from the command [output redirect]
   if(append_to_file != 0 || redirect_to_file != 0){
     if(append_to_file != 0){
       filename = append_to_file+2;
@@ -89,7 +93,30 @@ void execute(char* line){
     while(filename[0] == ' '){
       filename++;
     }
+
+    out = 1;
   }
+  // If condition for seperating filename from the command [input redirect]
+  else if(input_here_string != 0 || input_from_file != 0){
+    if(input_here_string != 0){
+      filename = input_here_string+3;
+      inputhere = 1;
+    }
+    else{
+      filename = input_from_file+1;
+      inputfile = 1;
+    }
+
+    line = strsep(&line, "<");
+    line[strlen(line)-1] = 0;
+
+    while(filename[0] == ' '){
+      filename++;
+    }
+
+    in = 1;
+  }
+
 
   // Seperates the command from the arguments
   char *command = strsep(&line, delimiter);
@@ -100,16 +127,25 @@ void execute(char* line){
   // If no output flag has been triggered, no stream is created.
   if(append == 1){
     filefd = open(filename, O_WRONLY|O_CREAT|O_APPEND, 0666);
-    out = 1;
   }
   else if(redirect == 1){
     filefd = open(filename, O_WRONLY|O_CREAT|O_TRUNC, 0666);
-    out = 1;
+  }
+  else if(inputfile == 1){
+    filefd = open(filename, O_RDONLY);
+  }
+  else if(inputhere == 1){
+    FILE *f = fopen("stdin.tmp", "w+");
+    fprintf(f, "%s", filename);
+
+    filefd = open("stdin.tmp", O_RDONLY);
+    fclose(f);
   }
   else{
     filename = 0;
   }
 
+  // Conditional block for redirecting output
   if(out == 1){
     int save_out = dup(fileno(stdout));
 
@@ -126,6 +162,29 @@ void execute(char* line){
 
     dup2(save_out, fileno(stdout));
     close(save_out);
+  }
+  // Conditional block for redirecting input
+  else if(in == 1){
+    int save_in = dup(fileno(stdin));
+
+    if(dup2(filefd, fileno(stdin)) == -1){
+      perror("Failed in redirecting stdin");
+      setExitcode(255);
+      return;
+    }
+
+    runLine(command, line);
+
+    fflush(stdin);
+    close(filefd);
+
+    dup2(save_in, fileno(stdin));
+    close(save_in);
+
+    if(inputhere == 1){
+      remove("stdin.tmp");
+    }
+
   }
   else{
     runLine(command, line);
