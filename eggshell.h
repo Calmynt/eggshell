@@ -4,10 +4,10 @@ char *line;
 
 #include <stdio.h>
 
-#include "variables.h"
-#include "printer.h"
-#include "proc_manager.h"
-#include "sig_handler.h"
+#include "./src/variables.h"
+#include "./src/printer.h"
+#include "./src/proc_manager.h"
+#include "./src/sig_handler.h"
 
 /* Initialises the eggshell */
 void initEggshell();

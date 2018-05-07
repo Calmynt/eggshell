@@ -1,5 +1,5 @@
 program:
 	clang -coverage -std=gnu99 -g -O0 -o ../eggshell ../main.c ../eggshell.c \
-	../linenoise.c ../variables.c \
-	../printer.c ../proc_manager.c \
-	../sig_handler.c
+	../add-on/linenoise.c ../src/variables.c \
+	../src/printer.c ../src/proc_manager.c \
+	../src/sig_handler.c

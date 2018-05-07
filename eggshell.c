@@ -8,7 +8,7 @@
 #include <signal.h>
 
 #include "eggshell.h"
-#include "linenoise.h"
+#include "./add-on/linenoise.h"
 
 #define ARRLEN(x) (sizeof(x)/sizeof(x[0]))
 
