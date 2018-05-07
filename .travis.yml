@@ -5,6 +5,7 @@ script:
   - make
   - cd ..
   - ./eggshell test
+  - cd ci
   - gcov main.c
 
 after_success:
