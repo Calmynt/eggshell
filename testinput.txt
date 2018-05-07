@@ -1,3 +1,9 @@
+# All scripts for the eggshell have commenting support
+# In order to indicate a comment, one should start a line with '#'
+# Newlines are also ignored, so leave as many as you like.
+# There is one rule that all scripts should abide by however.
+# And that is that all scripts should end with a newline. Otherwise bugs'll appear.
+
 all
 vars
 VAR=value
@@ -8,5 +14,9 @@ print nice
 print hello there bud
 print $VAR
 print "$VAR"
-ls >> dir.txt
-chdir ..
+
+echo nice > createfile.txt
+echo append >> createfile.txt
+cat < createfile.txt
+
+# NEWLINE

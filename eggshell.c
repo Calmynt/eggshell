@@ -211,6 +211,9 @@ void runScript(char* filename){
   int lineNo = 0;
 
   while(fgets(line, 1024, testfile) != NULL){
+    if(strlen(line) < 3){continue;}
+    if(line[0] == '#'){continue;}
+
     printf("%s%s", value("PROMPT"), line); // Emulates the prompt
 
     //Terminates line at right place to simulate input
