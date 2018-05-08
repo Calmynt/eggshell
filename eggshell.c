@@ -121,6 +121,8 @@ void changeDirectory(char* directory){
 }
 
 void runLine(char *command, char *line){
+  struct sigaction sa;
+
   if(strcmp(command, "print") == 0) {printLine(line); return;} // checks for print command
   else if(strcmp(command, "all") == 0) {showShellVars(); return;} // checks for all command
   else if(strcmp(command, "vars") == 0) {displayUserVars(); return;}  // checks for debug vars command
@@ -131,9 +133,14 @@ void runLine(char *command, char *line){
 
   // If conditions for signal handling.
   // Also creates 2 signal handlers in memory for the SIGINT and SIGTSTP
-  if(signal(SIGINT, signal_handler) == SIG_ERR)
+
+  sa.sa_handler = signal_handler;
+  sigemptyset(&sa.sa_mask);
+  sa.sa_flags = SA_RESTART;
+
+  if(sigaction(SIGINT, &sa, NULL) == -1)
     printf("Couldn't catch SIGINT - Interrupt Signal\n");
-  if(signal(SIGTSTP, signal_handler) == SIG_ERR)
+  if(sigaction(SIGTSTP, &sa, NULL) == -1)
     printf("Couldn't catch SIGTSTP - Suspension Signal\n");
 
   // Runs external command seperate from the eggshell
