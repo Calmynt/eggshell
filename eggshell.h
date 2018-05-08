@@ -18,9 +18,12 @@ void runScript(char* filename);
 // Changes the directory of the eggshell
 void changeDirectory(char* directory);
 
+// Executes the command with varargs *line
+// As well as execute command, it also initialises the necessary signal handlers.
 void runLine(char *command, char *line);
 
-// The main execution core of the eggshell.
-// This is what the user will use to execute any and all commands.
-// This method parses a line entered by the user, and runs the appropriate command.
+// The main core of the eggshell
+// This is what the user will be interacting with most of the time
+// It acts as a parser, utilising multiple methods to parse the line itself.
+// After this, functions are called to execute the line.
 void execute(char* line);

@@ -50,5 +50,13 @@ void setExitcode(int ec);
 // Used by retrieving all env variables of the system, and appending eggshell specific vars.
 char** environEGG();
 
-// Used to check whether a variable exists.
+// Returns the index of the variable.
+// If it returns -1, the var does not exist.
 int varExists(char* varname);
+
+// Checks whether the user is trying to assign a variable.
+// If an assignment is detected, it is then attempted.
+// The only return codes this function returns are 0 and 1.
+// 0 if an assignment was detected, 1 if not.
+// The assignment error codes are set in the Exitcode variable
+int parse_var(char *line);

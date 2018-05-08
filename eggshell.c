@@ -4,11 +4,11 @@
 #include <unistd.h>
 #include <limits.h>
 #include <sys/wait.h>
-#include <fcntl.h>
 #include <signal.h>
 
 #include "eggshell.h"
 #include "./add-on/linenoise.h"
+#include "./src/redirection.h"
 
 #define ARRLEN(x) (sizeof(x)/sizeof(x[0]))
 
@@ -26,46 +26,10 @@ void execute(char* line){
   char rest[2] = "\0";
   if(strcmp(line, "exit") == 0){runLine("clear", ""); exit(0);}
 
-  int assign_check = 0;
+  // Check for variable assignment
+  if(parse_var(line) == 0){return;}
 
-  char *vardelimiter = "=";
-
-  char *vartest = malloc(1000);
-  strcpy(vartest, line);
-
-  char *varname = strsep(&vartest, vardelimiter);
-
-  // Checks for variable assignment
-  if(vartest != 0){
-    if(vartest[0] != ' ' && strstr(varname, " ") == 0){
-      assign_check = 1;
-      for(int i = 0; i < strlen(varname); i++){
-        if(varname[i] < 65 || varname[i] > 90){
-          assign_check = 0;
-          break;
-        }
-      }
-
-      if(assign_check == 1){
-        createVar(line);
-        setExitcode(0);
-      }
-      else{
-        printf("Assignment detected but line is invalid\n");
-        printf("[The variable name can only contain CAPITAL LETTERS]\n");
-        setExitcode(-1);
-      }
-    }
-    else{;
-      printf("Assignment detected but line is invalid\n");
-      printf("[The '=' should not be seperated with spaces]\n");
-      setExitcode(-1);
-    }
-    return;
-  }
-
-  // Filename only used for redirection purposes
-  char *filename;
+  char *filename; // only used for redirection purposes
 
   // Checks for different output redirection symbols
   char* redirect_to_file  = strstr(line, ">");
@@ -73,47 +37,15 @@ void execute(char* line){
   char* input_from_file   = strstr(line, "<");
   char* input_here_string = strstr(line, "<<<");
 
-  int redirect = 0, append = 0; // variables for output redirection
-  int inputfile = 0, inputhere = 0; // variables for input redirection
   int out = 0, in = 0; // flag variables for redirection
 
-  // If condition for seperating filename from the command [output redirect]
+  // Checks for redirection
   if(append_to_file != 0 || redirect_to_file != 0){
-    if(append_to_file != 0){
-      filename = append_to_file+2;
-      append = 1;
-    }
-    else{
-      filename = redirect_to_file+1;
-      redirect = 1;
-    }
-    line = strsep(&line, ">");
-    line[strlen(line)-1] = 0;
-
-    while(filename[0] == ' '){
-      filename++;
-    }
-
+    filename = out_redirect_parse(append_to_file, redirect_to_file, line);
     out = 1;
   }
-  // If condition for seperating filename from the command [input redirect]
   else if(input_here_string != 0 || input_from_file != 0){
-    if(input_here_string != 0){
-      filename = input_here_string+3;
-      inputhere = 1;
-    }
-    else{
-      filename = input_from_file+1;
-      inputfile = 1;
-    }
-
-    line = strsep(&line, "<");
-    line[strlen(line)-1] = 0;
-
-    while(filename[0] == ' '){
-      filename++;
-    }
-
+    filename = in_redirect_parse(input_from_file, input_here_string, line);
     in = 1;
   }
 
@@ -121,70 +53,17 @@ void execute(char* line){
   // Seperates the command from the arguments
   char *command = strsep(&line, delimiter);
 
-  int filefd;
+  int filefd = init_redirect(filename);
 
-  // Opens an output stream depending on the flags triggered
-  // If no output flag has been triggered, no stream is created.
-  if(append == 1){
-    filefd = open(filename, O_WRONLY|O_CREAT|O_APPEND, 0666);
-  }
-  else if(redirect == 1){
-    filefd = open(filename, O_WRONLY|O_CREAT|O_TRUNC, 0666);
-  }
-  else if(inputfile == 1){
-    filefd = open(filename, O_RDONLY);
-  }
-  else if(inputhere == 1){
-    FILE *f = fopen("stdin.tmp", "w+");
-    fprintf(f, "%s", filename);
-
-    filefd = open("stdin.tmp", O_RDONLY);
-    fclose(f);
-  }
-  else{
-    filename = 0;
-  }
-
-  // Conditional block for redirecting output
   if(out == 1){
-    int save_out = dup(fileno(stdout));
-
-    if(dup2(filefd, fileno(stdout)) == -1){
-      perror("Failed in redirecting stdout");
-      setExitcode(255);
-      return;
-    }
-
+    redirect_out(filefd);
     runLine(command, line);
-
-    fflush(stdout);
-    close(filefd);
-
-    dup2(save_out, fileno(stdout));
-    close(save_out);
+    close_redirects(OUT, filefd);
   }
-  // Conditional block for redirecting input
   else if(in == 1){
-    int save_in = dup(fileno(stdin));
-
-    if(dup2(filefd, fileno(stdin)) == -1){
-      perror("Failed in redirecting stdin");
-      setExitcode(255);
-      return;
-    }
-
+    redirect_in(filefd);
     runLine(command, line);
-
-    fflush(stdin);
-    close(filefd);
-
-    dup2(save_in, fileno(stdin));
-    close(save_in);
-
-    if(inputhere == 1){
-      remove("stdin.tmp");
-    }
-
+    close_redirects(IN, filefd);
   }
   else{
     runLine(command, line);

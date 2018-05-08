@@ -7,6 +7,48 @@
 
 Vars *variables;
 
+int parse_var(char *line){
+  int assign_check = 0;
+
+  char *vardelimiter = "=";
+
+  char *vartest = malloc(1000);
+  strcpy(vartest, line);
+
+  char *varname = strsep(&vartest, vardelimiter);
+
+  // Checks for variable assignment
+  if(vartest != 0){
+    if(vartest[0] != ' ' && strstr(varname, " ") == 0){
+      assign_check = 1;
+      for(int i = 0; i < strlen(varname); i++){
+        if(varname[i] < 65 || varname[i] > 90){
+          assign_check = 0;
+          break;
+        }
+      }
+
+      if(assign_check == 1){
+        createVar(line);
+        setExitcode(0);
+      }
+      else{
+        printf("Assignment detected but line is invalid\n");
+        printf("[The variable name can only contain CAPITAL LETTERS]\n");
+        setExitcode(-1);
+      }
+    }
+    else{;
+      printf("Assignment detected but line is invalid\n");
+      printf("[The '=' should not be seperated with spaces]\n");
+      setExitcode(-1);
+    }
+    return 0;
+  }
+
+  return 1;
+}
+
 void updateCWD(){
   Var *cwdVar = retrieveVar("CWD");
   char cwd[VARSIZE];
@@ -212,8 +254,6 @@ void setExitcode(int ec){
   sprintf(exit->value, "%d", ec);;
 }
 
-// Returns the index of the variable.
-// If it returns -1, the var does not exist.
 int varExists(char *varname){
   for(int i = 0; i < variables->amount; i++){
     if(strcmp(variables->vars[i]->varname, varname) == 0){
