@@ -84,8 +84,10 @@ int init_redirect(char *filename){
 }
 
 int redirect_out(int filefd){
+    // Duplicates file transcriptor 'stdout' to saveout
     save_out = dup(fileno(stdout));
 
+    // Sets stdout file transcriptor to our transcriptor 'filefd'
     if(dup2(filefd, fileno(stdout)) == -1){
       perror("Failed in redirecting stdout");
       setExitcode(255);
@@ -109,9 +111,10 @@ int redirect_in(int filefd){
 
 void close_redirects(int direction, int filefd){
     if(direction == OUT){
-        fflush(stdout);
-        close(filefd);
+        fflush(stdout); // flushes whatever is in stdout
+        close(filefd); // Closes our file transcriptor 'filefd'
 
+        // Sets stdout file transcriptor, to our saved stdout file transcriptor
         dup2(save_out, fileno(stdout));
         close(save_out);
     }

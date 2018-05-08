@@ -9,10 +9,9 @@
 #include "eggshell.h"
 #include "./add-on/linenoise.h"
 #include "./src/redirection.h"
+#include "./src/pipe_manager.h"
 
 #define ARRLEN(x) (sizeof(x)/sizeof(x[0]))
-
-enum bool{false, true};
 
 char *line;
 
@@ -28,6 +27,9 @@ void execute(char* line){
 
   // Check for variable assignment
   if(parse_var(line) == 0){return;}
+
+  if(pipe_parser(line) == 0){return;}
+  // TODO: finish piping
 
   char *filename; // only used for redirection purposes
 
@@ -48,7 +50,6 @@ void execute(char* line){
     filename = in_redirect_parse(input_from_file, input_here_string, line);
     in = 1;
   }
-
 
   // Seperates the command from the arguments
   char *command = strsep(&line, delimiter);
