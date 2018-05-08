@@ -1,0 +1,80 @@
+\NeedsTeXFormat{LaTeX2e}[1994/06/01]
+\ProvidesPackage{personalstyle}
+  [2011/01/11 v0.01 LaTeX package for my own purpose]
+
+\usepackage{fancyvrb}
+\usepackage{amsmath}
+\usepackage{listings}
+\usepackage{xcolor}
+\usepackage{contour}
+\usepackage{enumitem}
+\usepackage{hyperref}
+\usepackage{array}
+\usepackage{lmodern}
+\usepackage{tikz}
+\usepackage[normalem]{ulem}
+\usepackage{fancyhdr}
+\usepackage{ragged2e}
+\usepackage[english]{babel}
+\usepackage[autostyle, english = american]{csquotes}
+\MakeOuterQuote{"}
+
+\contourlength{1pt}
+
+\setlength{\parskip}{1em}
+
+\renewcommand{\ULdepth}{1.8pt}
+\contourlength{0.8pt}
+
+\newcommand{\myul}[1]{% Underlines word - letters with tail [ex. p, q] cut through
+  \uline{\phantom{#1}}% Keeps placement of word, while underlining it
+  \llap{\contour{white}{#1}}% Draws contour around word
+}
+
+\newcommand{\mysubsect}[2]{ % subsection with two lines
+  \subsection{#1 \\[-6pt] {\fontsize{10pt}{10pt}\selectfont #2}}
+}
+
+\hypersetup{
+  colorlinks = true,
+  linkcolor = blue,
+  filecolor = magenta,
+  urlcolor = mygreen,
+}
+
+\urlstyle{same}
+
+\pagestyle{fancy}
+\fancyhf{}
+
+\rfoot{\thepage}
+
+\newcommand{\bb}[1]{
+  \textbf{#1}
+}
+
+\newcommand{\ii}[1]{
+  \textit{#1}
+}
+
+\newcommand{\bi}[1]{
+  \textbf{\textit{#1}}
+}
+
+\newcommand{\tx}[1]{
+  \texttt{#1}
+}
+
+\renewcommand{\headrulewidth}{2pt}
+\renewcommand{\footrulewidth}{1pt}
+
+\definecolor{mygreen}{rgb}{0,0.6,0}
+
+\lstdefinestyle{javascript}{
+    language=javascript,
+    basicstyle=\ttfamily,
+    keywordstyle=\color{blue},
+    keywordstyle= [2] \color{teal},
+    stringstyle=\color{red},
+    commentstyle=\color{mygreen}
+}

@@ -9,6 +9,7 @@
 #include "variables.h"
 #include "proc_manager.h"
 #include "pipe_manager.h"
+#include "printer.h"
 
 int pipeAmnt; // stores the amount of pipes present in the line
 int cmdAmnt; // stores the amount of commands
@@ -51,9 +52,12 @@ int pipe_parser(char *line){
     return 0;
 }
 
+
+
 int pipe_executer(char **commands){
     int pipefd[pipeAmnt*2];
 
+    // Creates pipes out of the array of integers.
     for(int i = 0; i < pipeAmnt; i++){
         if(pipe(pipefd + i*2) < 0){
             perror("piping");
@@ -61,14 +65,20 @@ int pipe_executer(char **commands){
         }
     }
 
-    int j = 0;
-    int p = 0;
-    pid_t pid;
+    int j = 0; // iterative variable for different commands
+    int p = 0; // iterative variable for different pipes
+    pid_t pid; // pid of processes
 
     for(j = 0; j < cmdAmnt; j++){
 
         int pathlen = 0;
         char *command = strsep(&commands[j], " ");
+
+        char *printline = malloc(1024);
+
+        if(commands[j] != 0){
+            strcpy(printline, commands[j]);
+        }
 
         char **env = environEGG();
         char **paths = pathsToCommArr(&pathlen, command);
@@ -115,10 +125,16 @@ int pipe_executer(char **commands){
             }
             
             /* Execute the command with its arguments
-               and the eggshell's environment variables */
-            for(int i = 0; i < pathlen; i++){
-                strcpy(args[0], paths[i]); // sets first arg to program
-                execve(*args, args, env);
+               and the eggshell's environment variables 
+               Contains support for eggshell commands w/ output. */
+            if(strcmp(command, "print") == 0) {printLine(printline); exit(-1);} // checks for print command
+            else if(strcmp(command, "all") == 0) {showShellVars(); exit(-1);} // checks for all command
+            else if(strcmp(command, "vars") == 0) {displayUserVars(); exit(-1);}  // checks for debug vars command
+            else{
+                for(int i = 0; i < pathlen; i++){
+                    strcpy(args[0], paths[i]); // sets first arg to program
+                    execve(*args, args, env);
+                }
             }
         }
 

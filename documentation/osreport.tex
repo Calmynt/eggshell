@@ -1,0 +1,120 @@
+\documentclass[12pt, a4paper]{report}
+\usepackage{personalstyle}
+
+\setlength{\parskip}{1em}
+
+\begin{document}
+    \begin{titlepage}
+        \centering
+        \Huge{Eggshell}\\
+        \Large{an Operating Systems project}\\
+        \normalsize{CPS1012}\\[10pt]
+        \Large{Andre' Jenkins}\\
+        \small{76999M}
+    \end{titlepage}
+
+    \tableofcontents
+
+    \clearpage
+
+    \chapter{Structure of the code}
+        The code was structured into different directories, so that they may
+        be organised according to what they are supposed to achieve.
+        \section{Main files}
+            The files here are ones which are used in the front layer of the
+            eggshell. Here you may find a main C file that uses the eggshell
+            functions, the main eggshell \texttt{.c / .h} files which either
+            call multiple other functions, or are simple enough to be on the
+            front layer, and other files such as the Makefile, any scripts,
+            testfiles, and other miscellaneous files.
+
+            \begin{description}
+                \item[\textbf{main.c} --- ]
+                    The main \texttt{C} file that the executable is retrieved
+                    from. Uses libraries such as \texttt{eggshell} and 
+                    \texttt{linenoise}.
+                \item[\textbf{eggshell.c/h} ---]
+                    The \texttt{eggshell library} used by the main file in order
+                    to start the eggshell and utilise it. Uses multiple libraries
+                    that are all found in the \texttt{src} directory.
+                \item[\textbf{Makefile/Makefile-GCC} ---]
+                    The Makefile necessary to generate the executable. The current
+                    default Makefile uses the \texttt{Clang} compiler, for reasons
+                    stated in the \texttt{README.md} file. To use the Makefile that
+                    utilises the \texttt{GCC} compiler instead, either change the
+                    name of the \texttt{Makefile-GCC} file, or run \texttt{switch.sh}
+                \item[\textbf{switch.sh} ---]
+                    A script that aids in switching compilers for the makefile.
+                    This was written for each switching between \texttt{Clang} and
+                    \texttt{GCC}, due to the ease of debugging with \texttt{Clang},
+                    and the standard nature of the \texttt{GCC} compiler.
+                \item[\textbf{README.md} ---]
+                    The \texttt{README} file holds the instructions to compiling the
+                    program, as well as a quick summary of the program and its utilities.
+                \item[\textbf{testinput.txt} ---]
+                    A file used to test the capabilities of the eggshell. 
+                    Running \texttt{./eggshell test} will immediately launch
+                    the eggshell and run this script, to provide a quick 
+                    testing method.
+                \item[\textbf{LICENSE, .gitignore \& .yml files} ---]
+                    Files that are unimportant to the project itself.
+                    These were used for \texttt{git} purposes, as the project 
+                    was also uploaded as a \texttt{git} repository.
+            \end{description}
+
+        \section{Source files}
+            The files found here are the bulk of the code making up the 
+            eggshell. In here, every single \texttt{eggshell header library}
+            is present, all of them with their own specific and complicated purpose.
+            These were seperated from the main \texttt{eggshell} file 
+            in order to organise the core of the project from the 
+            specific elements making up the project itself.
+
+            \begin{description}
+                \item[\bf{variables.c/h} ---]
+                    Contains all the functions and structs relating to the
+                    variables created and stored by the \tx{eggshell}. 
+                    For example, all the \bb{shell} variables can be found
+                    here.
+                \item[\bf{printer.c/h} ---]
+                    The main file dealing with the \tx{print} command.
+                \item[\bf{proc\_manager.c/h} ---]
+                    The file dealing with the execution of external commands.
+                \item[\bf{sig\_handler.c/h} ---]
+                    Contains the \tx{signal handler} function used in order 
+                    to suspend and interrupt processes. Also contains an 
+                    additional function in order to reawaken a suspended
+                    process.
+                \item[\bf{redirection.c/h} ---]
+                    The main file dealing with \tx{input/output} redirection.
+                \item[\bf{pipe\_manager.c/h} ---]
+                    Contains functions dealing with the piping system that the
+                    \tx{eggshell} offers. Also contains a special execution function,
+                    rather than using the one found in \tx{proc\_manager.c/h}
+            \end{description}
+        
+        \section{Other files}
+            There are also other directories that contain files that aren't
+            integral to the functionality of the eggshell, but are still related
+            somewhat.
+
+            \begin{description}
+                \item[\bf{documentation/} ---]
+                    Contains the \tx{.tex} file that generated this report,
+                    as well as other items related to it. In order to recompile it,
+                    you'd most likely need to install \TeX{}live first.
+                \item[\bf{ci/} ---]
+                    Unrelated to the main project. The Makefile here is used for 
+                    Continuous Integration for the \tx{git} repository.
+                \item[\bf{add-on/} ---]
+                    Contains the \tx{linenoise.c/h} library that was used in the 
+                    main file to simulate a terminal's prompt with input.
+                \item[\bf{.vscode/} ---]
+                    Contains files that helped with debugging/building the project
+                    in \tx{Visual Studio Code}.
+            \end{description}
+
+
+
+
+\end{document}
