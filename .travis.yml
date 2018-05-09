@@ -3,9 +3,9 @@ language: c
 script:
   - cd ci
   - make
-  # - cd ..
-  # - ./eggshell test
-  # - cd ci
+  - cd ..
+  - ./eggshell test
+  - cd ci
   - gcov main.c
 
 after_success:

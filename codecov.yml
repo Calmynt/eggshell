@@ -1,3 +1,5 @@
 ignore:
   - "./add-on/linenoise.c"
   - "main.c"
+  - "./src/sig_handler.c"
+  - "./src/redirection.c"
