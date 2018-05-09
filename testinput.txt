@@ -16,13 +16,13 @@ print $VAR
 print "$VAR"
 
 # Following lines also cause CI build to fail.
-# echo whoowhee
-# ls -l
-# dir
+echo whoowhee
+ls -l
+dir
 
 # Following lines cause the TRAVIS CI build to fail with a realloc error.
-# echo nice > createfile.txt
-# echo append >> createfile.txt
-# cat < createfile.txt
+echo nice > createfile.txt
+echo append >> createfile.txt
+cat < createfile.txt
 
 # NEWLINE
