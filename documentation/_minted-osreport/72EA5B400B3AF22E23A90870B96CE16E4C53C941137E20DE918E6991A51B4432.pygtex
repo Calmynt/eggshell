@@ -1,0 +1,10 @@
+\begin{Verbatim}[commandchars=\\\{\}]
+\PYG{k}{if}\PYG{p}{(}\PYG{n}{strcmp}\PYG{p}{(}\PYG{n}{command}\PYG{p}{,} \PYG{l+s}{\PYGZdq{}print\PYGZdq{}}\PYG{p}{)} \PYG{o}{==} \PYG{l+m+mi}{0}\PYG{p}{)} \PYG{n}{printLine}\PYG{p}{(}\PYG{n}{line}\PYG{p}{);}
+\PYG{k}{else} \PYG{n+nf}{if}\PYG{p}{(}\PYG{n}{strcmp}\PYG{p}{(}\PYG{n}{command}\PYG{p}{,} \PYG{l+s}{\PYGZdq{}all\PYGZdq{}}\PYG{p}{)} \PYG{o}{==} \PYG{l+m+mi}{0}\PYG{p}{)} \PYG{n}{showShellVars}\PYG{p}{();}
+\PYG{k}{else} \PYG{n+nf}{if}\PYG{p}{(}\PYG{n}{strcmp}\PYG{p}{(}\PYG{n}{command}\PYG{p}{,} \PYG{l+s}{\PYGZdq{}vars\PYGZdq{}}\PYG{p}{)} \PYG{o}{==} \PYG{l+m+mi}{0}\PYG{p}{)} \PYG{n}{displayUserVars}\PYG{p}{();}
+\PYG{k}{else} \PYG{n+nf}{if}\PYG{p}{(}\PYG{n}{strcmp}\PYG{p}{(}\PYG{n}{command}\PYG{p}{,} \PYG{l+s}{\PYGZdq{}chdir\PYGZdq{}}\PYG{p}{)} \PYG{o}{==} \PYG{l+m+mi}{0}\PYG{p}{)} \PYG{n}{changeDirectory}\PYG{p}{(}\PYG{n}{line}\PYG{p}{);}
+\PYG{k}{else} \PYG{n+nf}{if}\PYG{p}{(}\PYG{n}{strcmp}\PYG{p}{(}\PYG{n}{command}\PYG{p}{,} \PYG{l+s}{\PYGZdq{}source\PYGZdq{}}\PYG{p}{)} \PYG{o}{==} \PYG{l+m+mi}{0}\PYG{p}{)} \PYG{n}{runScript}\PYG{p}{(}\PYG{n}{line}\PYG{p}{);}
+\PYG{k}{else} \PYG{n+nf}{if}\PYG{p}{(}\PYG{n}{strcmp}\PYG{p}{(}\PYG{n}{command}\PYG{p}{,} \PYG{l+s}{\PYGZdq{}fg\PYGZdq{}}\PYG{p}{)} \PYG{o}{==} \PYG{l+m+mi}{0}\PYG{p}{)} \PYG{n}{resumeProcessSignal}\PYG{p}{(}\PYG{n}{FOREGROUND}\PYG{p}{);}
+\PYG{k}{else} \PYG{n+nf}{if}\PYG{p}{(}\PYG{n}{strcmp}\PYG{p}{(}\PYG{n}{command}\PYG{p}{,} \PYG{l+s}{\PYGZdq{}bg\PYGZdq{}}\PYG{p}{)} \PYG{o}{==} \PYG{l+m+mi}{0}\PYG{p}{)} \PYG{n}{resumeProcessSignal}\PYG{p}{(}\PYG{n}{BACKGROUND}\PYG{p}{);}
+\PYG{k}{else} \PYG{n+nf}{externalCommand}\PYG{p}{(}\PYG{n}{command}\PYG{p}{,} \PYG{n}{line}\PYG{p}{);}
+\end{Verbatim}

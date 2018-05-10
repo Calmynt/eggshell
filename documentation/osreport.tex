@@ -182,7 +182,7 @@
 
                 \begingroup
                 \fontsize{10pt}{10pt}\selectfont
-                \begin{lstlisting}[breaklines, frame=single, gobble=20, style=C]
+                \begin{minted}[gobble=20, breaklines, frame=single, linenos=true]{C}
                     if(strcmp(command, "print") == 0) printLine(line);
                     else if(strcmp(command, "all") == 0) showShellVars();
                     else if(strcmp(command, "vars") == 0) displayUserVars();
@@ -191,7 +191,7 @@
                     else if(strcmp(command, "fg") == 0) resumeProcessSignal(FOREGROUND);
                     else if(strcmp(command, "bg") == 0) resumeProcessSignal(BACKGROUND);
                     else externalCommand(command, line);
-                \end{lstlisting}
+                \end{minted}
                 \endgroup
 
                 \clearpage
@@ -202,7 +202,7 @@
 
                 \begingroup
                 \fontsize{10pt}{10pt}\selectfont
-                \begin{lstlisting}[breaklines, frame=single, gobble=20, style=C]
+                \begin{minted}[gobble=20, breaklines, frame=single, linenos=true]{C}
                     struct sigaction sa;
 
                     sa.sa_handler = signal_handler;
@@ -215,7 +215,7 @@
                       printf("Couldn't catch SIGINT - Interrupt Signal\n");
                     if(sigaction(SIGTSTP, &sa, NULL) == -1)
                       printf("Couldn't catch SIGTSTP - Suspension Signal\n");
-                \end{lstlisting}
+                \end{minted}
                 \endgroup
             
             \subsection{\tx{changeDirectory(char* directory)}}
@@ -240,8 +240,85 @@
 
                 \clearpage
             
-            \subsection{\tx{execute()}}
-                The 
+            \subsection{\tx{execute(char *line)}}
+                This function is the main one to be executed.
+                It is what reveals the eggshell functions to the user,
+                as all other functions are accessed via this one.
+
+                What it does first of all, is check the line's structure
+                in order to parse it for specific cases. For example, in 
+                this section here:
+                
+                \begingroup
+                \fontsize{10pt}{10pt}\selectfont
+                \Ccode[firstline=27, lastline=32]{../eggshell.c}
+                \endgroup
+                The first line checks whether the line is identical to the
+                exit command \tx{exit}, at which point the \tx{clear} command
+                is run, and the program stops executing. Line 30 and 32, use
+                functions from \tx{variables.c} and \tx{pipe\_manager.c} respecively,
+                to check whether the line assigns a variable, or contains pipes in it.
+                An exitcode of 0 from these functions means that they were detected.
+
+                If none of these are detected, the function then attempts to check
+                whether the line contains any redirection symbols such as \tx{>},
+                \tx{>>}, \tx{<} or \tx{<<<}:
+
+                \begingroup
+                \fontsize{10pt}{10pt}\selectfont
+                \Ccode[firstline=37, lastline=43]{../eggshell.c}
+                \endgroup
+                The results of the \tx{strstr} function used are stored in variables.
+                These variables have two uses: They are used as flags to check which
+                redirection symbol was found, \bb{and} they point to the first character
+                of the symbol itself, which is useful. The flag variables \tx{out} and
+                \tx{in}, also serve a purpose which will be gone into later on.
+
+                \clearpage
+
+                After this, a conditional \tx{if-else} block is used to parse the line
+                for redirection. Depending on which \tx{char*} flags where set, the
+                respective function from \tx{redirection.c} is called:
+
+                \begingroup
+                \fontsize{10pt}{10pt}\selectfont
+                \Ccode[firstline=45, lastline=53]{../eggshell.c}
+                \endgroup
+                One can also note, that one of the integer flag variables \tx{in/out} is
+                also set to 1. This is used to call the appropriate redirection function
+                later on.
+
+                After doing so, two lines are used. One uses the \tx{strsep} function to
+                seperate the command from the arguments, and the other calls the 
+                redirect initialisation function from \tx{redirection.c}
+
+                \begingroup
+                \fontsize{10pt}{10pt}\selectfont
+                \Ccode[firstline=55, lastline=58]{../eggshell.c}
+                \endgroup
+                After this, the actual execution of the function is done. Depending on 
+                the integer flags triggered, the appropriate block of code in the
+                conditional loop is run. One begins redirecting the input, one redirects
+                the output, and in the case that neither of these flags are set, the
+                line is simply executed.
+
+                \begingroup
+                \fontsize{10pt}{10pt}\selectfont
+                \Ccode[firstline=60, lastline=72]{../eggshell.c}
+                \endgroup
+
+        \section{\tx{printer.c}}
+            \subsection{Use of \tx{printer.c}}
+                This file handles the \tx{print} command. It's main purpose
+                is to print the line, being able to detect whether a part of
+                the string is escaped in quotation marks, and replacing 
+                unescaped variable references with their value.
+
+            \subsection{\tx{printLine(char *line)}}
+                The main function of the file, it is the primary function to
+                be called from \tx{printer.c}. It achieves the aforementioned
+                goal by splitting the line accordingly, and passing the 
+                segments of the split line to the other function in the same file.
 
                 
 

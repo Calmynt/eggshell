@@ -9,9 +9,6 @@ void printLine(char* line){
   char wordDelimiter[2] = " ";
   char segmDelimiter[2] = "\"";
 
-  char *wordSAVE;
-  char *segmSAVE;
-
   char *word = malloc(100);
   char *segment;
 

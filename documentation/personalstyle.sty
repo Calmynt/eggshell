@@ -17,6 +17,7 @@
 \usepackage{ragged2e}
 \usepackage[english]{babel}
 \usepackage[autostyle, english = american]{csquotes}
+\usepackage{minted}
 \MakeOuterQuote{"}
 
 \contourlength{1pt}
@@ -88,4 +89,27 @@
   keywordstyle= [2] \color{teal},
   stringstyle=\color{red},
   commentstyle=\color{mygreen}
+}
+
+\definecolor{mintedbackground}{rgb}{0.95,0.95,0.95}
+
+\newmintedfile[Ccode]{C}{
+  bgcolor=mintedbackground,
+  breaklines=true,
+  fontfamily=tt,
+  linenos=true,
+  numberblanklines=true,
+  numbersep=5pt,
+  autogobble=true,
+  frame=single,
+  framerule=0.4pt,
+  framesep=2mm,
+  funcnamehighlighting=true,
+  tabsize=4,
+  obeytabs=false,
+  mathescape=false
+  samepage=false, %with this setting you can force the list to appear on the same page
+  showspaces=false,
+  showtabs =false,
+  texcl=false,
 }

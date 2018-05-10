@@ -1,0 +1,14 @@
+\begin{Verbatim}[commandchars=\\\{\}]
+\PYG{k}{struct} \PYG{n}{sigaction} \PYG{n}{sa}\PYG{p}{;}
+
+\PYG{n}{sa}\PYG{p}{.}\PYG{n}{sa\PYGZus{}handler} \PYG{o}{=} \PYG{n}{signal\PYGZus{}handler}\PYG{p}{;}
+\PYG{n}{sigemptyset}\PYG{p}{(}\PYG{o}{\PYGZam{}}\PYG{n}{sa}\PYG{p}{.}\PYG{n}{sa\PYGZus{}mask}\PYG{p}{);}
+\PYG{n}{sa}\PYG{p}{.}\PYG{n}{sa\PYGZus{}flags} \PYG{o}{=} \PYG{n}{SA\PYGZus{}RESTART}\PYG{p}{;}
+
+\PYG{c+c1}{// If conditions for signal handling.}
+\PYG{c+c1}{// Also creates 2 signal handlers in memory for the SIGINT and SIGTSTP}
+\PYG{k}{if}\PYG{p}{(}\PYG{n}{sigaction}\PYG{p}{(}\PYG{n}{SIGINT}\PYG{p}{,} \PYG{o}{\PYGZam{}}\PYG{n}{sa}\PYG{p}{,} \PYG{n+nb}{NULL}\PYG{p}{)} \PYG{o}{==} \PYG{o}{\PYGZhy{}}\PYG{l+m+mi}{1}\PYG{p}{)}
+  \PYG{n}{printf}\PYG{p}{(}\PYG{l+s}{\PYGZdq{}Couldn\PYGZsq{}t catch SIGINT \PYGZhy{} Interrupt Signal}\PYG{l+s+se}{\PYGZbs{}n}\PYG{l+s}{\PYGZdq{}}\PYG{p}{);}
+\PYG{k}{if}\PYG{p}{(}\PYG{n}{sigaction}\PYG{p}{(}\PYG{n}{SIGTSTP}\PYG{p}{,} \PYG{o}{\PYGZam{}}\PYG{n}{sa}\PYG{p}{,} \PYG{n+nb}{NULL}\PYG{p}{)} \PYG{o}{==} \PYG{o}{\PYGZhy{}}\PYG{l+m+mi}{1}\PYG{p}{)}
+  \PYG{n}{printf}\PYG{p}{(}\PYG{l+s}{\PYGZdq{}Couldn\PYGZsq{}t catch SIGTSTP \PYGZhy{} Suspension Signal}\PYG{l+s+se}{\PYGZbs{}n}\PYG{l+s}{\PYGZdq{}}\PYG{p}{);}
+\end{Verbatim}
