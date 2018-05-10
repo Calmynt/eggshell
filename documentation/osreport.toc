@@ -1,0 +1,19 @@
+\babel@toc {english}{}
+\contentsline {chapter}{\numberline {1}Structure of the code}{3}{chapter.1}
+\contentsline {section}{\numberline {1.1}Main files}{3}{section.1.1}
+\contentsline {section}{\numberline {1.2}Source files}{4}{section.1.2}
+\contentsline {section}{\numberline {1.3}Other files}{5}{section.1.3}
+\contentsline {chapter}{\numberline {2}Code documentation}{6}{chapter.2}
+\contentsline {section}{\numberline {2.1} \texttt {main.c} }{6}{section.2.1}
+\contentsline {subsection}{\numberline {2.1.1}Use of \texttt {main.c} }{6}{subsection.2.1.1}
+\contentsline {section}{\numberline {2.2} \texttt {eggshell.c} }{7}{section.2.2}
+\contentsline {subsection}{\numberline {2.2.1}Use of \texttt {eggshell.c} }{7}{subsection.2.2.1}
+\contentsline {subsection}{\numberline {2.2.2} \texttt {initEggshell()} }{7}{subsection.2.2.2}
+\contentsline {subsection}{\numberline {2.2.3} \texttt {runLine(char *command, char *line)} }{7}{subsection.2.2.3}
+\contentsline {subsection}{\numberline {2.2.4} \texttt {changeDirectory(char* directory)} }{8}{subsection.2.2.4}
+\contentsline {subsection}{\numberline {2.2.5} \texttt {runScript(char *filename)} }{8}{subsection.2.2.5}
+\contentsline {subsection}{\numberline {2.2.6} \texttt {execute(char *line)} }{9}{subsection.2.2.6}
+\contentsline {section}{\numberline {2.3} \texttt {printer.c} }{11}{section.2.3}
+\contentsline {subsection}{\numberline {2.3.1}Use of \texttt {printer.c} }{11}{subsection.2.3.1}
+\contentsline {subsection}{\numberline {2.3.2} \texttt {printLine(char *line)} }{11}{subsection.2.3.2}
+\contentsline {subsection}{\numberline {2.3.3} \texttt {printSeg(char *segment, int escaped)} }{12}{subsection.2.3.3}

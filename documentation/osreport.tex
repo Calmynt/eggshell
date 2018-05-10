@@ -320,6 +320,74 @@
                 goal by splitting the line accordingly, and passing the 
                 segments of the split line to the other function in the same file.
 
+                The splitting is done using \tx{strsep}, and an integer variable
+                \tx{escaped} was used to determine whether the segment was escaped.
+
+                For example, a line such as:
+
+                \begin{center}
+                    hello \$USER, and wel\quot come to the \$HOME\quot
+                \end{center}
                 
+                Will be split into several pieces like:
+
+                \begin{center}
+                    hello --- \$USER, --- and --- wel --- come --- to --- the --- \$HOME
+                \end{center}
+
+                ...and the segments are then sequentially handed off to the other function.
+                Note that after the \tx{wel} segment, the \tx{escaped} variable is flipped.
+
+                \clearpage
+            
+            \subsection{\tx{printSeg(char *segment, int escaped)}}
+                This function utilises its parameters to print the segment,
+                replacing the segment [or a part of it] with a value if it
+                is found to be a variable name.
+
+                If the \tx{escape} variable is set to 1, then the segment is
+                simply printed without considering the rest of the function.
+                However, if it isn't, then the following steps are covered:
+
+                \begin{itemize}
+                    \item \bb{IF} the first character is '\$', start reading what's after it.
+                        \begin{itemize}
+                            \item \bb{IF} the string contains any invalid variable characters
+                                \ii{(any character that isn't a capital english letter)},
+                                terminate reading, and consider what has been read to be
+                                the variable name.
+                            \item Retrieve the value of the variable with the name that
+                                was read.
+                            \item \bb{IF} the variable exists, and the reading was stopped,
+                                print the value, followed by the rest of the segment.
+                            \item \bb{ELSE IF} the variable exists, and no invalid characters were
+                                found, print the value.
+                            \item \bb{ELSE}, print the segment.
+                        \end{itemize}
+                    \item \bb{ELSE}, print the segment.
+                \end{itemize}
+
+                For example in the line above, \$USER would be replaced by the value,
+                whereas \$HOME would be printed as it is, as it was escaped.
+
+                A limitation of this is that if a segment contains \$ anywhere that isn't
+                its first character, it is ignored. For example, if \$A is B, \tx{\$Aees}
+                would be printed as \tx{Bees}, whereas \tx{a\$Ae Lincoln} would remain
+                the same, instead of being printed as \tx{aBe Lincoln}.
+
+                \clearpage
+            
+        \section{\tx{sig\_handler.c}}
+            \subsection{Use of \tx{sig\_handler.c}}
+                This file contains functions relating to any signals, or any effects
+                resulting from signals. To be more precise, it contains a \ii{signal handler},
+                and a way to wake up a suspended process.
+
+                This was split into a seperate file for sake of organization, as having it
+                bundled with the \tx{eggshell.c} file would have added more complexity
+                to the already significant file.
+
+            \subsection{title}
+
 
 \end{document}
