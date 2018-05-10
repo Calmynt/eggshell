@@ -67,6 +67,8 @@ void externalCommand(char *command, char *varargs){
   else if(pid > 0){ //Parent
     current_pid = pid;
 
+    if(setpgid(pid, pid) == 0) perror("setpid");
+
     // Waits if background flag not activated.
     if(BG == 0){
       // WUNTRACED used to stop waiting when suspended
