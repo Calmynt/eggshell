@@ -1,0 +1,66 @@
+\begin{Verbatim}[commandchars=\\\{\}]
+\PYG{c+cp}{\PYGZsh{}include} \PYG{c+cpf}{\PYGZlt{}signal.h\PYGZgt{}}
+\PYG{c+cp}{\PYGZsh{}include} \PYG{c+cpf}{\PYGZlt{}unistd.h\PYGZgt{}}
+\PYG{c+cp}{\PYGZsh{}include} \PYG{c+cpf}{\PYGZlt{}sys/wait.h\PYGZgt{}}
+\PYG{c+cp}{\PYGZsh{}include} \PYG{c+cpf}{\PYGZlt{}stdio.h\PYGZgt{}}
+
+\PYG{c+cp}{\PYGZsh{}include} \PYG{c+cpf}{\PYGZdq{}proc\PYGZus{}manager.h\PYGZdq{}}
+
+\PYG{k+kt}{pid\PYGZus{}t} \PYG{n}{suspended\PYGZus{}process}\PYG{p}{[}\PYG{l+m+mi}{10}\PYG{p}{];}
+\PYG{k+kt}{int} \PYG{n}{last\PYGZus{}suspended} \PYG{o}{=} \PYG{o}{\PYGZhy{}}\PYG{l+m+mi}{1}\PYG{p}{;}
+
+\PYG{k+kt}{void} \PYG{n+nf}{signal\PYGZus{}handler}\PYG{p}{(}\PYG{k+kt}{int} \PYG{n}{signo}\PYG{p}{)\PYGZob{}}
+    \PYG{k+kt}{pid\PYGZus{}t} \PYG{n}{process} \PYG{o}{=} \PYG{n}{currentpid}\PYG{p}{();}
+
+    \PYG{c+c1}{// Catches interrupt signal}
+    \PYG{k}{if}\PYG{p}{(}\PYG{n}{signo} \PYG{o}{==} \PYG{n}{SIGINT}\PYG{p}{)\PYGZob{}}
+        \PYG{k+kt}{int} \PYG{n}{success} \PYG{o}{=} \PYG{n}{kill}\PYG{p}{(}\PYG{n}{process}\PYG{p}{,} \PYG{n}{SIGINT}\PYG{p}{);}
+    \PYG{p}{\PYGZcb{}}
+
+    \PYG{c+c1}{// Catches suspend signal}
+    \PYG{k}{else} \PYG{k}{if}\PYG{p}{(}\PYG{n}{signo} \PYG{o}{==} \PYG{n}{SIGTSTP}\PYG{p}{)\PYGZob{}}
+        \PYG{k+kt}{int} \PYG{n}{success} \PYG{o}{=} \PYG{n}{kill}\PYG{p}{(}\PYG{n}{process}\PYG{p}{,} \PYG{n}{SIGTSTP}\PYG{p}{);}
+        \PYG{n}{resuspended} \PYG{o}{=} \PYG{l+m+mi}{1}\PYG{p}{;}
+        \PYG{n}{suspended\PYGZus{}process}\PYG{p}{[}\PYG{n}{last\PYGZus{}suspended}\PYG{o}{+}\PYG{l+m+mi}{1}\PYG{p}{]} \PYG{o}{=} \PYG{n}{process}\PYG{p}{;}
+        \PYG{n}{last\PYGZus{}suspended}\PYG{o}{++}\PYG{p}{;}
+    \PYG{p}{\PYGZcb{}}
+\PYG{p}{\PYGZcb{}}
+
+\PYG{k+kt}{void} \PYG{n+nf}{resumeProcessSignal}\PYG{p}{(}\PYG{k+kt}{int} \PYG{n}{state}\PYG{p}{)\PYGZob{}}
+    \PYG{k}{if}\PYG{p}{(}\PYG{n}{last\PYGZus{}suspended} \PYG{o}{\PYGZlt{}} \PYG{l+m+mi}{0}\PYG{p}{)\PYGZob{}}
+        \PYG{n}{fprintf}\PYG{p}{(}\PYG{n}{stderr}\PYG{p}{,} \PYG{l+s}{\PYGZdq{}No process currently suspended.}\PYG{l+s+se}{\PYGZbs{}n}\PYG{l+s}{\PYGZdq{}}\PYG{p}{);}
+        \PYG{k}{return}\PYG{p}{;}
+    \PYG{p}{\PYGZcb{}}
+    \PYG{k}{else}\PYG{p}{\PYGZob{}}
+        \PYG{k+kt}{int} \PYG{n}{resumed} \PYG{o}{=} \PYG{n}{resumeProcess}\PYG{p}{(}\PYG{n}{state}\PYG{p}{,} \PYG{n}{suspended\PYGZus{}process}\PYG{p}{[}\PYG{n}{last\PYGZus{}suspended}\PYG{p}{]);}
+        \PYG{k}{if}\PYG{p}{(}\PYG{n}{resumed} \PYG{o}{==} \PYG{l+m+mi}{0}\PYG{p}{)\PYGZob{}}
+            \PYG{n}{suspended\PYGZus{}process}\PYG{p}{[}\PYG{n}{last\PYGZus{}suspended}\PYG{p}{]} \PYG{o}{=} \PYG{l+m+mi}{0}\PYG{p}{;}
+            \PYG{n}{last\PYGZus{}suspended}\PYG{o}{\PYGZhy{}\PYGZhy{}}\PYG{p}{;}
+            \PYG{n}{setExitcode}\PYG{p}{(}\PYG{l+m+mi}{0}\PYG{p}{);}
+        \PYG{p}{\PYGZcb{}}
+        \PYG{k}{else}\PYG{p}{\PYGZob{}}
+            \PYG{k}{if}\PYG{p}{(}\PYG{n}{resuspended} \PYG{o}{==} \PYG{l+m+mi}{0}\PYG{p}{)\PYGZob{}}
+                \PYG{n}{setExitcode}\PYG{p}{(}\PYG{o}{\PYGZhy{}}\PYG{l+m+mi}{1}\PYG{p}{);}
+            \PYG{p}{\PYGZcb{}}
+            \PYG{k}{else}\PYG{p}{\PYGZob{}}
+                \PYG{n}{setExitcode}\PYG{p}{(}\PYG{l+m+mi}{18}\PYG{p}{);}
+            \PYG{p}{\PYGZcb{}}
+        \PYG{p}{\PYGZcb{}}
+    \PYG{p}{\PYGZcb{}}
+\PYG{p}{\PYGZcb{}}
+
+\PYG{k+kt}{void} \PYG{n+nf}{init\PYGZus{}handler}\PYG{p}{()\PYGZob{}}
+\PYG{k}{struct} \PYG{n}{sigaction} \PYG{n}{sa}\PYG{p}{;}
+
+  \PYG{n}{sa}\PYG{p}{.}\PYG{n}{sa\PYGZus{}handler} \PYG{o}{=} \PYG{n}{signal\PYGZus{}handler}\PYG{p}{;}
+  \PYG{n}{sigemptyset}\PYG{p}{(}\PYG{o}{\PYGZam{}}\PYG{n}{sa}\PYG{p}{.}\PYG{n}{sa\PYGZus{}mask}\PYG{p}{);}
+  \PYG{n}{sa}\PYG{p}{.}\PYG{n}{sa\PYGZus{}flags} \PYG{o}{=} \PYG{n}{SA\PYGZus{}RESTART}\PYG{p}{;}
+
+  \PYG{c+c1}{// If conditions for signal handling.}
+  \PYG{c+c1}{// Also creates 2 signal handlers in memory for the SIGINT and SIGTSTP}
+  \PYG{k}{if}\PYG{p}{(}\PYG{n}{sigaction}\PYG{p}{(}\PYG{n}{SIGINT}\PYG{p}{,} \PYG{o}{\PYGZam{}}\PYG{n}{sa}\PYG{p}{,} \PYG{n+nb}{NULL}\PYG{p}{)} \PYG{o}{==} \PYG{o}{\PYGZhy{}}\PYG{l+m+mi}{1}\PYG{p}{)}
+    \PYG{n}{printf}\PYG{p}{(}\PYG{l+s}{\PYGZdq{}Couldn\PYGZsq{}t catch SIGINT \PYGZhy{} Interrupt Signal}\PYG{l+s+se}{\PYGZbs{}n}\PYG{l+s}{\PYGZdq{}}\PYG{p}{);}
+  \PYG{k}{if}\PYG{p}{(}\PYG{n}{sigaction}\PYG{p}{(}\PYG{n}{SIGTSTP}\PYG{p}{,} \PYG{o}{\PYGZam{}}\PYG{n}{sa}\PYG{p}{,} \PYG{n+nb}{NULL}\PYG{p}{)} \PYG{o}{==} \PYG{o}{\PYGZhy{}}\PYG{l+m+mi}{1}\PYG{p}{)}
+    \PYG{n}{printf}\PYG{p}{(}\PYG{l+s}{\PYGZdq{}Couldn\PYGZsq{}t catch SIGTSTP \PYGZhy{} Suspension Signal}\PYG{l+s+se}{\PYGZbs{}n}\PYG{l+s}{\PYGZdq{}}\PYG{p}{);}
+\PYG{p}{\PYGZcb{}}
+\end{Verbatim}

@@ -47,3 +47,18 @@ void resumeProcessSignal(int state){
         }
     }
 }
+
+void init_handler(){
+struct sigaction sa;
+
+  sa.sa_handler = signal_handler;
+  sigemptyset(&sa.sa_mask);
+  sa.sa_flags = SA_RESTART;
+
+  // If conditions for signal handling.
+  // Also creates 2 signal handlers in memory for the SIGINT and SIGTSTP
+  if(sigaction(SIGINT, &sa, NULL) == -1)
+    printf("Couldn't catch SIGINT - Interrupt Signal\n");
+  if(sigaction(SIGTSTP, &sa, NULL) == -1)
+    printf("Couldn't catch SIGTSTP - Suspension Signal\n");
+}

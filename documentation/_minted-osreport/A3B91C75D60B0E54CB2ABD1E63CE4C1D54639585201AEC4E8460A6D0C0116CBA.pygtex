@@ -1,0 +1,135 @@
+\begin{Verbatim}[commandchars=\\\{\}]
+\PYG{c+cp}{\PYGZsh{}include} \PYG{c+cpf}{\PYGZlt{}stdio.h\PYGZgt{}}
+\PYG{c+cp}{\PYGZsh{}include} \PYG{c+cpf}{\PYGZlt{}string.h\PYGZgt{}}
+\PYG{c+cp}{\PYGZsh{}include} \PYG{c+cpf}{\PYGZlt{}stdlib.h\PYGZgt{}}
+\PYG{c+cp}{\PYGZsh{}include} \PYG{c+cpf}{\PYGZlt{}unistd.h\PYGZgt{}}
+\PYG{c+cp}{\PYGZsh{}include} \PYG{c+cpf}{\PYGZlt{}limits.h\PYGZgt{}}
+\PYG{c+cp}{\PYGZsh{}include} \PYG{c+cpf}{\PYGZlt{}sys/wait.h\PYGZgt{}}
+\PYG{c+cp}{\PYGZsh{}include} \PYG{c+cpf}{\PYGZlt{}sys/types.h\PYGZgt{}}
+\PYG{c+cp}{\PYGZsh{}include} \PYG{c+cpf}{\PYGZlt{}signal.h\PYGZgt{}}
+
+\PYG{c+cp}{\PYGZsh{}include} \PYG{c+cpf}{\PYGZdq{}eggshell.h\PYGZdq{}}
+\PYG{c+cp}{\PYGZsh{}include} \PYG{c+cpf}{\PYGZdq{}./add\PYGZhy{}on/linenoise.h\PYGZdq{}}
+\PYG{c+cp}{\PYGZsh{}include} \PYG{c+cpf}{\PYGZdq{}./src/redirection.h\PYGZdq{}}
+\PYG{c+cp}{\PYGZsh{}include} \PYG{c+cpf}{\PYGZdq{}./src/pipe\PYGZus{}manager.h\PYGZdq{}}
+
+\PYG{c+cp}{\PYGZsh{}define ARRLEN(x) (sizeof(x)/sizeof(x[0]))}
+
+\PYG{k+kt}{char} \PYG{o}{*}\PYG{n}{line}\PYG{p}{;}
+
+\PYG{k+kt}{void} \PYG{n+nf}{initEggshell}\PYG{p}{()\PYGZob{}}
+  \PYG{n}{initShellVars}\PYG{p}{();}
+\PYG{p}{\PYGZcb{}}
+
+\PYG{k+kt}{void} \PYG{n+nf}{execute}\PYG{p}{(}\PYG{k+kt}{char}\PYG{o}{*} \PYG{n}{line}\PYG{p}{)\PYGZob{}}
+  \PYG{k+kt}{int} \PYG{n}{PARSECODE} \PYG{o}{=} \PYG{l+m+mi}{0}\PYG{p}{;}
+  \PYG{k+kt}{char} \PYG{n}{delimiter}\PYG{p}{[}\PYG{l+m+mi}{2}\PYG{p}{]} \PYG{o}{=} \PYG{l+s}{\PYGZdq{} \PYGZdq{}}\PYG{p}{;}
+  \PYG{k+kt}{char} \PYG{n}{rest}\PYG{p}{[}\PYG{l+m+mi}{2}\PYG{p}{]} \PYG{o}{=} \PYG{l+s}{\PYGZdq{}}\PYG{l+s+se}{\PYGZbs{}0}\PYG{l+s}{\PYGZdq{}}\PYG{p}{;}
+\PYG{k}{if}\PYG{p}{(}\PYG{n}{strcmp}\PYG{p}{(}\PYG{n}{line}\PYG{p}{,} \PYG{l+s}{\PYGZdq{}exit\PYGZdq{}}\PYG{p}{)} \PYG{o}{==} \PYG{l+m+mi}{0}\PYG{p}{)\PYGZob{}}\PYG{n}{runLine}\PYG{p}{(}\PYG{l+s}{\PYGZdq{}clear\PYGZdq{}}\PYG{p}{,} \PYG{l+s}{\PYGZdq{}\PYGZdq{}}\PYG{p}{);} \PYG{n}{exit}\PYG{p}{(}\PYG{l+m+mi}{0}\PYG{p}{);\PYGZcb{}}
+
+\PYG{c+c1}{// Check for variable assignment}
+\PYG{k}{if}\PYG{p}{(}\PYG{n}{parse\PYGZus{}var}\PYG{p}{(}\PYG{n}{line}\PYG{p}{)} \PYG{o}{==} \PYG{l+m+mi}{0}\PYG{p}{)\PYGZob{}}\PYG{k}{return}\PYG{p}{;\PYGZcb{}}
+
+\PYG{k}{if}\PYG{p}{(}\PYG{n}{pipe\PYGZus{}parser}\PYG{p}{(}\PYG{n}{line}\PYG{p}{)} \PYG{o}{==} \PYG{l+m+mi}{0}\PYG{p}{)\PYGZob{}}\PYG{k}{return}\PYG{p}{;\PYGZcb{}}
+  \PYG{c+c1}{// TODO: finish piping}
+
+  \PYG{k+kt}{char} \PYG{o}{*}\PYG{n}{filename}\PYG{p}{;} \PYG{c+c1}{// only used for redirection purposes}
+
+  \PYG{c+c1}{// Checks for different output redirection symbols}
+  \PYG{k+kt}{char}\PYG{o}{*} \PYG{n}{redirect\PYGZus{}to\PYGZus{}file}  \PYG{o}{=} \PYG{n}{strstr}\PYG{p}{(}\PYG{n}{line}\PYG{p}{,} \PYG{l+s}{\PYGZdq{}\PYGZgt{}\PYGZdq{}}\PYG{p}{);}
+  \PYG{k+kt}{char}\PYG{o}{*} \PYG{n}{append\PYGZus{}to\PYGZus{}file}    \PYG{o}{=} \PYG{n}{strstr}\PYG{p}{(}\PYG{n}{line}\PYG{p}{,} \PYG{l+s}{\PYGZdq{}\PYGZgt{}\PYGZgt{}\PYGZdq{}}\PYG{p}{);}
+  \PYG{k+kt}{char}\PYG{o}{*} \PYG{n}{input\PYGZus{}from\PYGZus{}file}   \PYG{o}{=} \PYG{n}{strstr}\PYG{p}{(}\PYG{n}{line}\PYG{p}{,} \PYG{l+s}{\PYGZdq{}\PYGZlt{}\PYGZdq{}}\PYG{p}{);}
+  \PYG{k+kt}{char}\PYG{o}{*} \PYG{n}{input\PYGZus{}here\PYGZus{}string} \PYG{o}{=} \PYG{n}{strstr}\PYG{p}{(}\PYG{n}{line}\PYG{p}{,} \PYG{l+s}{\PYGZdq{}\PYGZlt{}\PYGZlt{}\PYGZlt{}\PYGZdq{}}\PYG{p}{);}
+
+  \PYG{k+kt}{int} \PYG{n}{out} \PYG{o}{=} \PYG{l+m+mi}{0}\PYG{p}{,} \PYG{n}{in} \PYG{o}{=} \PYG{l+m+mi}{0}\PYG{p}{;} \PYG{c+c1}{// flag variables for redirection}
+
+  \PYG{c+c1}{// Checks for redirection}
+  \PYG{k}{if}\PYG{p}{(}\PYG{n}{append\PYGZus{}to\PYGZus{}file} \PYG{o}{!=} \PYG{l+m+mi}{0} \PYG{o}{||} \PYG{n}{redirect\PYGZus{}to\PYGZus{}file} \PYG{o}{!=} \PYG{l+m+mi}{0}\PYG{p}{)\PYGZob{}}
+    \PYG{n}{filename} \PYG{o}{=} \PYG{n}{out\PYGZus{}redirect\PYGZus{}parse}\PYG{p}{(}\PYG{n}{append\PYGZus{}to\PYGZus{}file}\PYG{p}{,} \PYG{n}{redirect\PYGZus{}to\PYGZus{}file}\PYG{p}{,} \PYG{n}{line}\PYG{p}{);}
+    \PYG{n}{out} \PYG{o}{=} \PYG{l+m+mi}{1}\PYG{p}{;}
+  \PYG{p}{\PYGZcb{}}
+  \PYG{k}{else} \PYG{k}{if}\PYG{p}{(}\PYG{n}{input\PYGZus{}here\PYGZus{}string} \PYG{o}{!=} \PYG{l+m+mi}{0} \PYG{o}{||} \PYG{n}{input\PYGZus{}from\PYGZus{}file} \PYG{o}{!=} \PYG{l+m+mi}{0}\PYG{p}{)\PYGZob{}}
+    \PYG{n}{filename} \PYG{o}{=} \PYG{n}{in\PYGZus{}redirect\PYGZus{}parse}\PYG{p}{(}\PYG{n}{input\PYGZus{}from\PYGZus{}file}\PYG{p}{,} \PYG{n}{input\PYGZus{}here\PYGZus{}string}\PYG{p}{,} \PYG{n}{line}\PYG{p}{);}
+    \PYG{n}{in} \PYG{o}{=} \PYG{l+m+mi}{1}\PYG{p}{;}
+  \PYG{p}{\PYGZcb{}}
+
+  \PYG{c+c1}{// Seperates the command from the arguments}
+  \PYG{k+kt}{char} \PYG{o}{*}\PYG{n}{command} \PYG{o}{=} \PYG{n}{strsep}\PYG{p}{(}\PYG{o}{\PYGZam{}}\PYG{n}{line}\PYG{p}{,} \PYG{n}{delimiter}\PYG{p}{);}
+
+  \PYG{k+kt}{int} \PYG{n}{filefd} \PYG{o}{=} \PYG{n}{init\PYGZus{}redirect}\PYG{p}{(}\PYG{n}{filename}\PYG{p}{);}
+
+  \PYG{k}{if}\PYG{p}{(}\PYG{n}{out} \PYG{o}{==} \PYG{l+m+mi}{1}\PYG{p}{)\PYGZob{}}
+    \PYG{n}{redirect\PYGZus{}out}\PYG{p}{(}\PYG{n}{filefd}\PYG{p}{);}
+    \PYG{n}{runLine}\PYG{p}{(}\PYG{n}{command}\PYG{p}{,} \PYG{n}{line}\PYG{p}{);}
+    \PYG{n}{close\PYGZus{}redirects}\PYG{p}{(}\PYG{n}{OUT}\PYG{p}{,} \PYG{n}{filefd}\PYG{p}{);}
+  \PYG{p}{\PYGZcb{}}
+  \PYG{k}{else} \PYG{k}{if}\PYG{p}{(}\PYG{n}{in} \PYG{o}{==} \PYG{l+m+mi}{1}\PYG{p}{)\PYGZob{}}
+    \PYG{n}{redirect\PYGZus{}in}\PYG{p}{(}\PYG{n}{filefd}\PYG{p}{);}
+    \PYG{n}{runLine}\PYG{p}{(}\PYG{n}{command}\PYG{p}{,} \PYG{n}{line}\PYG{p}{);}
+    \PYG{n}{close\PYGZus{}redirects}\PYG{p}{(}\PYG{n}{IN}\PYG{p}{,} \PYG{n}{filefd}\PYG{p}{);}
+  \PYG{p}{\PYGZcb{}}
+  \PYG{k}{else}\PYG{p}{\PYGZob{}}
+    \PYG{n}{runLine}\PYG{p}{(}\PYG{n}{command}\PYG{p}{,} \PYG{n}{line}\PYG{p}{);}
+  \PYG{p}{\PYGZcb{}}
+\PYG{p}{\PYGZcb{}}
+
+\PYG{k+kt}{void} \PYG{n+nf}{runScript}\PYG{p}{(}\PYG{k+kt}{char}\PYG{o}{*} \PYG{n}{filename}\PYG{p}{)\PYGZob{}}
+  \PYG{k+kt}{FILE} \PYG{o}{*}\PYG{n}{testfile} \PYG{o}{=} \PYG{n}{fopen}\PYG{p}{(}\PYG{n}{filename}\PYG{p}{,} \PYG{l+s}{\PYGZdq{}r\PYGZdq{}}\PYG{p}{);}
+
+  \PYG{c+c1}{// Condition for nonexistent file}
+  \PYG{k}{if}\PYG{p}{(}\PYG{n}{testfile} \PYG{o}{==} \PYG{n+nb}{NULL}\PYG{p}{)\PYGZob{}}
+    \PYG{n}{fprintf}\PYG{p}{(}\PYG{n}{stderr}\PYG{p}{,} \PYG{l+s}{\PYGZdq{}No file \PYGZsq{}\PYGZpc{}s\PYGZsq{} found!\PYGZdq{}}\PYG{p}{,} \PYG{n}{filename}\PYG{p}{);}
+    \PYG{n}{setExitcode}\PYG{p}{(}\PYG{o}{\PYGZhy{}}\PYG{l+m+mi}{1}\PYG{p}{);}
+    \PYG{k}{return}\PYG{p}{;}
+  \PYG{p}{\PYGZcb{}}
+
+  \PYG{n}{line} \PYG{o}{=} \PYG{n}{malloc}\PYG{p}{(}\PYG{l+m+mi}{1024} \PYG{o}{*} \PYG{k}{sizeof}\PYG{p}{(}\PYG{k+kt}{char}\PYG{p}{));}
+
+  \PYG{k+kt}{int} \PYG{n}{lineNo} \PYG{o}{=} \PYG{l+m+mi}{0}\PYG{p}{;}
+
+  \PYG{k}{while}\PYG{p}{(}\PYG{n}{fgets}\PYG{p}{(}\PYG{n}{line}\PYG{p}{,} \PYG{l+m+mi}{1024}\PYG{p}{,} \PYG{n}{testfile}\PYG{p}{)} \PYG{o}{!=} \PYG{n+nb}{NULL}\PYG{p}{)\PYGZob{}}
+    \PYG{k}{if}\PYG{p}{(}\PYG{n}{strlen}\PYG{p}{(}\PYG{n}{line}\PYG{p}{)} \PYG{o}{\PYGZlt{}} \PYG{l+m+mi}{3}\PYG{p}{)\PYGZob{}}\PYG{k}{continue}\PYG{p}{;\PYGZcb{}}
+    \PYG{k}{if}\PYG{p}{(}\PYG{n}{line}\PYG{p}{[}\PYG{l+m+mi}{0}\PYG{p}{]} \PYG{o}{==} \PYG{l+s+sc}{\PYGZsq{}\PYGZsh{}\PYGZsq{}}\PYG{p}{)\PYGZob{}}\PYG{k}{continue}\PYG{p}{;\PYGZcb{}}
+
+    \PYG{n}{printf}\PYG{p}{(}\PYG{l+s}{\PYGZdq{}\PYGZpc{}s\PYGZpc{}s\PYGZdq{}}\PYG{p}{,} \PYG{n}{value}\PYG{p}{(}\PYG{l+s}{\PYGZdq{}PROMPT\PYGZdq{}}\PYG{p}{),} \PYG{n}{line}\PYG{p}{);} \PYG{c+c1}{// Emulates the prompt}
+
+    \PYG{c+c1}{//Terminates line at right place to simulate input}
+    \PYG{n}{line}\PYG{p}{[}\PYG{n}{strlen}\PYG{p}{(}\PYG{n}{line}\PYG{p}{)}\PYG{o}{\PYGZhy{}}\PYG{l+m+mi}{2}\PYG{p}{]} \PYG{o}{=} \PYG{l+s+sc}{\PYGZsq{}\PYGZbs{}0\PYGZsq{}}\PYG{p}{;}
+
+    \PYG{n}{execute}\PYG{p}{(}\PYG{n}{line}\PYG{p}{);}
+
+    \PYG{n}{lineNo}\PYG{o}{++}\PYG{p}{;} 
+  \PYG{p}{\PYGZcb{}}
+
+  \PYG{n}{setExitcode}\PYG{p}{(}\PYG{l+m+mi}{0}\PYG{p}{);}
+\PYG{p}{\PYGZcb{}}
+
+\PYG{k+kt}{void} \PYG{n+nf}{changeDirectory}\PYG{p}{(}\PYG{k+kt}{char}\PYG{o}{*} \PYG{n}{directory}\PYG{p}{)\PYGZob{}}
+  \PYG{k+kt}{int} \PYG{n}{exitcode} \PYG{o}{=} \PYG{n}{chdir}\PYG{p}{(}\PYG{n}{directory}\PYG{p}{);}
+
+  \PYG{k}{if}\PYG{p}{(}\PYG{n}{exitcode} \PYG{o}{==} \PYG{l+m+mi}{0}\PYG{p}{)\PYGZob{}}
+    \PYG{n}{updateCWD}\PYG{p}{();}
+    \PYG{n}{printf}\PYG{p}{(}\PYG{l+s}{\PYGZdq{}Current directory is now \PYGZsq{}\PYGZpc{}s\PYGZsq{}}\PYG{l+s+se}{\PYGZbs{}n}\PYG{l+s}{\PYGZdq{}}\PYG{p}{,} \PYG{n}{value}\PYG{p}{(}\PYG{l+s}{\PYGZdq{}CWD\PYGZdq{}}\PYG{p}{));}
+    \PYG{n}{setExitcode}\PYG{p}{(}\PYG{n}{exitcode}\PYG{p}{);}
+  \PYG{p}{\PYGZcb{}}
+  \PYG{k}{else}\PYG{p}{\PYGZob{}}
+    \PYG{n}{perror}\PYG{p}{(}\PYG{l+s}{\PYGZdq{}Changing directory\PYGZdq{}}\PYG{p}{);}
+    \PYG{n}{setExitcode}\PYG{p}{(}\PYG{n}{exitcode}\PYG{p}{);}
+  \PYG{p}{\PYGZcb{}}
+\PYG{p}{\PYGZcb{}}
+
+\PYG{k+kt}{void} \PYG{n+nf}{runLine}\PYG{p}{(}\PYG{k+kt}{char} \PYG{o}{*}\PYG{n}{command}\PYG{p}{,} \PYG{k+kt}{char} \PYG{o}{*}\PYG{n}{line}\PYG{p}{)\PYGZob{}}
+  \PYG{n}{init\PYGZus{}handler}\PYG{p}{();}
+
+  \PYG{k}{if}\PYG{p}{(}\PYG{n}{strcmp}\PYG{p}{(}\PYG{n}{command}\PYG{p}{,} \PYG{l+s}{\PYGZdq{}print\PYGZdq{}}\PYG{p}{)} \PYG{o}{==} \PYG{l+m+mi}{0}\PYG{p}{)} \PYG{n}{printLine}\PYG{p}{(}\PYG{n}{line}\PYG{p}{);} \PYG{c+c1}{// checks for print command}
+  \PYG{k}{else} \PYG{k}{if}\PYG{p}{(}\PYG{n}{strcmp}\PYG{p}{(}\PYG{n}{command}\PYG{p}{,} \PYG{l+s}{\PYGZdq{}all\PYGZdq{}}\PYG{p}{)} \PYG{o}{==} \PYG{l+m+mi}{0}\PYG{p}{)} \PYG{n}{showShellVars}\PYG{p}{();} \PYG{c+c1}{// checks for all command}
+  \PYG{k}{else} \PYG{k}{if}\PYG{p}{(}\PYG{n}{strcmp}\PYG{p}{(}\PYG{n}{command}\PYG{p}{,} \PYG{l+s}{\PYGZdq{}vars\PYGZdq{}}\PYG{p}{)} \PYG{o}{==} \PYG{l+m+mi}{0}\PYG{p}{)} \PYG{n}{displayUserVars}\PYG{p}{();}  \PYG{c+c1}{// checks for debug vars command}
+  \PYG{k}{else} \PYG{k}{if}\PYG{p}{(}\PYG{n}{strcmp}\PYG{p}{(}\PYG{n}{command}\PYG{p}{,} \PYG{l+s}{\PYGZdq{}chdir\PYGZdq{}}\PYG{p}{)} \PYG{o}{==} \PYG{l+m+mi}{0}\PYG{p}{)} \PYG{n}{changeDirectory}\PYG{p}{(}\PYG{n}{line}\PYG{p}{);} \PYG{c+c1}{// checks for chdir command}
+  \PYG{k}{else} \PYG{k}{if}\PYG{p}{(}\PYG{n}{strcmp}\PYG{p}{(}\PYG{n}{command}\PYG{p}{,} \PYG{l+s}{\PYGZdq{}source\PYGZdq{}}\PYG{p}{)} \PYG{o}{==} \PYG{l+m+mi}{0}\PYG{p}{)} \PYG{n}{runScript}\PYG{p}{(}\PYG{n}{line}\PYG{p}{);} \PYG{c+c1}{// checks for source command}
+  \PYG{k}{else} \PYG{k}{if}\PYG{p}{(}\PYG{n}{strcmp}\PYG{p}{(}\PYG{n}{command}\PYG{p}{,} \PYG{l+s}{\PYGZdq{}fg\PYGZdq{}}\PYG{p}{)} \PYG{o}{==} \PYG{l+m+mi}{0}\PYG{p}{)} \PYG{n}{resumeProcessSignal}\PYG{p}{(}\PYG{n}{FOREGROUND}\PYG{p}{);} \PYG{c+c1}{// recovers suspended process to fg}
+  \PYG{k}{else} \PYG{k}{if}\PYG{p}{(}\PYG{n}{strcmp}\PYG{p}{(}\PYG{n}{command}\PYG{p}{,} \PYG{l+s}{\PYGZdq{}bg\PYGZdq{}}\PYG{p}{)} \PYG{o}{==} \PYG{l+m+mi}{0}\PYG{p}{)} \PYG{n}{resumeProcessSignal}\PYG{p}{(}\PYG{n}{BACKGROUND}\PYG{p}{);}\PYG{c+c1}{// recovers suspended process to bg}
+
+  \PYG{c+c1}{// Runs external command seperate from the eggshell}
+  \PYG{k}{else} \PYG{n}{externalCommand}\PYG{p}{(}\PYG{n}{command}\PYG{p}{,} \PYG{n}{line}\PYG{p}{);}
+\PYG{p}{\PYGZcb{}}
+\end{Verbatim}

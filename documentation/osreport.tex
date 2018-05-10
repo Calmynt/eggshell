@@ -194,29 +194,10 @@
                 \end{minted}
                 \endgroup
 
+                The signal handler is also initialised by calling the \tx{init\_handler()}
+                function in \tx{sig\_handler.c}.
+
                 \clearpage
-
-                The function also initialises the signal handler before running the
-                processes, so that it can handle \tx{SIGINT} and \tx{SIGTSTP} signals
-                given when the user presses \tx{CTRL-C} and \tx{CTRL-Z} respectively.
-
-                \begingroup
-                \fontsize{10pt}{10pt}\selectfont
-                \begin{minted}[gobble=20, breaklines, frame=single, linenos=true]{C}
-                    struct sigaction sa;
-
-                    sa.sa_handler = signal_handler;
-                    sigemptyset(&sa.sa_mask);
-                    sa.sa_flags = SA_RESTART;
-                  
-                    // If conditions for signal handling.
-                    // Also creates 2 signal handlers in memory for the SIGINT and SIGTSTP
-                    if(sigaction(SIGINT, &sa, NULL) == -1)
-                      printf("Couldn't catch SIGINT - Interrupt Signal\n");
-                    if(sigaction(SIGTSTP, &sa, NULL) == -1)
-                      printf("Couldn't catch SIGTSTP - Suspension Signal\n");
-                \end{minted}
-                \endgroup
             
             \subsection{\tx{changeDirectory(char* directory)}}
                 This function changes the directory to the directory specified by

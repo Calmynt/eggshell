@@ -10,3 +10,6 @@ void signal_handler(int signo);
 // Checks whether a process is suspended, and resumes it.
 // Does this by calling a function that sends a SIGCONT signal to the suspended process.
 void resumeProcessSignal(int state);
+
+// Initialises handlers to catch SIG_INT and SIG_TSTP signals.
+void init_handler();
