@@ -4,6 +4,7 @@
 #include <unistd.h>
 #include <limits.h>
 #include <sys/wait.h>
+#include <sys/types.h>
 #include <signal.h>
 
 #include "eggshell.h"
@@ -74,13 +75,8 @@ void execute(char* line){
 void runScript(char* filename){
   FILE *testfile = fopen(filename, "r");
 
-  // Special condition for test execution
-  if(testfile == NULL && strcmp(filename, "testinput.txt") == 0){
-    fprintf(stderr, "--- No test file found, aborting... ---");
-    exit(-1);
-  }
   // Condition for nonexistent file
-  else if(testfile == NULL){
+  if(testfile == NULL){
     fprintf(stderr, "No file '%s' found!", filename);
     setExitcode(-1);
     return;
@@ -113,6 +109,7 @@ void changeDirectory(char* directory){
   if(exitcode == 0){
     updateCWD();
     printf("Current directory is now '%s'\n", value("CWD"));
+    setExitcode(exitcode);
   }
   else{
     perror("Changing directory");
@@ -123,25 +120,24 @@ void changeDirectory(char* directory){
 void runLine(char *command, char *line){
   struct sigaction sa;
 
-  if(strcmp(command, "print") == 0) {printLine(line); return;} // checks for print command
-  else if(strcmp(command, "all") == 0) {showShellVars(); return;} // checks for all command
-  else if(strcmp(command, "vars") == 0) {displayUserVars(); return;}  // checks for debug vars command
-  else if(strcmp(command, "chdir") == 0) {changeDirectory(line); return;} // checks for chdir command
-  else if(strcmp(command, "source") == 0) {runScript(line); return;} // checks for source command
-  else if(strcmp(command, "fg") == 0) {resumeProcessSignal(FOREGROUND); return;} // recovers suspended process to fg
-  else if(strcmp(command, "bg") == 0) {resumeProcessSignal(BACKGROUND); return;} // recovers suspended process to bg
-
-  // If conditions for signal handling.
-  // Also creates 2 signal handlers in memory for the SIGINT and SIGTSTP
-
   sa.sa_handler = signal_handler;
   sigemptyset(&sa.sa_mask);
   sa.sa_flags = SA_RESTART;
 
+  // If conditions for signal handling.
+  // Also creates 2 signal handlers in memory for the SIGINT and SIGTSTP
   if(sigaction(SIGINT, &sa, NULL) == -1)
     printf("Couldn't catch SIGINT - Interrupt Signal\n");
   if(sigaction(SIGTSTP, &sa, NULL) == -1)
     printf("Couldn't catch SIGTSTP - Suspension Signal\n");
+
+  if(strcmp(command, "print") == 0) printLine(line); // checks for print command
+  else if(strcmp(command, "all") == 0) showShellVars(); // checks for all command
+  else if(strcmp(command, "vars") == 0) displayUserVars();  // checks for debug vars command
+  else if(strcmp(command, "chdir") == 0) changeDirectory(line); // checks for chdir command
+  else if(strcmp(command, "source") == 0) runScript(line); // checks for source command
+  else if(strcmp(command, "fg") == 0) resumeProcessSignal(FOREGROUND); // recovers suspended process to fg
+  else if(strcmp(command, "bg") == 0) resumeProcessSignal(BACKGROUND);// recovers suspended process to bg
 
   // Runs external command seperate from the eggshell
   else externalCommand(command, line);

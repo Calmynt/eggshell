@@ -2,6 +2,7 @@
 \usepackage{personalstyle}
 
 \setlength{\parskip}{1em}
+\setlength{\parindent}{0em}
 
 \begin{document}
     \begin{titlepage}
@@ -12,6 +13,15 @@
         \Large{Andre' Jenkins}\\
         \small{76999M}
     \end{titlepage}
+
+    \lstset{
+        frame       = single,
+        numbers     = left,
+        showspaces  = false,
+        showstringspaces    = false,
+        captionpos  = t,
+        caption     = \lstname
+    }
 
     \tableofcontents
 
@@ -114,7 +124,125 @@
                     in \tx{Visual Studio Code}.
             \end{description}
 
+    \clearpage
+
+    \chapter{Code documentation}
+        \section{\tx{main.c}}
+            \subsection{Use of \tx{main.c}}
+                This code is mainly used in order to produce an executable
+                using the \tx{eggshell.} This is because the eggshell is
+                mainly used as a sort of \tx{API,} which interfaces with
+                the inner functions that the eggshell offers.
+
+                As a result, the \tx{main} implements some not-so-integral
+                elements of the eggshell, such as an introduction/boot-up
+                screen, an additional \tx{test} argument feature, and some
+                \tx{linenoise} functions such as history \ii{(ability to
+                use $\uparrow$ and $\downarrow$ keys to traverse through
+                older commands)}. It also uses the function \tx{updatePrompt();}
+                which updates the prompt of the eggshell in order to display
+                the current directory.
+
+                A thing to note is that the external command \tx{clear} is run by the line:
+
+                \texttt{runLine(\quot clear\quot, \quot\quot);}
+
+                ...which is an external function found in \tx{eggshell.c}.
+
+                \bb{\myul{Note:}} In order to test the first part of the program,
+                which loads \tx{testinput.txt} and runs it, you'd need to run
+                the eggshell with the \tx{test} parameter: \tx{./eggshell test}
+
+                \clearpage
 
 
+        \clearpage
+
+        \section{\tx{eggshell.c}}
+            \subsection{Use of \tx{eggshell.c}}
+                This file serves as the \bb{core} of the eggshell itself.
+                Its main method, \tx{execute}, executes the line inputted
+                by the user. Almost every other function of the eggshell is
+                accessed through this main file automatically, using parsing.
+
+            \subsection{\tx{initEggshell()}}
+                All this function does is initialise the eggshell. To initialise,
+                all it needs to do is initialise its shell variables, which is 
+                does by calling the method \tx{initShellVars()} from
+                \tx{variables.c}
+
+            \subsection{\tx{runLine(char *command, char *line)}}
+                This function executes the command \tx{command} with the
+                arguments found in \tx{line}. An example of this is:
+
+                \tx{command} = \tx{\quot chdir\quot} and \tx{line} = \tx{\quot ../src/\quot}
+
+                Which would execute \tx{chdir} with arguments \tx{../src/}. It does this
+                by having a significant if/else-if block that checks which function to execute:
+
+                \begingroup
+                \fontsize{10pt}{10pt}\selectfont
+                \begin{lstlisting}[breaklines, frame=single, gobble=20, style=C]
+                    if(strcmp(command, "print") == 0) printLine(line);
+                    else if(strcmp(command, "all") == 0) showShellVars();
+                    else if(strcmp(command, "vars") == 0) displayUserVars();
+                    else if(strcmp(command, "chdir") == 0) changeDirectory(line); 
+                    else if(strcmp(command, "source") == 0) runScript(line);
+                    else if(strcmp(command, "fg") == 0) resumeProcessSignal(FOREGROUND);
+                    else if(strcmp(command, "bg") == 0) resumeProcessSignal(BACKGROUND);
+                    else externalCommand(command, line);
+                \end{lstlisting}
+                \endgroup
+
+                \clearpage
+
+                The function also initialises the signal handler before running the
+                processes, so that it can handle \tx{SIGINT} and \tx{SIGTSTP} signals
+                given when the user presses \tx{CTRL-C} and \tx{CTRL-Z} respectively.
+
+                \begingroup
+                \fontsize{10pt}{10pt}\selectfont
+                \begin{lstlisting}[breaklines, frame=single, gobble=20, style=C]
+                    struct sigaction sa;
+
+                    sa.sa_handler = signal_handler;
+                    sigemptyset(&sa.sa_mask);
+                    sa.sa_flags = SA_RESTART;
+                  
+                    // If conditions for signal handling.
+                    // Also creates 2 signal handlers in memory for the SIGINT and SIGTSTP
+                    if(sigaction(SIGINT, &sa, NULL) == -1)
+                      printf("Couldn't catch SIGINT - Interrupt Signal\n");
+                    if(sigaction(SIGTSTP, &sa, NULL) == -1)
+                      printf("Couldn't catch SIGTSTP - Suspension Signal\n");
+                \end{lstlisting}
+                \endgroup
+            
+            \subsection{\tx{changeDirectory(char* directory)}}
+                This function changes the directory to the directory specified by
+                the parameter. This is done using the inbuilt \tx{chdir} function.
+
+                If changing the directory was successful, the \tx{\$CWD} shell
+                variable is updated, and the new directory is displayed.
+
+                However, if it was failing, \tx{perror} is used to display the
+                error message.
+            
+            \subsection{\tx{runScript(char *filename)}}
+                All this function does, is load a \tx{script} file which can have
+                any extension, and execute its commands line by line. It contains
+                measures, such as ignoring any line starting with \tx{\#}, or 
+                any empty lines. This effectively enables commenting support for 
+                scripts using the \tx{\#} symbol.
+
+                It also emulates a prompt, so that the output generated when running 
+                the script could be more readable to the user.
+
+                \clearpage
+            
+            \subsection{\tx{execute()}}
+                The 
+
+                
 
 \end{document}
