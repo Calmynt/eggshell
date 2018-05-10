@@ -5,7 +5,8 @@
 
 #include "proc_manager.h"
 
-pid_t suspended_process;
+pid_t suspended_process[10];
+int last_suspended = -1;
 
 void signal_handler(int signo){
     pid_t process = currentpid();
@@ -19,19 +20,21 @@ void signal_handler(int signo){
     else if(signo == SIGTSTP){
         int success = kill(process, SIGTSTP);
         resuspended = 1;
-        suspended_process = process;
+        suspended_process[last_suspended+1] = process;
+        last_suspended++;
     }
 }
 
 void resumeProcessSignal(int state){
-    if(suspended_process < 0){
+    if(last_suspended < 0){
         fprintf(stderr, "No process currently suspended.\n");
         return;
     }
     else{
-        int resumed = resumeProcess(state, suspended_process);
+        int resumed = resumeProcess(state, suspended_process[last_suspended]);
         if(resumed == 0){
-            suspended_process = -1;
+            suspended_process[last_suspended] = 0;
+            last_suspended--;
             setExitcode(0);
         }
         else{

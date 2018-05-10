@@ -387,7 +387,35 @@
                 bundled with the \tx{eggshell.c} file would have added more complexity
                 to the already significant file.
 
-            \subsection{title}
+            \subsection{\tx{signal\_handler(int signo)}}
+                This is the signal handler that is initialised by \tx{sigaction}.
+                
+                \begingroup
+                    \fontsize{10pt}{10pt}\selectfont
+                    \Ccode[firstline=11, lastline=23]{../src/sig_handler.c}
+                \endgroup
+                It is lacking in \tx{printf} statements, as after some research,
+                it was found that it is not \tx{re-entrant}, or \tx{async-signal-safe},
+                meaning that if, for example, in the middle of running \tx{printf}
+                in a signal handler, another signal is caught, the program might 
+                end up in a deadlock.
+
+                A \tx{SIGINT} signal is handled by simply sending the signal to the
+                current process, whereas a \tx{SIGTSTP} is handled by sending the
+                signal, then setting the \tx{resuspended} flag to 1, after which the
+                pid of the now suspended process is appended to an array of pid's
+                using a variable that keeps count of how many suspended processes there are.
+                This ensures that multiple processes can be suspended and restored normally.
+
+                \clearpage
+            \subsection{\tx{resumeProcessSignal(int state)}}
+                This function activates in the case of either the \tx{fg} or
+                \tx{bg} commands. It's purpose is to resume a suspended process
+                by calling a function from \tx{proc\_manager.c}. This is done 
+                in order to abstract the process managing \ii{(with \tx{waitpid}
+                etc...)} from the signal handler, while at the same time allowing
+                access to the pid of the suspended process.
+                
 
 
 \end{document}
