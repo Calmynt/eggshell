@@ -14,15 +14,6 @@
         \small{76999M}
     \end{titlepage}
 
-    \lstset{
-        frame       = single,
-        numbers     = left,
-        showspaces  = false,
-        showstringspaces    = false,
-        captionpos  = t,
-        caption     = \lstname
-    }
-
     \tableofcontents
 
     \clearpage
@@ -550,4 +541,167 @@
                 \clearpage
 
         \section{\tx{proc\_manager.c}}
+            \subsection{Use of \tx{proc\_manager.c}}
+                The use of this file is to manage everything doing
+                with processes. This includes a \tx{fork-exec} pattern
+                for external commands and handling the resumption of
+                suspended processes.
+            
+            \mysubsect{\tx{char** pathsToCommArr}}{\tx{(int *pathn, char *program)}}
+                This function is meant to be a \ii{helper} to the main 
+                function of the file, as it produces an array of possible
+                \tx{PATH}s that show where the product is.
+
+                Firstly, the \tx{PATH} variable is retrieved, and copied
+                into a seperate string, so that any modifications to the
+                new string do not reflect back to our shell variable.
+                Then, the array of paths is created and initialised.
+
+                After doing so, we have the following code:
+
+                \begingroup
+                    \fontsize{10pt}{10pt}\selectfont
+                    \Ccode[firstline=97, lastline=114]{../src/proc_manager.c}
+                \endgroup
+
+                The delimiter's purpose is to store what we will be splitting
+                the paths by --- the colon. \tx{pathnL} will also be the
+                temporary variable in which we'll store the amount of paths.
+
+                Inside the loop, \tx{path} will store the freshly seperated
+                path from the \tx{paths} string, at which point it is stored
+                in the \tx{patharr} array. Said path then has \tx{/<program name>}
+                appended to it, as that would be the possible full path of the 
+                program.
+
+                After doing so, the path array is reallocated some additional
+                memory in advance, so that it would be able to store an additional
+                path. 
+
+                Once the loop breaks, the parameter \tx{*pathn} is set to
+                \tx{pathnL}. This is so that the length of the paths can be used
+                outside this function. After doing so, the array of paths is then
+                returned.
+
+            \mysubsect{\tx{void externalCommand}}{\tx{(char *command, char *varargs)}}
+                This function executes a command that does not belong to the
+                \tx{eggshell} using \tx{fork-exec}. The parameters are the name 
+                of the command itself, and a single string containing all the 
+                arguments of the command. A command with no arguments will have 
+                an empty string as \tx{varargs}.
+
+                The function first initialises all the variables it will need:
+
+                \begingroup
+                \fontsize{10pt}{10pt}\selectfont
+                \Ccode[firstline=14, lastline=28]{../src/proc_manager.c}
+                \endgroup\\
+
+                Here's a small description for each of these variables:
+                
+                \begin{description}
+                    \item[\tx{args} --- ] 
+                        Where the array of arguments will be stored.
+                    \item[\tx{arg} --- ]
+                        Temporary variable used to store the argument to be 
+                        added to \tx{args}
+                    \item[\tx{argc} --- ]
+                        The number of arguments present.
+                    \item[\tx{arg\_delimiter[2]} --- ]
+                        Used to split the \tx{varargs} string into individual
+                        arguments
+                    \item[\tx{BG} --- ]
+                        Flag whose purpose is to signal whether the process should
+                        be run in the background or foreground. 0 means foreground.
+                    \item[\tx{envp} --- ]
+                        Contains all environment variables, the ones belonging to
+                        the main shell, \bb{and} \tx{eggshell} variables.
+                    \item[\tx{pid} --- ]
+                        Stores the process id of the forked process.
+                    \item[\tx{pathn} --- ]
+                        Contains the amount of paths that are present in \tx{paths}
+                    \item[\tx{paths} --- ]
+                        The array of paths to cycle through when executing a command. 
+                \end{description}
+
+                The following loop then splits \tx{varargs} into \tx{args}
+                using the \tx{arg\_delimiter}, after which the main 
+                conditional block is encountered.
+
+                Here, there are three possibilities. We are in the child,
+                we are in the parent, or the forking failed. First, we will
+                consider the child.
+
+                For the child, it is pretty simple. The first argument in
+                \tx{args} is set to the current \tx{path} we are attempting
+                to access, and the numerous paths are cycled through until 
+                the program is found and then executed, or all the paths are
+                exhausted and an error message is returned.
+
+                For the parent, it is slightly more complicated.
+                First, the \tx{current\_pid} global variable is set to the pid
+                of the process to be used by the signal handler, and then the 
+                \tx{pgid} of the forked process is set to itself. This means that
+                if a signal is recieved, the signal sent by the signal handler
+                will only affect the current process running in the \tx{foreground}.
+                If this line was omitted, all children would receive the same signal,
+                even ones who are suspended or in the background.
+
+                After doing so, an if block will execute if \tx{\&} was not detected
+                at the end of \tx{varargs}. If it was, the function will ignore this
+                block, hence letting the process run in the background. However if it
+                wasn't, the parent will wait for the process to finish:
+
+                \begingroup
+                    \fontsize{10pt}{10pt}\selectfont
+                    \Ccode[firstline=67, lastline=77]{../src/proc_manager.c}
+                \endgroup
+
+                The \tx{status} variable stores the status code of how the process
+                terminated. The \tx{WIFEXITED} and \tx{WIFSIGNALED} macros check
+                whether the process terminated normally or with a signal. Then, 
+                \tx{WEXITSTATUS(status)} or \tx{WTERMSIG(status)} will show us 
+                the exitcode of the process, or the signal that stopped the process
+                respectively.
+
+                \tx{WUNTRACED} was used in \tx{waitpid} as it waits for the process
+                to finish, however if the process is suspended, it will immediately
+                stop waiting and continue on. After this point, the function will then
+                return.
+
+                If, however, the forking failed, \tx{perror} is used to showcase why
+                that is the case.
+
+                \clearpage
+
+            \mysubsect{\tx{int resumeProcess}}{\tx{(int state, pid\_t process)}}
+                The purpose of this function is to resume a previously suspended 
+                process. This is done by using the \tx{pid\_t} given in the parameter,
+                and checking whether the program should be resumed in the foreground
+                or background using the \tx{state} variable.
+
+                Firstly, the \tx{resuspended} variable is reset to 0, after which a
+                \tx{SIGCONT} signal is sent to the suspended process. If this failed,
+                \tx{perror} is used to show why, and an error code of 1 is returned.
+
+                If it doesn't fail, the \tx{current\_pid} is then set to the now
+                recovered process. The same waiting conditional block that was in
+                \tx{externalCommand} is placed here, depending on whether 
+                \tx{state} was set to the macro \tx{FOREGROUND} or \tx{BACKGROUND}.
+
+                There is an extra step however. \tx{resuspended} is checked again,
+                to know whether the resumed process was suspended again. If it is
+                still set to 0, then an exitcode of 0 is returned, showing everything
+                executed normally. However, if it is now set to 1, an exitcode of 
+                18 is returned, showing that the process was suspended again.
+                This number was chosen because it is the signal number of \tx{SIGTSTP}.
+
+                \bb{\myul{Note:}} The \tx{currentPid} function is omitted from the
+                documentation as its function is obvious, and it only contains one
+                line of code as a result. Its only purpose is to make a variable
+                accessible by other files.
+
+                \clearpage
+                
+        \section{variables.c}
 \end{document}

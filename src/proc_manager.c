@@ -45,7 +45,6 @@ void externalCommand(char *command, char *varargs){
 
   // Conditional block for fork-exec pattern
   if(pid == 0){ // Child
-    int exec_success = 0; // checks whether command executed correctly
 
     // For loop for using all paths
     for(int i = 0; i < pathn; i++){
@@ -53,15 +52,11 @@ void externalCommand(char *command, char *varargs){
       args[0] = paths[i];
 
       // Executes command path[i] with arguments args with environment envp
-      exec_success = execve(paths[i], args, envp);
+      execve(paths[i], args, envp);
     }
 
-    if(exec_success == -1){
-      perror("Execution of external command failed");
-      exit(-1);
-    }
-
-    exit(0);
+    perror("execve");
+    exit(-1);
   }
   else if(pid > 0){ //Parent
     current_pid = pid;
@@ -82,7 +77,7 @@ void externalCommand(char *command, char *varargs){
     }
   }
   else{
-    perror("waitpid()");
+    perror("fork()");
   }
 }
 
