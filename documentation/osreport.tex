@@ -165,13 +165,13 @@
                 by the user. Almost every other function of the eggshell is
                 accessed through this main file automatically, using parsing.
 
-            \subsection{\tx{initEggshell()}}
+            \mysubsect{\tx{void initEggshell}}{\tx{()}}
                 All this function does is initialise the eggshell. To initialise,
                 all it needs to do is initialise its shell variables, which is 
                 does by calling the method \tx{initShellVars()} from
                 \tx{variables.c}
 
-            \subsection{\tx{runLine(char *command, char *line)}}
+            \mysubsect{\tx{void runLine}}{\tx{(char *command, char *line)}}
                 This function executes the command \tx{command} with the
                 arguments found in \tx{line}. An example of this is:
 
@@ -199,7 +199,7 @@
 
                 \clearpage
             
-            \subsection{\tx{changeDirectory(char* directory)}}
+            \mysubsect{\tx{void changeDirectory}}{\tx{(char* directory)}}
                 This function changes the directory to the directory specified by
                 the parameter. This is done using the inbuilt \tx{chdir} function.
 
@@ -209,7 +209,7 @@
                 However, if it was failing, \tx{perror} is used to display the
                 error message.
             
-            \subsection{\tx{runScript(char *filename)}}
+            \mysubsect{\tx{void runScript}}{\tx{{(char *filename)}}}
                 All this function does, is load a \tx{script} file which can have
                 any extension, and execute its commands line by line. It contains
                 measures, such as ignoring any line starting with \tx{\#}, or 
@@ -221,7 +221,7 @@
 
                 \clearpage
             
-            \subsection{\tx{execute(char *line)}}
+            \mysubsect{\tx{void execute}}{\tx{(char *line)}}
                 This function is the main one to be executed.
                 It is what reveals the eggshell functions to the user,
                 as all other functions are accessed via this one.
@@ -295,7 +295,7 @@
                 the string is escaped in quotation marks, and replacing 
                 unescaped variable references with their value.
 
-            \subsection{\tx{printLine(char *line)}}
+            \mysubsect{\tx{void printLine}}{\tx{(char *line)}}
                 The main function of the file, it is the primary function to
                 be called from \tx{printer.c}. It achieves the aforementioned
                 goal by splitting the line accordingly, and passing the 
@@ -321,7 +321,7 @@
 
                 \clearpage
             
-            \subsection{\tx{printSeg(char *segment, int escaped)}}
+            \mysubsect{\tx{void printSeg}}{\tx{(char *segment, int escaped)}}
                 This function utilises its parameters to print the segment,
                 replacing the segment [or a part of it] with a value if it
                 is found to be a variable name.
@@ -368,13 +368,13 @@
                 bundled with the \tx{eggshell.c} file would have added more complexity
                 to the already significant file.
 
-            \subsection{\tx{signal\_handler(int signo)}}
+            \mysubsect{\tx{void signal\_handler}}{\tx{(int signo)}}
                 This is the signal handler that is initialised by \tx{sigaction}.
                 
                 \begingroup
                     \fontsize{10pt}{10pt}\selectfont
-                    \Ccode[firstline=11, lastline=23]{../src/sig_handler.c}
-                \endgroup
+                    \Ccode[firstline=11, lastline=25]{../src/sig_handler.c}
+                \endgroup\\[-30pt]
                 It is lacking in \tx{printf} statements, as after some research,
                 it was found that it is not \tx{re-entrant}, or \tx{async-signal-safe},
                 meaning that if, for example, in the middle of running \tx{printf}
@@ -389,14 +389,165 @@
                 This ensures that multiple processes can be suspended and restored normally.
 
                 \clearpage
-            \subsection{\tx{resumeProcessSignal(int state)}}
+            \mysubsect{\tx{void resumeProcessSignal}}{\tx{{(int state)}}}
                 This function activates in the case of either the \tx{fg} or
                 \tx{bg} commands. It's purpose is to resume a suspended process
                 by calling a function from \tx{proc\_manager.c}. This is done 
                 in order to abstract the process managing \ii{(with \tx{waitpid}
                 etc...)} from the signal handler, while at the same time allowing
                 access to the pid of the suspended process.
+
+                The correct pid is handed off to the function by using the 
+                \tx{last\_suspended} variable. This makes process suspension seem
+                like a stack, \bb{last suspended, first resumed}. If the suspension
+                succeeds, the \tx{last\_suspended} variable is decremented, and the
+                exitcode is set to 0. However, if for some reason it does not succeed,
+                there are two cases: \ii{the process is unresponsive} or \ii{the process
+                was resuspended.} In this case, the exit code is set to reflect which
+                outcome happened, \tx{-1} being an error and \tx{18} being an indication
+                of another suspension \ii{(18 is the SIGNO of SIGTSTP)}.
+            
+            \mysubsect{\tx{void init\_handler}}{\tx{()}}
+                All this function does is initialise the signal handlers that are to be
+                used. It does this by use of \tx{sigaction} rather than \tx{signal},
+                for multiple reasons:
+                    \begin{itemize}
+                        \item \tx{signal} performs differently on different systems,
+                            making it an unpredictable function to use.
+                        \item \tx{signal} automatically resets the signal action back
+                            to \tx{SIG\_DFL} after use. This means that during the time
+                            in which the signal is triggered and the handler is 
+                            reinitialized, \ii{the system is vulnerable to additional signals,
+                            which would not be handled}.
+                        \item \tx{sigaction} permits the blocking of signals, which if needed
+                            in the future, would be impossible to implement with \tx{signal}
+                    \end{itemize}
                 
+                    Other than the initialisation of the \tx{sigaction} struct, the
+                    handler is initialised to deal with \tx{SIGINT} and \tx{SIGTSTP}
+                    signals accordingly.
 
+        \section{\tx{redirection.c}}
+            \subsection{Use of \tx{redirection.c}}
+                The purpose of this file is to handle all \bb{input} and
+                \bb{output} redirection. It parses a line for any redirection
+                symbols, initialises the redirection using a filename
+                \ii{unless \tx{<<<} is detected}, and also starts the redirection,
+                depending on its own flags and how they were set.
+                
+            \subsection{Parsing functions}
+                The functions \tx{out\_redirect\_parse} and \tx{in\_redirect\_parse}
+                both have very similar code that functions differently in other
+                to be more specialised while also simplifying the code from having
+                too many conditional blocks.
 
+                Both of them require three strings, \bb{two} specifying pointers
+                to the symbols, and \bb{one} which contains the line itself.
+
+                These are passed in the parameter in order for the functions to know
+                which action is supposed to happen, and how the line is meant to be
+                parsed. This is because, in the case of \tx{<} and \tx{>}, one can 
+                simply split according to those symbols and be left with the two
+                elements required, albeit with additional whitespace, whereas in the
+                case of \tx{<<<} and \tx{>>}, one would need to perform some 
+                pointer arithmetic to split the strings accordingly.
+
+                Let's take the \tx{in\_redirect\_parse} function as an example:
+
+                \begingroup
+                \fontsize{10pt}{10pt}\selectfont
+                \Ccode[firstline=42, lastline=51]{../src/redirection.c}
+                \endgroup
+                Here, \tx{in\_string} and \tx{in\_file} serve as both pointers to
+                the symbol, and flags as to which symbol is present, with
+                \tx{in\_string} pointing to \tx{<<<} and \tx{in\_file} pointing to
+                \tx{<}. If the former was detected, \tx{filename} is set to a pointer
+                \ii{three characters away} from the symbol, whereas if the latter
+                was detected instead, \tx{filename} is set to a pointer
+                \ii{one character away}. In both cases, the respective flag is also set.
+
+                This ends up setting the filename to whatever is after the symbol, as
+                whichever symbol was pushed, the pointer was moved away from it anyways.
+
+                However, this leaves two problems - the left part of the line still
+                hasn't been parsed yet, and the start of the filename may still
+                contain whitespace.
+
+                These are both solved by the upcoming \tx{strsep} and pointer arithmetic.
+                The \tx{line} string, which still points to the whole thing, is split
+                according to the \tx{<} delimiter \ii{(\tx{>} for output)}, causing the
+                \tx{line} string to now contain only the command. As for the filename,
+                it is placed in a loop, where if its first character is a space, its
+                pointer is incremented by one. This means that it does not matter how
+                many whitespaces are behind the filename, they will all be removed by the
+                loop. As for the command, any whitespace at the end will not interfere,
+                as the \tx{execution} function in \tx{proc\_manager.c} will ignore those.
+
+            \mysubsect{\tx{int init\_redirect}}{\tx{(char *filename)}}
+                All this function does is open the correct file descriptor,
+                depending on which flags were set. This is done using an
+                integer variable \tx{filefd}, which would hold the descriptor,
+                and the \tx{open} function. The differences between \tx{>}
+                and \tx{>>>} is simply whether the \tx{O\_TRUNC} macro or the 
+                \tx{O\_APPEND} macro is used, and for \tx{<}, it's as simple as
+                using \tx{O\_RDONLY}.
+
+                However for \tx{<<<}, the \tx{filename} string would contain an 
+                actual string, rather than a filename. As a result, a temporary
+                file \tx{stdin.tmp} is created in order to store the string in,
+                and the temporary file is then subsequently opened. This has the
+                benefit of having the redirection be the same for both \tx{<<<}
+                and \tx{<}, abstracting it from the actual redirection function.
+                \clearpage
+            \subsection{Redirection functions}
+                These are grouped together for the same reason the parsing
+                functions are. The code is similar, however to avoid 
+                unnecessary long conditionals, they were split into two.
+
+                In this case, we'll take the example for the output redirection:
+                \begingroup
+                    \fontsize{10pt}{10pt}\selectfont
+                    \Ccode[firstline=86, lastline=98]{../src/redirection.c}
+                \endgroup
+                The first \tx{dup} call is used in order to duplicate the file
+                descriptor of \tx{stdout} to \tx{save\_out}. This is needed later
+                in order to restore \tx{stdout}.
+
+                Then, the \tx{dup2} in the if-condition sets our readymade 
+                file descriptor, which was set in the \tx{init\_redirect} function,
+                as the replacement for \tx{stdout}. If this fails, the redirection
+                aborts, and the error code is reported, as well as the exitcode 
+                being set accordingly.
+
+                However if it succeeds, 0 is returned, showing that the redirection
+                occured successfully. 
+
+                This differs from \tx{stdin} in that a different variable is used 
+                to store the file descriptor for \tx{stdin}, and \tx{stdin} is 
+                replaced instead of \tx{stdout}.
+
+                \clearpage
+
+            \mysubsect{\tx{void close\_redirects}}{\tx{(int direction, int filefd)}}
+                What this function does is reset all of the redirection that
+                was initialised and used so far. It does this by flushing
+                \tx{stdout} or \tx{stdin}, depending on which kind of redirection
+                occured, and then closing the file descriptor \tx{filefd}.
+
+                Our saved file descriptor, \tx{save\_in/save\_out}, then replaces
+                the place our old, now closed file descriptor occupied, after which
+                that is closed as well.
+
+                Depending on whether the temporary file was created, it is then
+                removed, as we have no more use for it.
+
+                After doing so, to ensure that everything is reset, every single
+                flag variable within the file is set to 0, including the
+                \tx{save\_out/save\_in} descriptors. This is so that the next time
+                redirection happens, it would be as if a redirection never happened
+                at all.
+
+                \clearpage
+
+        \section{\tx{proc\_manager.c}}
 \end{document}

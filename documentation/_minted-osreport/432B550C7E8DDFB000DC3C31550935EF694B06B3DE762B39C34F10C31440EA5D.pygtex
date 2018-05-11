@@ -1,0 +1,136 @@
+\begin{Verbatim}[commandchars=\\\{\}]
+\PYG{c+cp}{\PYGZsh{}include} \PYG{c+cpf}{\PYGZlt{}stdio.h\PYGZgt{}}
+\PYG{c+cp}{\PYGZsh{}include} \PYG{c+cpf}{\PYGZlt{}fcntl.h\PYGZgt{}}
+\PYG{c+cp}{\PYGZsh{}include} \PYG{c+cpf}{\PYGZlt{}unistd.h\PYGZgt{}}
+\PYG{c+cp}{\PYGZsh{}include} \PYG{c+cpf}{\PYGZlt{}string.h\PYGZgt{}}
+
+\PYG{c+cp}{\PYGZsh{}include} \PYG{c+cpf}{\PYGZdq{}redirection.h\PYGZdq{}}
+\PYG{c+cp}{\PYGZsh{}include} \PYG{c+cpf}{\PYGZdq{}variables.h\PYGZdq{}}
+
+\PYG{c+c1}{// Flag variables for redirection}
+\PYG{c+c1}{// Append \PYGZhy{} Overwrite \PYGZhy{} Input File \PYGZhy{} Input String respectively}
+\PYG{k+kt}{int} \PYG{n}{app} \PYG{o}{=} \PYG{l+m+mi}{0}\PYG{p}{;}
+\PYG{k+kt}{int} \PYG{n}{ovr} \PYG{o}{=} \PYG{l+m+mi}{0}\PYG{p}{;}
+\PYG{k+kt}{int} \PYG{n}{inf} \PYG{o}{=} \PYG{l+m+mi}{0}\PYG{p}{;}
+\PYG{k+kt}{int} \PYG{n}{ins} \PYG{o}{=} \PYG{l+m+mi}{0}\PYG{p}{;}
+
+\PYG{k+kt}{int} \PYG{n}{save\PYGZus{}out} \PYG{o}{=} \PYG{l+m+mi}{0}\PYG{p}{;}
+\PYG{k+kt}{int} \PYG{n}{save\PYGZus{}in} \PYG{o}{=} \PYG{l+m+mi}{0}\PYG{p}{;}
+
+\PYG{k+kt}{char} \PYG{o}{*}\PYG{n+nf}{out\PYGZus{}redirect\PYGZus{}parse}\PYG{p}{(}\PYG{k+kt}{char} \PYG{o}{*}\PYG{n}{append}\PYG{p}{,} \PYG{k+kt}{char} \PYG{o}{*}\PYG{n}{rewrite}\PYG{p}{,} \PYG{k+kt}{char} \PYG{o}{*}\PYG{n}{line}\PYG{p}{)\PYGZob{}}
+    \PYG{c+c1}{// Sets filename to redirect output to}
+    \PYG{k+kt}{char} \PYG{o}{*}\PYG{n}{filename}\PYG{p}{;}
+
+    \PYG{k}{if}\PYG{p}{(}\PYG{n}{append} \PYG{o}{!=} \PYG{l+m+mi}{0}\PYG{p}{)\PYGZob{}}
+      \PYG{n}{filename} \PYG{o}{=} \PYG{n}{append}\PYG{o}{+}\PYG{l+m+mi}{2}\PYG{p}{;}
+      \PYG{n}{app} \PYG{o}{=} \PYG{l+m+mi}{1}\PYG{p}{;}
+    \PYG{p}{\PYGZcb{}}
+    \PYG{k}{else}\PYG{p}{\PYGZob{}}
+      \PYG{n}{filename} \PYG{o}{=} \PYG{n}{rewrite}\PYG{o}{+}\PYG{l+m+mi}{1}\PYG{p}{;}
+      \PYG{n}{ovr} \PYG{o}{=} \PYG{l+m+mi}{1}\PYG{p}{;}
+    \PYG{p}{\PYGZcb{}}
+    \PYG{n}{line} \PYG{o}{=} \PYG{n}{strsep}\PYG{p}{(}\PYG{o}{\PYGZam{}}\PYG{n}{line}\PYG{p}{,} \PYG{l+s}{\PYGZdq{}\PYGZgt{}\PYGZdq{}}\PYG{p}{);}
+    \PYG{n}{line}\PYG{p}{[}\PYG{n}{strlen}\PYG{p}{(}\PYG{n}{line}\PYG{p}{)}\PYG{o}{\PYGZhy{}}\PYG{l+m+mi}{1}\PYG{p}{]} \PYG{o}{=} \PYG{l+m+mi}{0}\PYG{p}{;}
+
+    \PYG{k}{while}\PYG{p}{(}\PYG{n}{filename}\PYG{p}{[}\PYG{l+m+mi}{0}\PYG{p}{]} \PYG{o}{==} \PYG{l+s+sc}{\PYGZsq{} \PYGZsq{}}\PYG{p}{)\PYGZob{}}
+      \PYG{n}{filename}\PYG{o}{++}\PYG{p}{;}
+    \PYG{p}{\PYGZcb{}}
+
+    \PYG{k}{return} \PYG{n}{filename}\PYG{p}{;}
+\PYG{p}{\PYGZcb{}}
+
+\PYG{k+kt}{char} \PYG{o}{*}\PYG{n+nf}{in\PYGZus{}redirect\PYGZus{}parse}\PYG{p}{(}\PYG{k+kt}{char} \PYG{o}{*}\PYG{n}{in\PYGZus{}file}\PYG{p}{,} \PYG{k+kt}{char} \PYG{o}{*}\PYG{n}{in\PYGZus{}string}\PYG{p}{,} \PYG{k+kt}{char} \PYG{o}{*}\PYG{n}{line}\PYG{p}{)\PYGZob{}}
+    \PYG{k+kt}{char} \PYG{o}{*}\PYG{n}{filename}\PYG{p}{;}
+
+    \PYG{k}{if}\PYG{p}{(}\PYG{n}{in\PYGZus{}string} \PYG{o}{!=} \PYG{l+m+mi}{0}\PYG{p}{)\PYGZob{}}
+      \PYG{n}{filename} \PYG{o}{=} \PYG{n}{in\PYGZus{}string}\PYG{o}{+}\PYG{l+m+mi}{3}\PYG{p}{;}
+      \PYG{n}{ins} \PYG{o}{=} \PYG{l+m+mi}{1}\PYG{p}{;}
+    \PYG{p}{\PYGZcb{}}
+    \PYG{k}{else}\PYG{p}{\PYGZob{}}
+      \PYG{n}{filename} \PYG{o}{=} \PYG{n}{in\PYGZus{}file}\PYG{o}{+}\PYG{l+m+mi}{1}\PYG{p}{;}
+      \PYG{n}{inf} \PYG{o}{=} \PYG{l+m+mi}{1}\PYG{p}{;}
+    \PYG{p}{\PYGZcb{}}
+
+    \PYG{n}{line} \PYG{o}{=} \PYG{n}{strsep}\PYG{p}{(}\PYG{o}{\PYGZam{}}\PYG{n}{line}\PYG{p}{,} \PYG{l+s}{\PYGZdq{}\PYGZlt{}\PYGZdq{}}\PYG{p}{);}
+    \PYG{n}{line}\PYG{p}{[}\PYG{n}{strlen}\PYG{p}{(}\PYG{n}{line}\PYG{p}{)}\PYG{o}{\PYGZhy{}}\PYG{l+m+mi}{1}\PYG{p}{]} \PYG{o}{=} \PYG{l+m+mi}{0}\PYG{p}{;}
+
+    \PYG{k}{while}\PYG{p}{(}\PYG{n}{filename}\PYG{p}{[}\PYG{l+m+mi}{0}\PYG{p}{]} \PYG{o}{==} \PYG{l+s+sc}{\PYGZsq{} \PYGZsq{}}\PYG{p}{)\PYGZob{}}
+      \PYG{n}{filename}\PYG{o}{++}\PYG{p}{;}
+    \PYG{p}{\PYGZcb{}}
+
+    \PYG{k}{return} \PYG{n}{filename}\PYG{p}{;}
+\PYG{p}{\PYGZcb{}}
+
+\PYG{k+kt}{int} \PYG{n+nf}{init\PYGZus{}redirect}\PYG{p}{(}\PYG{k+kt}{char} \PYG{o}{*}\PYG{n}{filename}\PYG{p}{)\PYGZob{}}
+    \PYG{k+kt}{int} \PYG{n}{filefd} \PYG{o}{=} \PYG{o}{\PYGZhy{}}\PYG{l+m+mi}{255}\PYG{p}{;}
+
+    \PYG{k}{if}\PYG{p}{(}\PYG{n}{app} \PYG{o}{==} \PYG{l+m+mi}{1}\PYG{p}{)\PYGZob{}}
+        \PYG{n}{filefd} \PYG{o}{=} \PYG{n}{open}\PYG{p}{(}\PYG{n}{filename}\PYG{p}{,} \PYG{n}{O\PYGZus{}WRONLY}\PYG{o}{|}\PYG{n}{O\PYGZus{}CREAT}\PYG{o}{|}\PYG{n}{O\PYGZus{}APPEND}\PYG{p}{,} \PYG{l+m+mo}{0666}\PYG{p}{);}
+    \PYG{p}{\PYGZcb{}}
+    \PYG{k}{else} \PYG{k}{if}\PYG{p}{(}\PYG{n}{ovr} \PYG{o}{==} \PYG{l+m+mi}{1}\PYG{p}{)\PYGZob{}}
+        \PYG{n}{filefd} \PYG{o}{=} \PYG{n}{open}\PYG{p}{(}\PYG{n}{filename}\PYG{p}{,} \PYG{n}{O\PYGZus{}WRONLY}\PYG{o}{|}\PYG{n}{O\PYGZus{}CREAT}\PYG{o}{|}\PYG{n}{O\PYGZus{}TRUNC}\PYG{p}{,} \PYG{l+m+mo}{0666}\PYG{p}{);}
+    \PYG{p}{\PYGZcb{}}
+    \PYG{k}{else} \PYG{k}{if}\PYG{p}{(}\PYG{n}{inf} \PYG{o}{==} \PYG{l+m+mi}{1}\PYG{p}{)\PYGZob{}}
+        \PYG{n}{filefd} \PYG{o}{=} \PYG{n}{open}\PYG{p}{(}\PYG{n}{filename}\PYG{p}{,} \PYG{n}{O\PYGZus{}RDONLY}\PYG{p}{);}
+    \PYG{p}{\PYGZcb{}}
+    \PYG{k}{else} \PYG{k}{if}\PYG{p}{(}\PYG{n}{ins} \PYG{o}{==} \PYG{l+m+mi}{1}\PYG{p}{)\PYGZob{}}
+        \PYG{k+kt}{FILE} \PYG{o}{*}\PYG{n}{f} \PYG{o}{=} \PYG{n}{fopen}\PYG{p}{(}\PYG{l+s}{\PYGZdq{}stdin.tmp\PYGZdq{}}\PYG{p}{,} \PYG{l+s}{\PYGZdq{}w+\PYGZdq{}}\PYG{p}{);}
+        \PYG{n}{fprintf}\PYG{p}{(}\PYG{n}{f}\PYG{p}{,} \PYG{l+s}{\PYGZdq{}\PYGZpc{}s\PYGZdq{}}\PYG{p}{,} \PYG{n}{filename}\PYG{p}{);}
+
+        \PYG{n}{filefd} \PYG{o}{=} \PYG{n}{open}\PYG{p}{(}\PYG{l+s}{\PYGZdq{}stdin.tmp\PYGZdq{}}\PYG{p}{,} \PYG{n}{O\PYGZus{}RDONLY}\PYG{p}{);}
+        \PYG{n}{fclose}\PYG{p}{(}\PYG{n}{f}\PYG{p}{);}
+    \PYG{p}{\PYGZcb{}}
+
+    \PYG{k}{return} \PYG{n}{filefd}\PYG{p}{;}
+\PYG{p}{\PYGZcb{}}
+
+\PYG{k+kt}{int} \PYG{n+nf}{redirect\PYGZus{}out}\PYG{p}{(}\PYG{k+kt}{int} \PYG{n}{filefd}\PYG{p}{)\PYGZob{}}
+    \PYG{c+c1}{// Duplicates file transcriptor \PYGZsq{}stdout\PYGZsq{} to saveout}
+    \PYG{n}{save\PYGZus{}out} \PYG{o}{=} \PYG{n}{dup}\PYG{p}{(}\PYG{n}{fileno}\PYG{p}{(}\PYG{n}{stdout}\PYG{p}{));}
+
+    \PYG{c+c1}{// Sets stdout file transcriptor to our transcriptor \PYGZsq{}filefd\PYGZsq{}}
+    \PYG{k}{if}\PYG{p}{(}\PYG{n}{dup2}\PYG{p}{(}\PYG{n}{filefd}\PYG{p}{,} \PYG{n}{fileno}\PYG{p}{(}\PYG{n}{stdout}\PYG{p}{))} \PYG{o}{==} \PYG{o}{\PYGZhy{}}\PYG{l+m+mi}{1}\PYG{p}{)\PYGZob{}}
+      \PYG{n}{perror}\PYG{p}{(}\PYG{l+s}{\PYGZdq{}Failed in redirecting stdout\PYGZdq{}}\PYG{p}{);}
+      \PYG{n}{setExitcode}\PYG{p}{(}\PYG{l+m+mi}{255}\PYG{p}{);}
+      \PYG{k}{return} \PYG{l+m+mi}{255}\PYG{p}{;}
+    \PYG{p}{\PYGZcb{}}
+
+    \PYG{k}{return} \PYG{l+m+mi}{0}\PYG{p}{;}
+\PYG{p}{\PYGZcb{}}
+
+\PYG{k+kt}{int} \PYG{n+nf}{redirect\PYGZus{}in}\PYG{p}{(}\PYG{k+kt}{int} \PYG{n}{filefd}\PYG{p}{)\PYGZob{}}
+    \PYG{n}{save\PYGZus{}in} \PYG{o}{=} \PYG{n}{dup}\PYG{p}{(}\PYG{n}{fileno}\PYG{p}{(}\PYG{n}{stdin}\PYG{p}{));}
+
+    \PYG{k}{if}\PYG{p}{(}\PYG{n}{dup2}\PYG{p}{(}\PYG{n}{filefd}\PYG{p}{,} \PYG{n}{fileno}\PYG{p}{(}\PYG{n}{stdin}\PYG{p}{))} \PYG{o}{==} \PYG{o}{\PYGZhy{}}\PYG{l+m+mi}{1}\PYG{p}{)\PYGZob{}}
+      \PYG{n}{perror}\PYG{p}{(}\PYG{l+s}{\PYGZdq{}Failed in redirecting stdin\PYGZdq{}}\PYG{p}{);}
+      \PYG{n}{setExitcode}\PYG{p}{(}\PYG{l+m+mi}{255}\PYG{p}{);}
+      \PYG{k}{return} \PYG{l+m+mi}{255}\PYG{p}{;}
+    \PYG{p}{\PYGZcb{}}
+
+    \PYG{k}{return} \PYG{l+m+mi}{0}\PYG{p}{;}
+\PYG{p}{\PYGZcb{}}
+
+\PYG{k+kt}{void} \PYG{n+nf}{close\PYGZus{}redirects}\PYG{p}{(}\PYG{k+kt}{int} \PYG{n}{direction}\PYG{p}{,} \PYG{k+kt}{int} \PYG{n}{filefd}\PYG{p}{)\PYGZob{}}
+    \PYG{k}{if}\PYG{p}{(}\PYG{n}{direction} \PYG{o}{==} \PYG{n}{OUT}\PYG{p}{)\PYGZob{}}
+        \PYG{n}{fflush}\PYG{p}{(}\PYG{n}{stdout}\PYG{p}{);} \PYG{c+c1}{// flushes whatever is in stdout}
+        \PYG{n}{close}\PYG{p}{(}\PYG{n}{filefd}\PYG{p}{);} \PYG{c+c1}{// Closes our file transcriptor \PYGZsq{}filefd\PYGZsq{}}
+
+        \PYG{c+c1}{// Sets stdout file transcriptor, to our saved stdout file transcriptor}
+        \PYG{n}{dup2}\PYG{p}{(}\PYG{n}{save\PYGZus{}out}\PYG{p}{,} \PYG{n}{fileno}\PYG{p}{(}\PYG{n}{stdout}\PYG{p}{));}
+        \PYG{n}{close}\PYG{p}{(}\PYG{n}{save\PYGZus{}out}\PYG{p}{);}
+    \PYG{p}{\PYGZcb{}}
+    \PYG{k}{else} \PYG{k}{if}\PYG{p}{(}\PYG{n}{direction} \PYG{o}{==} \PYG{n}{IN}\PYG{p}{)\PYGZob{}}
+        \PYG{n}{fflush}\PYG{p}{(}\PYG{n}{stdin}\PYG{p}{);}
+        \PYG{n}{close}\PYG{p}{(}\PYG{n}{filefd}\PYG{p}{);}
+
+        \PYG{n}{dup2}\PYG{p}{(}\PYG{n}{save\PYGZus{}in}\PYG{p}{,} \PYG{n}{fileno}\PYG{p}{(}\PYG{n}{stdin}\PYG{p}{));}
+        \PYG{n}{close}\PYG{p}{(}\PYG{n}{save\PYGZus{}in}\PYG{p}{);}
+
+        \PYG{k}{if}\PYG{p}{(}\PYG{n}{ins} \PYG{o}{==} \PYG{l+m+mi}{1}\PYG{p}{)\PYGZob{}}
+            \PYG{n}{remove}\PYG{p}{(}\PYG{l+s}{\PYGZdq{}stdin.tmp\PYGZdq{}}\PYG{p}{);}
+        \PYG{p}{\PYGZcb{}}
+    \PYG{p}{\PYGZcb{}}
+
+    \PYG{n}{app} \PYG{o}{=} \PYG{n}{ovr} \PYG{o}{=} \PYG{n}{inf} \PYG{o}{=} \PYG{n}{ins} \PYG{o}{=} \PYG{n}{save\PYGZus{}in} \PYG{o}{=} \PYG{n}{save\PYGZus{}out} \PYG{o}{=} \PYG{l+m+mi}{0}\PYG{p}{;}
+\PYG{p}{\PYGZcb{}}
+\end{Verbatim}
