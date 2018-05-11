@@ -49,14 +49,20 @@ The second command is equivalent to running the shell, and entering the command 
 
 - `redirection` - You can redirect output/input as well:
   - `>>` and `>` - The former will append to a file, whereas the latter will overwrite it. Both will create a file if it doesn't exist however.
-    *Example :* `print nice >> hello.txt` will append *nice* to `hello.txt`.
-                `print nice > hello.txt` will overwrite `hello.txt` with *nice*.
+    - *Example 1:* `print nice >> hello.txt` will append *nice* to `hello.txt`.
+    - *Example 2:* `print nice > hello.txt` will overwrite `hello.txt` with *nice*.
+  - `<` and `<<<` - The former will retrieve the contents of a file, whereas the latter will use whatever is after it as a string.
+    - *Example 1:* `cat < hello.txt` will place the contents of `hello.txt` onto the `stdin` of `cat`.
+    - *Example 2:* `cat <<< hello.txt` will place *hello.txt* as a string onto the `stdin` of `cat`.
 
 - `external commands` - Every command your shell offers can also be used!
   - For example, if `ls` is run, `eggshell` will realise that it's not an internal command, and will redirect it to be executed by whichever shell is being used by the system its being run on.
+
+- `piping` - Piping between programs is now also possible!
+  - You can pipe between 2 or more programs, for example `print cat | wc` and `echo nice | wc | figlet | wc`
 
 ## Notes
 
 - Doing `echo $[variable name]` will not work, as `echo` is an external command, and with all external commands, `$` is processed by a shell. However, the eggshell environment variables *ARE* still present, as can be proven by running the internal command `all`, and the external command `env`.
 
-- Coverage is low and builds are failing mostly because of all the code that handles the signals. They cannot be tested via a text file, so all that code is being ignored. How **rude**.
+- Coverage is low due to whole files, such as `redirection.c`, `proc_manager.c`, `pipe_manager.c` and `sig_handler.c` not being able to be tested on Travis CI.

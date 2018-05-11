@@ -47,7 +47,6 @@ void externalCommand(char *command, char *varargs){
   if(pid == 0){ // Child
     int exec_success = 0; // checks whether command executed correctly
 
-
     // For loop for using all paths
     for(int i = 0; i < pathn; i++){
       args[0] = (char*) malloc(80);
@@ -67,7 +66,7 @@ void externalCommand(char *command, char *varargs){
   else if(pid > 0){ //Parent
     current_pid = pid;
 
-    if(setpgid(pid, pid) == 0) perror("setpid");
+    if(setpgid(pid, pid) != 0) perror("setpid");
 
     // Waits if background flag not activated.
     if(BG == 0){

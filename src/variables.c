@@ -131,15 +131,13 @@ void showShellVars(){
 char** environEGG(){
   extern char **environ; // brings all environment variables
 
-  char *TERMINAL = malloc(VARSIZE);
-  char *CWD = malloc(VARSIZE);
-
-  sprintf(TERMINAL, "TERMINAL=%s", value("TERMINAL"));
-  sprintf(CWD, "CWD=%s", value("CWD"));
-
-  // Places the 'TERMINAL' and 'CMD' variables in the environment
-  putenv(TERMINAL);
-  putenv(CWD);
+  // Loop that places all 8 shell variables into the environment.
+  for(int i = 0; i < 8; i++){
+    char *string = malloc(VARSIZE);
+    Var *envVar = variables->vars[i];
+    sprintf(string, "%s=%s", envVar->varname, envVar->value);
+    putenv(string);
+  }
 
   return environ;
 }
