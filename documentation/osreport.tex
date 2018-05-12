@@ -716,6 +716,109 @@
             \mysubsect{\tx{int parse\_var}}{\tx{(char *line)}}
                 This function detects whether the line passed is
                 attempting to assign a variable, or modify its value.
-                It also validates the line, and stops further execution
-                of the line if it detects an invalid assignment.
+                It also validates the line, stopping the function if
+                the assignment detected seems to be invalid.
+                There are three rules for valid assignment:
+
+                \begin{itemize}
+                    \item The variable name should be \bb{capitalised}
+                    \item No spaces should surround the \tx{=} symbol.
+                    \item The variable name cannot have whitespace.
+                \end{itemize}
+
+                These rules are put into place as they are the same
+                syntax rules used by the \tx{bash shell}.
+
+                First, we start with the assumption that the line \bb{is}
+                an assignment line, and then proceed to \bb{use} or
+                \bb{validate} it:
+
+                \begingroup
+                    \fontsize{10pt}{10pt}\selectfont
+                    \Ccode[firstline=11, lastline=18]{../src/variables.c}
+                \endgroup
+
+                We copy the line into \tx{vartest} so as to not modify it, and then
+                we split the line into two, storing the supposed right side into
+                \tx{vartest}, and the left side in \tx{varname}. It should stand to
+                reason that, a line which does not have the \tx{=} symbol is not
+                trying to achieve assignment. Therefore the first check is whether
+                \tx{vartest} is empty. 
+
+                The second check is whether \tx{vartest} starts with whitespace,
+                \ii{and} whether \tx{varname} has any spaces within it at all.
+                Followed by a third check that checks all the letters within
+                \tx{varname} to see whether they are all capitalised. This is done
+                using the capital-letter slice in the ASCII table.
+
+                If any of these checks fail, the function returns \tx{1}, meaning
+                that a valid assignment wasn't made, meaning the main function should
+                keep on attempting to parse the line. There is only a single exception,
+                which is if the \tx{=} is surrounded by whitespace. There is no command
+                that requires a stray \tx{=}, and such a situation causes problems with
+                the rest of the \tx{execute} parser, so in this case, the function returns
+                \tx{0} to stop parsing, while setting the exitcode accordingly.
+
+                If they all succeed however, the \tx{createVar} function is called 
+                in order to either create, or modify a variable.
+
+            \mysubsect{\tx{void createVar}}{\tx{(char *line)}}
+                This is the largest function in the file, due to the
+                sheer amount of possibilities that the assignment is
+                attempting to achieve, such as:
+                
+                \begin{itemize}
+                    \item Create a new variable with a string value.
+                    \item Create a new variable with the value of an existing variable.
+                    \item Modify an existing variable with a string value.
+                    \item Replace an existing variable with the value of a different one.
+                \end{itemize}
+
+                Each of these possibilities need to be handled, and some even have
+                error cases, for example, the variable name in the righthand side of the
+                line does not exist, hence the assignment is aborted.
+
+                Firstly, the name and value of the variable are retrieved from the line,
+                and the name is checked to belong to an existing variable. This is done
+                by attempting to retrieve a variable with the same name. Needless to say,
+                if something is returned, then the name belongs to an existing variable.
+                If nothing is returned, then a new variable should be created.
+
+                Considering something is returned, the first character of the right hand
+                side is checked to be a \tx{\$}, the symbol seperating a variable from
+                a normal string. If it isn't, then simply set the variable value to 
+                the string as normal. However if it is, then the variable with the name
+                after \tx{\$} is retrieved. If said variable does not exist, then the 
+                function displays an error, along with returning immediately. However if
+                the variable exists, the value of the old variable is overwritten with 
+                the value of the new one. After doing so, the function returns with 
+                a successful code.
+
+                After doing so, possibilities 3 and 4 have been handled. Now it's time
+                to handle the case when a new variable should be created.
+
+                In the case that the first character of the right hand side is found to
+                be \tx{\$}, the same thing as before happens, only the function does not
+                return at the end, and the value overwritten is the right hand side of the line.
+
+                After doing so, the new variable is initialised by allocating memory to the 
+                empty space in the \tx{variable array}. Then, the now initialised
+                empty space in the array will be set to hold the newly created variable.
+                The following code will then reallocate enough additional memory to the
+                \tx{variable array} to be able to hold an additional variable the next time
+                around, and the \tx{integer variable} showing the amount of variables in the
+                array is incremented.
+
+                After doing so, possibilities 1 and 2 have now also been handled.
+                All that is left is the next block of code, which checks whether the 
+                \tx{\$EXITCODE} variable exists, and sets it if it does. This is
+                important as at the start of the eggshell, when it is being initialised,
+                numerous variable will be initialised before the \tx{EXITCODE}. If the 
+                function tries to set the exitcode before the exitcode is even created,
+                that would cause a segmentation fault.
+                \clearpage
+            
+            \mysubsect{}{}
+ 
+
 \end{document}

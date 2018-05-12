@@ -97,6 +97,9 @@ void runScript(char* filename){
 
     execute(line);
 
+    Var *prompt = retrieveVar("PROMPT");
+    sprintf(prompt->value, "< Executing script... - [%s] > $ ", value("EXITCODE"));
+
     lineNo++; 
   }
 

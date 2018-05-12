@@ -37,7 +37,13 @@ int parse_var(char *line){
       }
     }
     else{
-      return 1;
+      if(varname[strlen(varname)-1] == ' ' && vartest[0] == ' '){
+        setExitcode(-2);
+        return 0;
+      }
+      else{
+        return 1;
+      }
     }
     return 0;
   }
