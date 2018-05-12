@@ -33,15 +33,13 @@ int parse_var(char *line){
         setExitcode(0);
       }
       else{
-        printf("Assignment detected but line is invalid\n");
-        printf("[The variable name can only contain CAPITAL LETTERS]\n");
         setExitcode(-1);
+        return 1;
       }
     }
     else{;
-      printf("Assignment detected but line is invalid\n");
-      printf("[The '=' should not be seperated with spaces]\n");
       setExitcode(-1);
+      return 1;
     }
     return 0;
   }

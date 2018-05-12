@@ -703,5 +703,19 @@
 
                 \clearpage
                 
-        \section{variables.c}
+        \section{\tx{variables.c}}
+            \subsection{Use of \tx{variables.c}}
+                This file handles everything to do with variables.
+                This includes assignment, modification, retrieval,
+                and manipulation. It also helps initialise the
+                \tx{eggshell} by setting the shell variables.
+                It is one of the most used files in the system, as
+                multiple other functions require the use of variables,
+                whether it be as a \tx{struct} or just their values.
+
+            \mysubsect{\tx{int parse\_var}}{\tx{(char *line)}}
+                This function detects whether the line passed is
+                attempting to assign a variable, or modify its value.
+                It also validates the line, and stops further execution
+                of the line if it detects an invalid assignment.
 \end{document}
