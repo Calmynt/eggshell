@@ -636,7 +636,9 @@
                 \tx{args} is set to the current \tx{path} we are attempting
                 to access, and the numerous paths are cycled through until 
                 the program is found and then executed, or all the paths are
-                exhausted and an error message is returned.
+                exhausted and an error message is returned. \tx{\_exit()}
+                was used rather than \tx{exit()}, as the latter was causing
+                issues when combined with the \tx{source} command.
 
                 For the parent, it is slightly more complicated.
                 First, the \tx{current\_pid} global variable is set to the pid
@@ -814,7 +816,115 @@
                 that would cause a segmentation fault.
                 \clearpage
             
-            \mysubsect{}{}
+            \mysubsect{\tx{void initShellVars}}{\tx{(char *ex)}}
+                This function serves to initialise the environment variables that
+                will be used and stored by the \tx{eggshell}. Said variables occupy
+                the first 8 spaces of the \tx{variables} array, making it easy to
+                differentiate between the \tx{environment} variables and the 
+                \tx{user-made} variables.
+
+                The first thing the function does is initialise the \tx{SHELL} and 
+                the \tx{CWD} variables. This is because they have distinct ways of
+                initialising them when compared to the other variables. 
+                \tx{SHELL} utilises the personal \tx{getExecPath} function, whereas
+                \tx{CWD} uses the inbuilt \tx{getcwd} function.
+
+                After doing this, the variables array is initialised, in order to start
+                storing the shell variables. Since the \tx{createVar} expects a formatted
+                string of \tx{<VARNAME>=<VALUE>}, we'd need to pass a preformatted string
+                as the parameter. To do so, 8 variables are initialised.
+
+                Using \tx{sprintf} and functions to retrieve the rest of the environment 
+                variables, the \tx{8} \ii{injection strings} are formatted into a string
+                that will be processed by \tx{createVar}. After doing so, all 8 strings
+                are passed to the function in order to create the variables. Once this
+                is finished, all temporary strings are then freed.
+            \mysubsect{\tx{char** environEGG}}{\tx{()}}
+                This function returns a character array of all environment variables,
+                including the ones from the shell and eggshell. It does this by 
+                retrieving \tx{extern char **environ} and using \tx{setenv} in order
+                to place our variables in \tx{environ}. \tx{setenv} was used over
+                \tx{getenv} as the latter uses the \bb{pointer} to the string, 
+                complicating matters the same string was used to place multiple
+                variables.
+                \clearpage
+            \subsection{Retrieval and \tx{value} functions}
+                The following functions are used to retrieve either a variable struct,
+                mostly for modification, or the value of the variable:
+
+                \begin{itemize}
+                    \item \tx{int varExists(char *varname)}
+                    \item \tx{Var* retrieveVar(char *varname)}
+                    \item \tx{char *value(char *varname)}
+                \end{itemize}
+
+                The first function serves as a helper to the other two functions.
+                What it does is check whether a variable with the name \tx{varname}
+                exists in the array, and returns its index, with \tx{-1} being returned
+                if no such variable exists. This is done using a simple loop.
+
+                The second function uses the first to check whether a variable with
+                that name exists, and using the index returned, either the variable 
+                is returned, or \tx{0} is. In other words, \tx{retrieveVar} is a 
+                more useful version of \tx{varExists} for other functions.
+
+                The third function uses the second to check whether a variable with
+                said name exists, and using the variable returned, returns its value.
+                If such a variable does not exist, \tx{0} is returned instead.
+
+                Each function is a step over the other, which allows the user to pick
+                the right one depending on what they need precisely.
+
+            \subsection{Display functions}
+                There are two functions that display variables. These were seperate for
+                the \tx{all} and \tx{vars} commands to have a simple way of executing:
+
+                \begin{itemize}
+                    \item \tx{void showShellVars()}
+                    \item \tx{void displayUserVars()}
+                \end{itemize}
+
+                The former was done using a combination of \tx{printf} and the \tx{value}
+                functions. The latter consisted of a loop that traversed the variable array
+                while also excluding the environment variables.
+                \clearpage
+
+            \subsection{Get, Set, and Update functions}
+                The purpose of these functions is to either \bb{get} a value, in
+                order to initialise the shell variables, \bb{set} a value easily,
+                as the value would be modified frequently, and \bb{update} a value,
+                due to them requiring frequent updates for numerous reasons.
+                Such functions include
+
+                \begin{itemize}
+                    \item \tx{char* getExecPath(char *ex)}
+                    \item \tx{void setExitcode(int ec)}
+                    \item \tx{void updateCWD()}
+                    \item \tx{void updatePrompt()}
+                \end{itemize}
  
+                The first function utilises the parameter, and the current working directory,
+                to construct the path that the \tx{eggshell} is being executed in.
+
+                The parameter is meant to be \tx{argv[0]}, which is the exact command used to
+                launch the \tx{eggshell}. Depending on whether the relative path 
+                \ii{\tx{(./eggshell)}} or the absolute path \ii{\tx{(/???/eggshell)}} was used,
+                the path is then constructed by either keeping the absolute path, or 
+                concatenating the \tx{CWD} with the relative path. After doing this,
+                \tx{realpath} is used to resolve the path, in case relative symbols 
+                remain in it.
+
+                The second function converts the integer given in the parameter to a string,
+                and then sets the value of the \tx{\$EXITCODE} variable to it.
+
+                The third and fourth function "reinitialise" the \tx{\$CWD} and \tx{\$PROMPT}
+                variables using similar means than what was used before to first initialise 
+                them. These are important to update as \tx{\$CWD} needs to update to reflect
+                the effects of \tx{chdir}, and \tx{\$PROMPT} needs to update to reflect the
+                changes in \tx{\$CWD} and \tx{\$EXITCODE}.
+                \clearpage
+
+        \section{\tx{pipe\_manager.c}}
+
 
 \end{document}
