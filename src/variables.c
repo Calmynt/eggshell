@@ -33,12 +33,10 @@ int parse_var(char *line){
         setExitcode(0);
       }
       else{
-        setExitcode(-1);
         return 1;
       }
     }
-    else{;
-      setExitcode(-1);
+    else{
       return 1;
     }
     return 0;
