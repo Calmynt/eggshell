@@ -7,8 +7,10 @@
 #include <unistd.h>
 
 int main(int argc, char *argv[]){
+  setbuf(stdout, 0);
+
   printf("Before init...\n");
-  initEggshell();
+  initEggshell(argc, argv);
 
   if(argc == 2){
     if(strcmp(argv[1], "test") == 0){

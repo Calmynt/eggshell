@@ -4,12 +4,10 @@
 #include <stdlib.h>
 
 void printLine(char* line){
-  char *toPrint = malloc(8192); 
-
   char wordDelimiter[2] = " ";
   char segmDelimiter[2] = "\"";
 
-  char *word = malloc(100);
+  char *word;
   char *segment;
 
   int escaped = 0;
@@ -37,21 +35,19 @@ void printLine(char* line){
 
   // Prints a newline so that the PROMPT appears in a new line
   printf("\n");
-
   setExitcode(0);
 }
 
 void printSeg(char* segment, int escaped){
   if(escaped == 0){
     if(segment[0] == '$'){
-      char *varname = malloc(200);
+      char *varname = malloc(strlen(segment));
 
       int i = 0; // To iterate over a loop
       int s = 0; // Flag for possible string seperate from varname
 
-      char *tempSeg = malloc(200);
-
-      strcpy(tempSeg, segment);
+      char *tempSeg = strdup(segment);
+      void *tofree = tempSeg;
 
       for(i = 0; 1 < strlen(tempSeg); i++){
         tempSeg++;
@@ -73,6 +69,8 @@ void printSeg(char* segment, int escaped){
 
       char *varvalue = value(varname);
 
+      free(varname);
+
       if(varvalue != 0){
         if(s != 0){
           printf("%s", varvalue);
@@ -81,8 +79,12 @@ void printSeg(char* segment, int escaped){
         else{
           printf("%s", varvalue);
         }
-        return;
       }
+      else{
+        printf("%s", segment);
+      }
+      free(tofree);
+      return;
     }
   }
   printf("%s", segment);

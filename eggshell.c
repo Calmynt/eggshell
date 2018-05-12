@@ -16,23 +16,23 @@
 
 char *line;
 
-void initEggshell(){
-  initShellVars();
+void initEggshell(int argc, char *argv[]){
+  initShellVars(argv[0]);
 }
 
 void execute(char* line){
   int PARSECODE = 0;
   char delimiter[2] = " ";
+
   char rest[2] = "\0";
   if(strcmp(line, "exit") == 0){runLine("clear", ""); exit(0);}
 
   // Check for variable assignment
   if(parse_var(line) == 0){return;}
-
   if(pipe_parser(line) == 0){return;}
-  // TODO: finish piping
 
   char *filename; // only used for redirection purposes
+
 
   // Checks for different output redirection symbols
   char* redirect_to_file  = strstr(line, ">");

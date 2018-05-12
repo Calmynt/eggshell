@@ -12,8 +12,8 @@ int parse_var(char *line){
 
   char *vardelimiter = "=";
 
-  char *vartest = malloc(1000);
-  strcpy(vartest, line);
+  char *vartest = strdup(line);
+  void *tofree = vartest;
 
   char *varname = strsep(&vartest, vardelimiter);
 
@@ -31,23 +31,16 @@ int parse_var(char *line){
       if(assign_check == 1){
         createVar(line);
         setExitcode(0);
-      }
-      else{
-        return 1;
+        return 0;
       }
     }
     else{
       if(varname[strlen(varname)-1] == ' ' && vartest[0] == ' '){
         setExitcode(-2);
-        return 0;
-      }
-      else{
-        return 1;
       }
     }
-    return 0;
   }
-
+  free(tofree);
   return 1;
 }
 
@@ -63,17 +56,15 @@ void updatePrompt(){
   sprintf(prompt->value, "<[%s] - [%s]> $ ", value("CWD"), value("EXITCODE"));
 }
 
-void initShellVars(){
+void initShellVars(char *ex){
   // Sets execution path and current working directory
-  char *exec = malloc(VARSIZE * sizeof(char));
-  getExecPath(exec);
+  char *exec = getExecPath(ex);
   char cwd[VARSIZE];
   getcwd(cwd, sizeof(cwd));
 
   // Initialises variables array
   variables = (Vars *) malloc(sizeof(Vars));
   variables->vars = (Var **) calloc(1, sizeof(Var));
-  variables->vars[0] = (Var *) malloc(sizeof(Var));
   variables->amount = 0;
 
   // Initialises shell variable-injection strings
@@ -109,14 +100,17 @@ void initShellVars(){
 
   // Frees now-useless injection strings
   free(a); free(b); free(c); free(d); free(e); free(f); free(g); free(h);
+  free(exec);
 }
 
-void getExecPath(char *PATH){
-  char p[128];
-  pid_t pid = getpid();
-  sprintf(p, "/proc/%d/exe", pid); // reads path from file
-  if (readlink(p, PATH, PATHMAX) == -1)
-    perror("readlink"); // returns error if reading aborts
+char* getExecPath(char *ex){
+  char *temp = malloc(VARSIZE);
+  char *cwd = getenv("PWD");
+  if(ex[0] == '/') sprintf(temp, "%s", ex);
+  else sprintf(temp, "%s/%s",cwd,ex);
+  char *PATH = realpath(temp, NULL);
+  free(temp);
+  return PATH;
 }
 
 void showShellVars(){
@@ -135,10 +129,8 @@ char** environEGG(){
 
   // Loop that places all 8 shell variables into the environment.
   for(int i = 0; i < 8; i++){
-    char *string = malloc(VARSIZE);
     Var *envVar = variables->vars[i];
-    sprintf(string, "%s=%s", envVar->varname, envVar->value);
-    putenv(string);
+    setenv(envVar->varname, envVar->value, 1);
   }
 
   return environ;
@@ -209,7 +201,6 @@ void createVar(char* line){
   // Reallocates memory to list of variables, preparing for new variable.
   Var** vars = (Var**) realloc(variables->vars, (a)*sizeof(Var));
   variables->vars = vars;
-  variables->vars[a] = (Var *) malloc(sizeof(Var));
 
   if(retrieveVar("EXITCODE") == 0){
     return;

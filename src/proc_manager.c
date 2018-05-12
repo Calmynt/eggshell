@@ -48,7 +48,6 @@ void externalCommand(char *command, char *varargs){
 
     // For loop for using all paths
     for(int i = 0; i < pathn; i++){
-      args[0] = (char*) malloc(80);
       args[0] = paths[i];
 
       // Executes command path[i] with arguments args with environment envp
@@ -56,7 +55,7 @@ void externalCommand(char *command, char *varargs){
     }
 
     perror("execve");
-    exit(-1);
+    exit(0);
   }
   else if(pid > 0){ //Parent
     current_pid = pid;
@@ -79,12 +78,23 @@ void externalCommand(char *command, char *varargs){
   else{
     perror("fork()");
   }
+
+  for(int i = 0; i < argc; i++){
+    free(args[i]);
+  }
+  free(args);
+  
+  for(int i = 0; i < pathn; i++){
+    free(paths[i]);
+  }
+  free(paths);
 }
 
 char** pathsToCommArr(int *pathn, char *program){
   char *pathORIG = value("PATH"); // stores $PATH string
 
-  char *paths = malloc(VARSIZE);
+  char *paths = malloc(strlen(pathORIG)+1);
+  void *tofree = paths;
 
   strcpy(paths, pathORIG); // Done to keep original paths intact
 
@@ -102,9 +112,10 @@ char** pathsToCommArr(int *pathn, char *program){
     strcat(patharr[pathnL], "/");
     strcat(patharr[pathnL], program);
 
-    patharr = (char**) realloc(patharr, pathnL+1 * 100);
-    pathnL++;
+    patharr = (char**) realloc(patharr, ++pathnL * 100);
   }
+
+  free(tofree);
 
   *pathn = pathnL; // stores length of path to pathn pointer
 

@@ -15,7 +15,7 @@ typedef struct variables{
 #define PATHMAX 1024
 
 // Initialises the shell variables to be used.
-void initShellVars();
+void initShellVars(char *ex);
 
 // Shows all shell variables present.
 void showShellVars();
@@ -25,7 +25,7 @@ void showShellVars();
 void createVar(char* line);
 
 // Gets the execution path for use with the $SHELL variable.
-void getExecPath(char* PATH);
+char* getExecPath(char *ex);
 
 // Updates the current working directory.
 // Used whenever the directory is changed.

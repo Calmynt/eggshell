@@ -357,7 +357,7 @@
 
                 This was split into a seperate file for sake of organization, as having it
                 bundled with the \tx{eggshell.c} file would have added more complexity
-                to the already significant file.
+                to the already significant file.\\[-30pt]
 
             \mysubsect{\tx{void signal\_handler}}{\tx{(int signo)}}
                 This is the signal handler that is initialised by \tx{sigaction}.
@@ -561,7 +561,7 @@
 
                 \begingroup
                     \fontsize{10pt}{10pt}\selectfont
-                    \Ccode[firstline=97, lastline=114]{../src/proc_manager.c}
+                    \Ccode[firstline=99, lastline=116]{../src/proc_manager.c}
                 \endgroup
 
                 The delimiter's purpose is to store what we will be splitting
@@ -654,7 +654,7 @@
 
                 \begingroup
                     \fontsize{10pt}{10pt}\selectfont
-                    \Ccode[firstline=67, lastline=77]{../src/proc_manager.c}
+                    \Ccode[firstline=65, lastline=76]{../src/proc_manager.c}
                 \endgroup
 
                 The \tx{status} variable stores the status code of how the process
@@ -751,13 +751,9 @@
                 \tx{varname} to see whether they are all capitalised. This is done
                 using the capital-letter slice in the ASCII table.
 
-                If any of these checks fail, the function returns \tx{1}, meaning
-                that a valid assignment wasn't made, meaning the main function should
-                keep on attempting to parse the line. There is only a single exception,
-                which is if the \tx{=} is surrounded by whitespace. There is no command
-                that requires a stray \tx{=}, and such a situation causes problems with
-                the rest of the \tx{execute} parser, so in this case, the function returns
-                \tx{0} to stop parsing, while setting the exitcode accordingly.
+                If any of these checks fail, \tx{1} is returned, meaning that
+                the line should continue to be parsed, incase it should be treated
+                as a command instead.
 
                 If they all succeed however, the \tx{createVar} function is called 
                 in order to either create, or modify a variable.
