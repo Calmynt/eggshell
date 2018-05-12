@@ -43,6 +43,8 @@ void externalCommand(char *command, char *varargs){
     }
   }
 
+  int success = 0;
+
   // Conditional block for fork-exec pattern
   if(pid == 0){ // Child
 
@@ -51,11 +53,11 @@ void externalCommand(char *command, char *varargs){
       args[0] = paths[i];
 
       // Executes command path[i] with arguments args with environment envp
-      execve(paths[i], args, envp);
+      success = execve(paths[i], args, envp);
     }
 
     perror("execve");
-    exit(0);
+    _exit(-1);
   }
   else if(pid > 0){ //Parent
     current_pid = pid;

@@ -7,8 +7,8 @@
 all
 vars
 VAR=value
-# NOSPACE = BADASSIGN
-# bad=ERROR
+NOSPACE = BADASSIGN
+bad=ERROR
 A=B
 CURRENTUSER=$USER
 print nice
