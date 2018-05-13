@@ -95,6 +95,9 @@ void runScript(char* filename){
     script = realloc(script, (++lines) * 1024);
   }
 
+  char *stop_inf_recursion = malloc(1024);
+  sprintf(stop_inf_recursion, "source %s", filename);
+
   free(buf);
 
   fclose(testfile);
@@ -109,6 +112,11 @@ void runScript(char* filename){
     if(line[0] == ' '){continue;}
 
     printf("%s%s", value("PROMPT"), line); // Emulates the prompt
+
+    if(strstr(line, stop_inf_recursion) != 0){
+      fprintf(stderr, "Detected recursive loop - skipping line...\n");
+      continue;      
+    }
 
     // Block of code to remove newlines and carriage returns from file.
     // This is because on Windows, a newline is \r\n, and on Unix, it is \n.
@@ -131,6 +139,7 @@ void runScript(char* filename){
     free(script[i]);
   }
   free(script);
+  free(stop_inf_recursion);
 
   setExitcode(0);
 }

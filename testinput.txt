@@ -5,6 +5,7 @@
 # And that is that all scripts should end with a newline. Otherwise bugs'll appear.
 
 # Internal commands test
+source testinput.txt
 all
 vars
 VAR=value
@@ -37,5 +38,6 @@ dir | wc | figlet | wc
 # Combo test
 echo echo this is in a new source file > newscript.txt
 source newscript.txt | figlet
+cat newscript.txt | figlet
 
 # NEWLINE
