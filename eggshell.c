@@ -34,7 +34,7 @@ void execute(char* line){
   char *filename; // only used for redirection purposes
 
 
-  // Checks for different output redirection symbols
+  // Checks for different redirection symbols
   char* redirect_to_file  = strstr(line, ">");
   char* append_to_file    = strstr(line, ">>");
   char* input_from_file   = strstr(line, "<");
@@ -82,26 +82,55 @@ void runScript(char* filename){
     return;
   }
 
-  line = malloc(1024 * sizeof(char));
-
   int lineNo = 0;
 
-  while(fgets(line, 1024, testfile) != NULL){
+  char **script = calloc(1, 1024);
+
+  int lines = 0;
+
+  char *buf = malloc(1024);
+
+  while(fgets(buf, 255, testfile) != 0){
+    script[lines] = strdup(buf);
+    script = realloc(script, (++lines) * 1024);
+  }
+
+  free(buf);
+
+  fclose(testfile);
+
+  while(lineNo < lines){
+    line = strdup(script[lineNo]);
+    lineNo++; 
+    void *toFree = line;
+
     if(strlen(line) < 3){continue;}
     if(line[0] == '#'){continue;}
+    if(line[0] == ' '){continue;}
 
     printf("%s%s", value("PROMPT"), line); // Emulates the prompt
 
-    //Terminates line at right place to simulate input
-    line[strlen(line)-2] = '\0';
+    // Block of code to remove newlines and carriage returns from file.
+    // This is because on Windows, a newline is \r\n, and on Unix, it is \n.
+    // The loop uses pointer arithmetic to replace \r / \n with the next character.
+    char *src, *dst;
+    for (src = dst = line; *src != '\0'; src++){
+      *dst = *src;
+      if(*dst != '\r' && *dst != '\n') dst++;
+    }
+    *dst = '\0';
 
     execute(line);
+    free(toFree);
 
     Var *prompt = retrieveVar("PROMPT");
     sprintf(prompt->value, "< Executing script... - [%s] > $ ", value("EXITCODE"));
-
-    lineNo++; 
   }
+
+  for(int i = 0; i < lines; i++){
+    free(script[i]);
+  }
+  free(script);
 
   setExitcode(0);
 }

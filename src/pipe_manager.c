@@ -10,6 +10,7 @@
 #include "proc_manager.h"
 #include "pipe_manager.h"
 #include "printer.h"
+#include "../eggshell.h"
 
 int pipeAmnt; // stores the amount of pipes present in the line
 int cmdAmnt; // stores the amount of commands
@@ -19,15 +20,14 @@ int pipe_parser(char *line){
 
     pipeAmnt = 0;
 
-    char *linecpy = malloc(strlen(line));
-
-    strcpy(linecpy, line);
+    char *linecpy = strdup(line);
+    void *toFree = linecpy;
 
     for(int i = 0; i < strlen(line); i++){
         if(linecpy[i] == '|') pipeAmnt++;
     }
 
-    char *commands[pipeAmnt+1];
+    char *commands[pipeAmnt];
 
     cmdAmnt = 0;
 
@@ -42,12 +42,13 @@ int pipe_parser(char *line){
             command1[strlen(command1)-1] = 0;
         }
 
-        commands[cmdAmnt] = malloc(strlen(command1));
-        strcpy(commands[cmdAmnt], command1);
+        commands[cmdAmnt] = command1;
         cmdAmnt++;
     }
 
     pipe_executer(commands);
+
+    free(toFree);
 
     return 0;
 }
@@ -61,7 +62,7 @@ int pipe_executer(char **commands){
     for(int i = 0; i < pipeAmnt; i++){
         if(pipe(pipefd + i*2) < 0){
             perror("piping");
-            exit(-1);   
+            _exit(-1);   
         }
     }
 
@@ -75,6 +76,7 @@ int pipe_executer(char **commands){
         char *command = strsep(&commands[j], " ");
 
         char *printline = malloc(1024);
+        void *tofree = printline;
 
         if(commands[j] != 0){
             strcpy(printline, commands[j]);
@@ -106,7 +108,7 @@ int pipe_executer(char **commands){
             if(j != cmdAmnt-1){
                 if(dup2(pipefd[p+1], 1) < 0){
                     perror("dup2 piping output");
-                    exit(-1);
+                    _exit(-1);
                 }
             }
 
@@ -115,7 +117,7 @@ int pipe_executer(char **commands){
             if(j != 0){
                 if(dup2(pipefd[p-2], 0) < 0){
                     perror("dup2 piping input");
-                    exit(-1);
+                    _exit(-1);
                 }
             }
 
@@ -129,17 +131,33 @@ int pipe_executer(char **commands){
                Contains support for eggshell commands w/ output. */
             if(strcmp(command, "print") == 0) {printLine(printline); exit(-1);} // checks for print command
             else if(strcmp(command, "all") == 0) {showShellVars(); exit(-1);} // checks for all command
-            else if(strcmp(command, "vars") == 0) {displayUserVars(); exit(-1);}  // checks for debug vars command
+            else if(strcmp(command, "vars") == 0) {displayUserVars(); exit(-1);} // checks for debug vars command
+            else if(strcmp(command, "source") == 0) {runScript(printline); exit(-1);}  // checks for source command
             else{
                 for(int i = 0; i < pathlen; i++){
                     strcpy(args[0], paths[i]); // sets first arg to program
                     execve(*args, args, env);
                 }
+
+                perror("execve");
+                _exit(-1);
             }
         }
 
-        p+=2; // GO to next pipe
-    }
+            for(int i = 0; i < argc; i++){
+                free(args[i]);
+            }
+            free(args);
+            
+            for(int i = 0; i < pathlen; i++){
+                free(paths[i]);
+            }
+            free(paths);
+
+            free(tofree);
+
+            p+=2; // GO to next pipe
+        }
 
     /* Close all open pipes */
     for(int i = 0; i < 2*pipeAmnt; i++){

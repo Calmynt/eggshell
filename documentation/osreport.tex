@@ -210,6 +210,22 @@
                 It also emulates a prompt, so that the output generated when running 
                 the script could be more readable to the user.
 
+                \bb{\myul{Important Note:}} \tx{fgets} with a buffer was used to 
+                store all the lines into a buffer array, after which the lines from
+                said array will be loaded one by one. This approach was chosen over
+                using \tx{fgets} directly because of a \bb{critical} issue that 
+                surfaced when the source file contained an invalid line.
+
+                The invalid line would attempt to be executed as an \tx{external command},
+                after which the \tx{execve} would fail, causing the function that handles
+                external commands to \tx{\_exit}. This function not only effectively 
+                terminates the child, but also \bb{resets all file pointers}.
+
+                This effectively duplicated the execution of every consecutive command in
+                the file. Not only that, but if \bb{two} invalid commands were used, the
+                \tx{source} command would lock the \tx{eggshell} into an uninterruptable loop
+                that requires a \tx{SIGKILL} signal to halt.
+
                 \clearpage
             
             \mysubsect{\tx{void execute}}{\tx{(char *line)}}
@@ -925,6 +941,14 @@
                 \clearpage
 
         \section{\tx{pipe\_manager.c}}
+            \subsection{Use of \tx{pipe\_manager.c}}
+                This file manages everything to do with the piping 
+                functionality that the program offers. This includes
+                parsing a line for pipes, and then piping the output
+                of one command into the piping of the input. 
+                As a result, only two functions are present, one for
+                the parsing, and another for the actual piping mechanic.
 
+            \mysubsect{}{}
 
 \end{document}

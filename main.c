@@ -57,6 +57,7 @@ int main(int argc, char *argv[]){
     updatePrompt();
 
     linenoiseFree(line);
+    free(history_line);
   }
 
   runLine("clear", "");

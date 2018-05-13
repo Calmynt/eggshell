@@ -4,6 +4,7 @@
 # There is one rule that all scripts should abide by however.
 # And that is that all scripts should end with a newline. Otherwise bugs'll appear.
 
+# Internal commands test
 all
 vars
 VAR=value
@@ -15,15 +16,26 @@ print nice
 print hello there bud
 print $VAR
 print "$VAR"
-
-# Following lines also cause CI build to fail.
+chdir src
+chdir ..
+source new.txt
+ 
+# External command tests
 echo whoowhee
 ls
 dir
 
-# Following lines cause the TRAVIS CI build to fail with a realloc error.
+# Redirection tests
 echo nice > createfile.txt
 echo append >> createfile.txt
 cat < createfile.txt
+
+# Piping tests
+ls | figlet
+dir | wc | figlet | wc
+
+# Combo test
+echo echo this is in a new source file > newscript.txt
+source newscript.txt | figlet
 
 # NEWLINE
