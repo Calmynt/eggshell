@@ -31,6 +31,7 @@ The second command is equivalent to running the shell, and entering the command 
 ## Different commands
 
 - `source <filename>` - executes commands from a file, effectively using it as a script
+  - ***Note :*** The files sourced by eggshell have a commenting system. Lines starting with whitespace of `#` will be ignored.
 - `all` - prints out all the global shell variables belonging to eggshell, such as `$HOME` and `$EXITCODE`.
 - `vars` - prints out all user-made variables present in eggshell.
 - `print <string>` - prints out `<string>`, replacing any variables such as `$HOME` with their actual value, *unless* they are put between `" "`
@@ -64,5 +65,3 @@ The second command is equivalent to running the shell, and entering the command 
 ## Notes
 
 - Doing `echo $[variable name]` will not work, as `echo` is an external command, and with all external commands, `$` is processed by a shell. However, the eggshell environment variables *ARE* still present, as can be proven by running the internal command `all`, and the external command `env`.
-
-- Coverage is low due to whole files, such as `redirection.c`, `proc_manager.c`, `pipe_manager.c` and `sig_handler.c` not being able to be tested on Travis CI.
