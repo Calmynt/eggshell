@@ -32,6 +32,8 @@ echo append >> createfile.txt
 cat < createfile.txt
 
 # Piping tests
+ls | wc
+dir | wc | wc
 ls | figlet
 dir | wc | figlet | wc
 
@@ -39,5 +41,7 @@ dir | wc | figlet | wc
 echo echo this is in a new source file > newscript.txt
 source newscript.txt | figlet
 cat newscript.txt | figlet
+source newscript.txt | wc
+cat newscript.txt | wc
 
 # NEWLINE
