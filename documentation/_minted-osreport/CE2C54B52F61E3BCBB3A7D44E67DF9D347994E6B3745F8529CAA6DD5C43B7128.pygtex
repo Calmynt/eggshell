@@ -1,0 +1,186 @@
+\begin{Verbatim}[commandchars=\\\{\}]
+\PYG{c+cm}{/* to fill */}
+
+\PYG{c+cp}{\PYGZsh{}include} \PYG{c+cpf}{\PYGZlt{}stdio.h\PYGZgt{}}
+\PYG{c+cp}{\PYGZsh{}include} \PYG{c+cpf}{\PYGZlt{}string.h\PYGZgt{}}
+\PYG{c+cp}{\PYGZsh{}include} \PYG{c+cpf}{\PYGZlt{}unistd.h\PYGZgt{}}
+\PYG{c+cp}{\PYGZsh{}include} \PYG{c+cpf}{\PYGZlt{}stdlib.h\PYGZgt{}}
+\PYG{c+cp}{\PYGZsh{}include} \PYG{c+cpf}{\PYGZlt{}sys/wait.h\PYGZgt{}}
+
+\PYG{c+cp}{\PYGZsh{}include} \PYG{c+cpf}{\PYGZdq{}variables.h\PYGZdq{}}
+\PYG{c+cp}{\PYGZsh{}include} \PYG{c+cpf}{\PYGZdq{}proc\PYGZus{}manager.h\PYGZdq{}}
+\PYG{c+cp}{\PYGZsh{}include} \PYG{c+cpf}{\PYGZdq{}pipe\PYGZus{}manager.h\PYGZdq{}}
+\PYG{c+cp}{\PYGZsh{}include} \PYG{c+cpf}{\PYGZdq{}printer.h\PYGZdq{}}
+\PYG{c+cp}{\PYGZsh{}include} \PYG{c+cpf}{\PYGZdq{}../eggshell.h\PYGZdq{}}
+
+\PYG{k+kt}{int} \PYG{n}{pipeAmnt}\PYG{p}{;} \PYG{c+c1}{// stores the amount of pipes present in the line}
+\PYG{k+kt}{int} \PYG{n}{cmdAmnt}\PYG{p}{;} \PYG{c+c1}{// stores the amount of commands}
+
+\PYG{k+kt}{int} \PYG{n+nf}{pipe\PYGZus{}parser}\PYG{p}{(}\PYG{k+kt}{char} \PYG{o}{*}\PYG{n}{line}\PYG{p}{)\PYGZob{}}
+    \PYG{k}{if}\PYG{p}{(}\PYG{n}{strstr}\PYG{p}{(}\PYG{n}{line}\PYG{p}{,} \PYG{l+s}{\PYGZdq{}|\PYGZdq{}}\PYG{p}{)} \PYG{o}{==} \PYG{l+m+mi}{0}\PYG{p}{)\PYGZob{}}\PYG{k}{return} \PYG{l+m+mi}{1}\PYG{p}{;\PYGZcb{}}
+
+    \PYG{n}{pipeAmnt} \PYG{o}{=} \PYG{l+m+mi}{0}\PYG{p}{;}
+
+    \PYG{k+kt}{char} \PYG{o}{*}\PYG{n}{linecpy} \PYG{o}{=} \PYG{n}{strdup}\PYG{p}{(}\PYG{n}{line}\PYG{p}{);}
+    \PYG{k+kt}{void} \PYG{o}{*}\PYG{n}{toFree} \PYG{o}{=} \PYG{n}{linecpy}\PYG{p}{;}
+
+    \PYG{k}{for}\PYG{p}{(}\PYG{k+kt}{int} \PYG{n}{i} \PYG{o}{=} \PYG{l+m+mi}{0}\PYG{p}{;} \PYG{n}{i} \PYG{o}{\PYGZlt{}} \PYG{n}{strlen}\PYG{p}{(}\PYG{n}{line}\PYG{p}{);} \PYG{n}{i}\PYG{o}{++}\PYG{p}{)\PYGZob{}}
+        \PYG{k}{if}\PYG{p}{(}\PYG{n}{linecpy}\PYG{p}{[}\PYG{n}{i}\PYG{p}{]} \PYG{o}{==} \PYG{l+s+sc}{\PYGZsq{}|\PYGZsq{}}\PYG{p}{)} \PYG{n}{pipeAmnt}\PYG{o}{++}\PYG{p}{;}
+    \PYG{p}{\PYGZcb{}}
+
+    \PYG{k+kt}{char} \PYG{o}{*}\PYG{n}{commands}\PYG{p}{[}\PYG{n}{pipeAmnt}\PYG{p}{];}
+
+    \PYG{n}{cmdAmnt} \PYG{o}{=} \PYG{l+m+mi}{0}\PYG{p}{;}
+
+    \PYG{k}{while}\PYG{p}{(}\PYG{n}{linecpy} \PYG{o}{!=} \PYG{l+m+mi}{0}\PYG{p}{)\PYGZob{}}
+        \PYG{k+kt}{char} \PYG{o}{*}\PYG{n}{command1} \PYG{o}{=} \PYG{n}{strsep}\PYG{p}{(}\PYG{o}{\PYGZam{}}\PYG{n}{linecpy}\PYG{p}{,} \PYG{l+s}{\PYGZdq{}|\PYGZdq{}}\PYG{p}{);}
+
+        \PYG{k}{while}\PYG{p}{(}\PYG{o}{*}\PYG{n}{command1} \PYG{o}{==} \PYG{l+s+sc}{\PYGZsq{} \PYGZsq{}}\PYG{p}{)\PYGZob{}}
+            \PYG{n}{command1}\PYG{o}{++}\PYG{p}{;}
+        \PYG{p}{\PYGZcb{}}
+
+        \PYG{k}{while}\PYG{p}{(}\PYG{n}{command1}\PYG{p}{[}\PYG{n}{strlen}\PYG{p}{(}\PYG{n}{command1}\PYG{p}{)}\PYG{o}{\PYGZhy{}}\PYG{l+m+mi}{1}\PYG{p}{]} \PYG{o}{==} \PYG{l+s+sc}{\PYGZsq{} \PYGZsq{}}\PYG{p}{)\PYGZob{}}
+            \PYG{n}{command1}\PYG{p}{[}\PYG{n}{strlen}\PYG{p}{(}\PYG{n}{command1}\PYG{p}{)}\PYG{o}{\PYGZhy{}}\PYG{l+m+mi}{1}\PYG{p}{]} \PYG{o}{=} \PYG{l+m+mi}{0}\PYG{p}{;}
+        \PYG{p}{\PYGZcb{}}
+
+        \PYG{n}{commands}\PYG{p}{[}\PYG{n}{cmdAmnt}\PYG{p}{]} \PYG{o}{=} \PYG{n}{command1}\PYG{p}{;}
+        \PYG{n}{cmdAmnt}\PYG{o}{++}\PYG{p}{;}
+    \PYG{p}{\PYGZcb{}}
+
+    \PYG{n}{pipe\PYGZus{}executer}\PYG{p}{(}\PYG{n}{commands}\PYG{p}{);}
+
+    \PYG{n}{free}\PYG{p}{(}\PYG{n}{toFree}\PYG{p}{);}
+
+    \PYG{k}{return} \PYG{l+m+mi}{0}\PYG{p}{;}
+\PYG{p}{\PYGZcb{}}
+
+
+
+\PYG{k+kt}{int} \PYG{n+nf}{pipe\PYGZus{}executer}\PYG{p}{(}\PYG{k+kt}{char} \PYG{o}{**}\PYG{n}{commands}\PYG{p}{)\PYGZob{}}
+\PYG{k+kt}{int} \PYG{n}{pipefd}\PYG{p}{[}\PYG{n}{pipeAmnt}\PYG{o}{*}\PYG{l+m+mi}{2}\PYG{p}{];}
+
+\PYG{c+c1}{// Creates pipes out of the array of integers.}
+\PYG{k}{for}\PYG{p}{(}\PYG{k+kt}{int} \PYG{n}{i} \PYG{o}{=} \PYG{l+m+mi}{0}\PYG{p}{;} \PYG{n}{i} \PYG{o}{\PYGZlt{}} \PYG{n}{pipeAmnt}\PYG{p}{;} \PYG{n}{i}\PYG{o}{++}\PYG{p}{)\PYGZob{}}
+    \PYG{k}{if}\PYG{p}{(}\PYG{n}{pipe}\PYG{p}{(}\PYG{n}{pipefd} \PYG{o}{+} \PYG{n}{i}\PYG{o}{*}\PYG{l+m+mi}{2}\PYG{p}{)} \PYG{o}{\PYGZlt{}} \PYG{l+m+mi}{0}\PYG{p}{)\PYGZob{}}
+        \PYG{n}{perror}\PYG{p}{(}\PYG{l+s}{\PYGZdq{}piping\PYGZdq{}}\PYG{p}{);}
+        \PYG{n}{\PYGZus{}exit}\PYG{p}{(}\PYG{o}{\PYGZhy{}}\PYG{l+m+mi}{1}\PYG{p}{);}   
+    \PYG{p}{\PYGZcb{}}
+\PYG{p}{\PYGZcb{}}
+
+    \PYG{k+kt}{int} \PYG{n}{j} \PYG{o}{=} \PYG{l+m+mi}{0}\PYG{p}{;} \PYG{c+c1}{// iterative variable for different commands}
+    \PYG{k+kt}{int} \PYG{n}{p} \PYG{o}{=} \PYG{l+m+mi}{0}\PYG{p}{;} \PYG{c+c1}{// iterative variable for different pipes}
+    \PYG{k+kt}{pid\PYGZus{}t} \PYG{n}{pid}\PYG{p}{;} \PYG{c+c1}{// pid of processes}
+
+    \PYG{k}{for}\PYG{p}{(}\PYG{n}{j} \PYG{o}{=} \PYG{l+m+mi}{0}\PYG{p}{;} \PYG{n}{j} \PYG{o}{\PYGZlt{}} \PYG{n}{cmdAmnt}\PYG{p}{;} \PYG{n}{j}\PYG{o}{++}\PYG{p}{)\PYGZob{}}
+
+        \PYG{k+kt}{int} \PYG{n}{pathlen} \PYG{o}{=} \PYG{l+m+mi}{0}\PYG{p}{;}
+        \PYG{k+kt}{char} \PYG{o}{*}\PYG{n}{command} \PYG{o}{=} \PYG{n}{strsep}\PYG{p}{(}\PYG{o}{\PYGZam{}}\PYG{n}{commands}\PYG{p}{[}\PYG{n}{j}\PYG{p}{],} \PYG{l+s}{\PYGZdq{} \PYGZdq{}}\PYG{p}{);}
+
+        \PYG{k+kt}{char} \PYG{o}{*}\PYG{n}{printline} \PYG{o}{=} \PYG{n}{malloc}\PYG{p}{(}\PYG{l+m+mi}{1024}\PYG{p}{);}
+        \PYG{k+kt}{void} \PYG{o}{*}\PYG{n}{tofree} \PYG{o}{=} \PYG{n}{printline}\PYG{p}{;}
+
+        \PYG{k}{if}\PYG{p}{(}\PYG{n}{commands}\PYG{p}{[}\PYG{n}{j}\PYG{p}{]} \PYG{o}{!=} \PYG{l+m+mi}{0}\PYG{p}{)\PYGZob{}}
+            \PYG{n}{strcpy}\PYG{p}{(}\PYG{n}{printline}\PYG{p}{,} \PYG{n}{commands}\PYG{p}{[}\PYG{n}{j}\PYG{p}{]);}
+        \PYG{p}{\PYGZcb{}}
+
+        \PYG{k+kt}{char} \PYG{o}{**}\PYG{n}{env} \PYG{o}{=} \PYG{n}{environEGG}\PYG{p}{();}
+        \PYG{k+kt}{char} \PYG{o}{**}\PYG{n}{paths} \PYG{o}{=} \PYG{n}{pathsToCommArr}\PYG{p}{(}\PYG{o}{\PYGZam{}}\PYG{n}{pathlen}\PYG{p}{,} \PYG{n}{command}\PYG{p}{);}
+        \PYG{k+kt}{char} \PYG{o}{**}\PYG{n}{args} \PYG{o}{=} \PYG{n}{calloc}\PYG{p}{(}\PYG{l+m+mi}{1}\PYG{p}{,} \PYG{l+m+mi}{80}\PYG{p}{);}
+        \PYG{k+kt}{char} \PYG{o}{*}\PYG{n}{arg}\PYG{p}{;}
+        \PYG{k+kt}{int} \PYG{n}{argc} \PYG{o}{=} \PYG{l+m+mi}{1}\PYG{p}{;}
+
+        \PYG{c+cm}{/* Break up all the arguments and place in **args */}
+        \PYG{k}{while}\PYG{p}{(}\PYG{n}{commands}\PYG{p}{[}\PYG{n}{j}\PYG{p}{]} \PYG{o}{!=} \PYG{l+m+mi}{0}\PYG{p}{)\PYGZob{}}
+            \PYG{n}{args}\PYG{p}{[}\PYG{n}{argc}\PYG{p}{]} \PYG{o}{=} \PYG{p}{(}\PYG{k+kt}{char}\PYG{o}{*}\PYG{p}{)} \PYG{n}{malloc}\PYG{p}{(}\PYG{l+m+mi}{80}\PYG{p}{);}
+            \PYG{n}{arg} \PYG{o}{=} \PYG{n}{strsep}\PYG{p}{(}\PYG{o}{\PYGZam{}}\PYG{n}{commands}\PYG{p}{[}\PYG{n}{j}\PYG{p}{],} \PYG{l+s}{\PYGZdq{} \PYGZdq{}}\PYG{p}{);}
+            \PYG{n}{strcpy}\PYG{p}{(}\PYG{n}{args}\PYG{p}{[}\PYG{n}{argc}\PYG{p}{],} \PYG{n}{arg}\PYG{p}{);}
+            \PYG{n}{argc}\PYG{o}{++}\PYG{p}{;}
+            \PYG{n}{args} \PYG{o}{=} \PYG{n}{realloc}\PYG{p}{(}\PYG{n}{args}\PYG{p}{,} \PYG{p}{(}\PYG{n}{argc}\PYG{o}{+}\PYG{l+m+mi}{1}\PYG{p}{)} \PYG{o}{*} \PYG{l+m+mi}{80}\PYG{p}{);}
+        \PYG{p}{\PYGZcb{}}
+
+        \PYG{c+c1}{// Initialise first argument [to be set to the program]}
+        \PYG{n}{args}\PYG{p}{[}\PYG{l+m+mi}{0}\PYG{p}{]} \PYG{o}{=} \PYG{p}{(}\PYG{k+kt}{char}\PYG{o}{*}\PYG{p}{)} \PYG{n}{malloc}\PYG{p}{(}\PYG{l+m+mi}{80}\PYG{p}{);}
+
+        \PYG{n}{pid} \PYG{o}{=} \PYG{n}{fork}\PYG{p}{();}
+
+        \PYG{k}{if}\PYG{p}{(}\PYG{n}{pid} \PYG{o}{==} \PYG{l+m+mi}{0}\PYG{p}{)\PYGZob{}}
+            \PYG{c+cm}{/* If it isn\PYGZsq{}t the last command,}
+\PYG{c+cm}{               then replace the current output pipe with stdout */}
+            \PYG{k}{if}\PYG{p}{(}\PYG{n}{j} \PYG{o}{!=} \PYG{n}{cmdAmnt}\PYG{o}{\PYGZhy{}}\PYG{l+m+mi}{1}\PYG{p}{)\PYGZob{}}
+                \PYG{k}{if}\PYG{p}{(}\PYG{n}{dup2}\PYG{p}{(}\PYG{n}{pipefd}\PYG{p}{[}\PYG{n}{p}\PYG{o}{+}\PYG{l+m+mi}{1}\PYG{p}{],} \PYG{l+m+mi}{1}\PYG{p}{)} \PYG{o}{\PYGZlt{}} \PYG{l+m+mi}{0}\PYG{p}{)\PYGZob{}}
+                    \PYG{n}{perror}\PYG{p}{(}\PYG{l+s}{\PYGZdq{}dup2 piping output\PYGZdq{}}\PYG{p}{);}
+                    \PYG{n}{\PYGZus{}exit}\PYG{p}{(}\PYG{o}{\PYGZhy{}}\PYG{l+m+mi}{1}\PYG{p}{);}
+                \PYG{p}{\PYGZcb{}}
+            \PYG{p}{\PYGZcb{}}
+
+            \PYG{c+cm}{/* If it isn\PYGZsq{}t the first command, }
+\PYG{c+cm}{               then replace the last input pipe with stdin */}
+            \PYG{k}{if}\PYG{p}{(}\PYG{n}{j} \PYG{o}{!=} \PYG{l+m+mi}{0}\PYG{p}{)\PYGZob{}}
+                \PYG{k}{if}\PYG{p}{(}\PYG{n}{dup2}\PYG{p}{(}\PYG{n}{pipefd}\PYG{p}{[}\PYG{n}{p}\PYG{o}{\PYGZhy{}}\PYG{l+m+mi}{2}\PYG{p}{],} \PYG{l+m+mi}{0}\PYG{p}{)} \PYG{o}{\PYGZlt{}} \PYG{l+m+mi}{0}\PYG{p}{)\PYGZob{}}
+                    \PYG{n}{perror}\PYG{p}{(}\PYG{l+s}{\PYGZdq{}dup2 piping input\PYGZdq{}}\PYG{p}{);}
+                    \PYG{n}{\PYGZus{}exit}\PYG{p}{(}\PYG{o}{\PYGZhy{}}\PYG{l+m+mi}{1}\PYG{p}{);}
+                \PYG{p}{\PYGZcb{}}
+            \PYG{p}{\PYGZcb{}}
+
+            \PYG{c+cm}{/* Close all current pipes */}
+            \PYG{k}{for}\PYG{p}{(}\PYG{k+kt}{int} \PYG{n}{i} \PYG{o}{=} \PYG{l+m+mi}{0}\PYG{p}{;} \PYG{n}{i} \PYG{o}{\PYGZlt{}} \PYG{l+m+mi}{2}\PYG{o}{*}\PYG{n}{pipeAmnt}\PYG{p}{;} \PYG{n}{i}\PYG{o}{++}\PYG{p}{)\PYGZob{}}
+                \PYG{n}{close}\PYG{p}{(}\PYG{n}{pipefd}\PYG{p}{[}\PYG{n}{i}\PYG{p}{]);}
+            \PYG{p}{\PYGZcb{}}
+
+            \PYG{c+cm}{/* Execute the command with its arguments}
+\PYG{c+cm}{               and the eggshell\PYGZsq{}s environment variables }
+\PYG{c+cm}{               Contains support for eggshell commands w/ output. */}
+            \PYG{k}{if}\PYG{p}{(}\PYG{n}{strcmp}\PYG{p}{(}\PYG{n}{command}\PYG{p}{,} \PYG{l+s}{\PYGZdq{}print\PYGZdq{}}\PYG{p}{)} \PYG{o}{==} \PYG{l+m+mi}{0}\PYG{p}{)} \PYG{p}{\PYGZob{}}\PYG{n}{printLine}\PYG{p}{(}\PYG{n}{printline}\PYG{p}{);} \PYG{n}{exit}\PYG{p}{(}\PYG{o}{\PYGZhy{}}\PYG{l+m+mi}{1}\PYG{p}{);\PYGZcb{}} \PYG{c+c1}{// checks for print command}
+            \PYG{k}{else} \PYG{k}{if}\PYG{p}{(}\PYG{n}{strcmp}\PYG{p}{(}\PYG{n}{command}\PYG{p}{,} \PYG{l+s}{\PYGZdq{}all\PYGZdq{}}\PYG{p}{)} \PYG{o}{==} \PYG{l+m+mi}{0}\PYG{p}{)} \PYG{p}{\PYGZob{}}\PYG{n}{showShellVars}\PYG{p}{();} \PYG{n}{exit}\PYG{p}{(}\PYG{o}{\PYGZhy{}}\PYG{l+m+mi}{1}\PYG{p}{);\PYGZcb{}} \PYG{c+c1}{// checks for all command}
+            \PYG{k}{else} \PYG{k}{if}\PYG{p}{(}\PYG{n}{strcmp}\PYG{p}{(}\PYG{n}{command}\PYG{p}{,} \PYG{l+s}{\PYGZdq{}vars\PYGZdq{}}\PYG{p}{)} \PYG{o}{==} \PYG{l+m+mi}{0}\PYG{p}{)} \PYG{p}{\PYGZob{}}\PYG{n}{displayUserVars}\PYG{p}{();} \PYG{n}{exit}\PYG{p}{(}\PYG{o}{\PYGZhy{}}\PYG{l+m+mi}{1}\PYG{p}{);\PYGZcb{}} \PYG{c+c1}{// checks for debug vars command}
+            \PYG{k}{else} \PYG{k}{if}\PYG{p}{(}\PYG{n}{strcmp}\PYG{p}{(}\PYG{n}{command}\PYG{p}{,} \PYG{l+s}{\PYGZdq{}source\PYGZdq{}}\PYG{p}{)} \PYG{o}{==} \PYG{l+m+mi}{0}\PYG{p}{)} \PYG{p}{\PYGZob{}}\PYG{n}{runScript}\PYG{p}{(}\PYG{n}{printline}\PYG{p}{);} \PYG{n}{exit}\PYG{p}{(}\PYG{o}{\PYGZhy{}}\PYG{l+m+mi}{1}\PYG{p}{);\PYGZcb{}}  \PYG{c+c1}{// checks for source command}
+            \PYG{k}{else}\PYG{p}{\PYGZob{}}
+                \PYG{k}{for}\PYG{p}{(}\PYG{k+kt}{int} \PYG{n}{i} \PYG{o}{=} \PYG{l+m+mi}{0}\PYG{p}{;} \PYG{n}{i} \PYG{o}{\PYGZlt{}} \PYG{n}{pathlen}\PYG{p}{;} \PYG{n}{i}\PYG{o}{++}\PYG{p}{)\PYGZob{}}
+                    \PYG{n}{strcpy}\PYG{p}{(}\PYG{n}{args}\PYG{p}{[}\PYG{l+m+mi}{0}\PYG{p}{],} \PYG{n}{paths}\PYG{p}{[}\PYG{n}{i}\PYG{p}{]);} \PYG{c+c1}{// sets first arg to program}
+                    \PYG{n}{execve}\PYG{p}{(}\PYG{o}{*}\PYG{n}{args}\PYG{p}{,} \PYG{n}{args}\PYG{p}{,} \PYG{n}{env}\PYG{p}{);}
+                \PYG{p}{\PYGZcb{}}
+
+                \PYG{n}{perror}\PYG{p}{(}\PYG{l+s}{\PYGZdq{}execve\PYGZdq{}}\PYG{p}{);}
+                \PYG{n}{\PYGZus{}exit}\PYG{p}{(}\PYG{o}{\PYGZhy{}}\PYG{l+m+mi}{1}\PYG{p}{);}
+            \PYG{p}{\PYGZcb{}}
+        \PYG{p}{\PYGZcb{}}
+        \PYG{k}{else} \PYG{k}{if}\PYG{p}{(}\PYG{n}{pid} \PYG{o}{\PYGZgt{}} \PYG{l+m+mi}{0}\PYG{p}{)\PYGZob{}}
+            \PYG{k+kt}{int} \PYG{n}{status}\PYG{p}{;}
+            \PYG{n}{waitpid}\PYG{p}{(}\PYG{n}{pid}\PYG{p}{,} \PYG{o}{\PYGZam{}}\PYG{n}{status}\PYG{p}{,} \PYG{n}{WNOHANG}\PYG{p}{);}
+
+            \PYG{k}{if}\PYG{p}{(}\PYG{n}{WIFEXITED}\PYG{p}{(}\PYG{n}{status}\PYG{p}{))\PYGZob{}}
+                \PYG{n}{setExitcode}\PYG{p}{(}\PYG{n}{WEXITSTATUS}\PYG{p}{(}\PYG{n}{status}\PYG{p}{));}
+            \PYG{p}{\PYGZcb{}}
+        \PYG{p}{\PYGZcb{}}
+
+            \PYG{k}{for}\PYG{p}{(}\PYG{k+kt}{int} \PYG{n}{i} \PYG{o}{=} \PYG{l+m+mi}{0}\PYG{p}{;} \PYG{n}{i} \PYG{o}{\PYGZlt{}} \PYG{n}{argc}\PYG{p}{;} \PYG{n}{i}\PYG{o}{++}\PYG{p}{)\PYGZob{}}
+                \PYG{n}{free}\PYG{p}{(}\PYG{n}{args}\PYG{p}{[}\PYG{n}{i}\PYG{p}{]);}
+            \PYG{p}{\PYGZcb{}}
+            \PYG{n}{free}\PYG{p}{(}\PYG{n}{args}\PYG{p}{);}
+
+            \PYG{k}{for}\PYG{p}{(}\PYG{k+kt}{int} \PYG{n}{i} \PYG{o}{=} \PYG{l+m+mi}{0}\PYG{p}{;} \PYG{n}{i} \PYG{o}{\PYGZlt{}} \PYG{n}{pathlen}\PYG{p}{;} \PYG{n}{i}\PYG{o}{++}\PYG{p}{)\PYGZob{}}
+                \PYG{n}{free}\PYG{p}{(}\PYG{n}{paths}\PYG{p}{[}\PYG{n}{i}\PYG{p}{]);}
+            \PYG{p}{\PYGZcb{}}
+            \PYG{n}{free}\PYG{p}{(}\PYG{n}{paths}\PYG{p}{);}
+
+            \PYG{n}{free}\PYG{p}{(}\PYG{n}{tofree}\PYG{p}{);}
+
+            \PYG{n}{p}\PYG{o}{+=}\PYG{l+m+mi}{2}\PYG{p}{;} \PYG{c+c1}{// GO to next pipe}
+        \PYG{p}{\PYGZcb{}}
+
+    \PYG{c+cm}{/* Close all open pipes */}
+    \PYG{k}{for}\PYG{p}{(}\PYG{k+kt}{int} \PYG{n}{i} \PYG{o}{=} \PYG{l+m+mi}{0}\PYG{p}{;} \PYG{n}{i} \PYG{o}{\PYGZlt{}} \PYG{l+m+mi}{2}\PYG{o}{*}\PYG{n}{pipeAmnt}\PYG{p}{;} \PYG{n}{i}\PYG{o}{++}\PYG{p}{)\PYGZob{}}
+        \PYG{n}{close}\PYG{p}{(}\PYG{n}{pipefd}\PYG{p}{[}\PYG{n}{i}\PYG{p}{]);}
+    \PYG{p}{\PYGZcb{}}
+
+    \PYG{c+cm}{/* Wait for all the children to finish */}
+    \PYG{k+kt}{int} \PYG{n}{status}\PYG{p}{;}
+    \PYG{k}{for}\PYG{p}{(}\PYG{k+kt}{int} \PYG{n}{i} \PYG{o}{=} \PYG{l+m+mi}{0}\PYG{p}{;} \PYG{n}{i} \PYG{o}{\PYGZlt{}} \PYG{n}{pipeAmnt}\PYG{o}{+}\PYG{l+m+mi}{1}\PYG{p}{;} \PYG{n}{i}\PYG{o}{++}\PYG{p}{)\PYGZob{}}
+        \PYG{n}{wait}\PYG{p}{(}\PYG{o}{\PYGZam{}}\PYG{n}{status}\PYG{p}{);}
+    \PYG{p}{\PYGZcb{}}
+
+    \PYG{n}{setExitcode}\PYG{p}{(}\PYG{n}{status}\PYG{p}{);}
+
+    \PYG{k}{return} \PYG{l+m+mi}{0}\PYG{p}{;}
+\PYG{p}{\PYGZcb{}}
+\end{Verbatim}

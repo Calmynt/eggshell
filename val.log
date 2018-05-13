@@ -1,126 +1,156 @@
-==26798== Memcheck, a memory error detector
-==26798== Copyright (C) 2002-2015, and GNU GPL'd, by Julian Seward et al.
-==26798== Using Valgrind-3.11.0 and LibVEX; rerun with -h for copyright info
-==26798== Command: ./eggshell test
-==26798== Parent PID: 25521
-==26798== 
-==26799== 
-==26799== HEAP SUMMARY:
-==26799==     in use at exit: 59,283 bytes in 100 blocks
-==26799==   total heap usage: 207 allocs, 107 frees, 1,019,003 bytes allocated
-==26799== 
-==26799== 10 bytes in 1 blocks are definitely lost in loss record 1 of 39
-==26799==    at 0x4C2DB8F: malloc (in /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so)
-==26799==    by 0x4EC5489: strdup (strdup.c:42)
-==26799==    by 0x404B5A: parse_var (variables.c:15)
-==26799==    by 0x401D2B: execute (eggshell.c:31)
-==26799==    by 0x40212D: runScript (eggshell.c:131)
-==26799==    by 0x401B24: main (main.c:17)
-==26799== 
-==26799== 390 bytes in 8 blocks are definitely lost in loss record 25 of 39
-==26799==    at 0x4C2DB8F: malloc (in /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so)
-==26799==    by 0x4EC5489: strdup (strdup.c:42)
-==26799==    by 0x402010: runScript (eggshell.c:106)
-==26799==    by 0x401B24: main (main.c:17)
-==26799== 
-==26799== LEAK SUMMARY:
-==26799==    definitely lost: 400 bytes in 9 blocks
-==26799==    indirectly lost: 0 bytes in 0 blocks
-==26799==      possibly lost: 0 bytes in 0 blocks
-==26799==    still reachable: 58,883 bytes in 91 blocks
-==26799==         suppressed: 0 bytes in 0 blocks
-==26799== Reachable blocks (those to which a pointer was found) are not shown.
-==26799== To see them, rerun with: --leak-check=full --show-leak-kinds=all
-==26799== 
-==26799== For counts of detected and suppressed errors, rerun with: -v
-==26799== ERROR SUMMARY: 2 errors from 2 contexts (suppressed: 0 from 0)
-==26800== 
-==26800== HEAP SUMMARY:
-==26800==     in use at exit: 58,873 bytes in 98 blocks
-==26800==   total heap usage: 240 allocs, 142 frees, 1,028,482 bytes allocated
-==26800== 
-==26800== 10 bytes in 1 blocks are definitely lost in loss record 1 of 38
-==26800==    at 0x4C2DB8F: malloc (in /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so)
-==26800==    by 0x4EC5489: strdup (strdup.c:42)
-==26800==    by 0x404B5A: parse_var (variables.c:15)
-==26800==    by 0x401D2B: execute (eggshell.c:31)
-==26800==    by 0x40212D: runScript (eggshell.c:131)
-==26800==    by 0x401B24: main (main.c:17)
-==26800== 
-==26800== 390 bytes in 8 blocks are definitely lost in loss record 24 of 38
-==26800==    at 0x4C2DB8F: malloc (in /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so)
-==26800==    by 0x4EC5489: strdup (strdup.c:42)
-==26800==    by 0x402010: runScript (eggshell.c:106)
-==26800==    by 0x401B24: main (main.c:17)
-==26800== 
-==26800== LEAK SUMMARY:
-==26800==    definitely lost: 400 bytes in 9 blocks
-==26800==    indirectly lost: 0 bytes in 0 blocks
-==26800==      possibly lost: 0 bytes in 0 blocks
-==26800==    still reachable: 58,473 bytes in 89 blocks
-==26800==         suppressed: 0 bytes in 0 blocks
-==26800== Reachable blocks (those to which a pointer was found) are not shown.
-==26800== To see them, rerun with: --leak-check=full --show-leak-kinds=all
-==26800== 
-==26800== For counts of detected and suppressed errors, rerun with: -v
-==26800== ERROR SUMMARY: 2 errors from 2 contexts (suppressed: 0 from 0)
-==26814== 
-==26814== HEAP SUMMARY:
-==26814==     in use at exit: 62,595 bytes in 118 blocks
-==26814==   total heap usage: 772 allocs, 654 frees, 1,199,226 bytes allocated
-==26814== 
-==26814== 32 bytes in 3 blocks are definitely lost in loss record 12 of 42
-==26814==    at 0x4C2DB8F: malloc (in /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so)
-==26814==    by 0x4EC5489: strdup (strdup.c:42)
-==26814==    by 0x404B5A: parse_var (variables.c:15)
-==26814==    by 0x401D2B: execute (eggshell.c:31)
-==26814==    by 0x40212D: runScript (eggshell.c:131)
-==26814==    by 0x401B24: main (main.c:17)
-==26814== 
-==26814== 484 bytes in 16 blocks are definitely lost in loss record 27 of 42
-==26814==    at 0x4C2DB8F: malloc (in /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so)
-==26814==    by 0x4EC5489: strdup (strdup.c:42)
-==26814==    by 0x402010: runScript (eggshell.c:106)
-==26814==    by 0x401B24: main (main.c:17)
-==26814== 
-==26814== LEAK SUMMARY:
-==26814==    definitely lost: 516 bytes in 19 blocks
-==26814==    indirectly lost: 0 bytes in 0 blocks
-==26814==      possibly lost: 0 bytes in 0 blocks
-==26814==    still reachable: 62,079 bytes in 99 blocks
-==26814==         suppressed: 0 bytes in 0 blocks
-==26814== Reachable blocks (those to which a pointer was found) are not shown.
-==26814== To see them, rerun with: --leak-check=full --show-leak-kinds=all
-==26814== 
-==26814== For counts of detected and suppressed errors, rerun with: -v
-==26814== ERROR SUMMARY: 2 errors from 2 contexts (suppressed: 0 from 0)
-==26798== 
-==26798== HEAP SUMMARY:
-==26798==     in use at exit: 12,711 bytes in 56 blocks
-==26798==   total heap usage: 816 allocs, 760 frees, 1,208,862 bytes allocated
-==26798== 
-==26798== 32 bytes in 3 blocks are definitely lost in loss record 11 of 32
-==26798==    at 0x4C2DB8F: malloc (in /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so)
-==26798==    by 0x4EC5489: strdup (strdup.c:42)
-==26798==    by 0x404B5A: parse_var (variables.c:15)
-==26798==    by 0x401D2B: execute (eggshell.c:31)
-==26798==    by 0x40212D: runScript (eggshell.c:131)
-==26798==    by 0x401B24: main (main.c:17)
-==26798== 
-==26798== 487 bytes in 17 blocks are definitely lost in loss record 23 of 32
-==26798==    at 0x4C2DB8F: malloc (in /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so)
-==26798==    by 0x4EC5489: strdup (strdup.c:42)
-==26798==    by 0x402010: runScript (eggshell.c:106)
-==26798==    by 0x401B24: main (main.c:17)
-==26798== 
-==26798== LEAK SUMMARY:
-==26798==    definitely lost: 519 bytes in 20 blocks
-==26798==    indirectly lost: 0 bytes in 0 blocks
-==26798==      possibly lost: 0 bytes in 0 blocks
-==26798==    still reachable: 12,192 bytes in 36 blocks
-==26798==         suppressed: 0 bytes in 0 blocks
-==26798== Reachable blocks (those to which a pointer was found) are not shown.
-==26798== To see them, rerun with: --leak-check=full --show-leak-kinds=all
-==26798== 
-==26798== For counts of detected and suppressed errors, rerun with: -v
-==26798== ERROR SUMMARY: 2 errors from 2 contexts (suppressed: 0 from 0)
+==27063== Memcheck, a memory error detector
+==27063== Copyright (C) 2002-2015, and GNU GPL'd, by Julian Seward et al.
+==27063== Using Valgrind-3.11.0 and LibVEX; rerun with -h for copyright info
+==27063== Command: ./eggshell test
+==27063== Parent PID: 25521
+==27063== 
+==27064== 
+==27064== HEAP SUMMARY:
+==27064==     in use at exit: 63,458 bytes in 104 blocks
+==27064==   total heap usage: 215 allocs, 111 frees, 1,205,450 bytes allocated
+==27064== 
+==27064== 10 bytes in 1 blocks are definitely lost in loss record 1 of 39
+==27064==    at 0x4C2DB8F: malloc (in /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so)
+==27064==    by 0x4EC5489: strdup (strdup.c:42)
+==27064==    by 0x404B5A: parse_var (variables.c:15)
+==27064==    by 0x401D2B: execute (eggshell.c:31)
+==27064==    by 0x40212D: runScript (eggshell.c:131)
+==27064==    by 0x401B24: main (main.c:17)
+==27064== 
+==27064== 390 bytes in 8 blocks are definitely lost in loss record 25 of 39
+==27064==    at 0x4C2DB8F: malloc (in /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so)
+==27064==    by 0x4EC5489: strdup (strdup.c:42)
+==27064==    by 0x402010: runScript (eggshell.c:106)
+==27064==    by 0x401B24: main (main.c:17)
+==27064== 
+==27064== LEAK SUMMARY:
+==27064==    definitely lost: 400 bytes in 9 blocks
+==27064==    indirectly lost: 0 bytes in 0 blocks
+==27064==      possibly lost: 0 bytes in 0 blocks
+==27064==    still reachable: 63,058 bytes in 95 blocks
+==27064==         suppressed: 0 bytes in 0 blocks
+==27064== Reachable blocks (those to which a pointer was found) are not shown.
+==27064== To see them, rerun with: --leak-check=full --show-leak-kinds=all
+==27064== 
+==27064== For counts of detected and suppressed errors, rerun with: -v
+==27064== ERROR SUMMARY: 2 errors from 2 contexts (suppressed: 0 from 0)
+==27065== 
+==27065== HEAP SUMMARY:
+==27065==     in use at exit: 63,048 bytes in 102 blocks
+==27065==   total heap usage: 248 allocs, 146 frees, 1,214,929 bytes allocated
+==27065== 
+==27065== 10 bytes in 1 blocks are definitely lost in loss record 1 of 38
+==27065==    at 0x4C2DB8F: malloc (in /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so)
+==27065==    by 0x4EC5489: strdup (strdup.c:42)
+==27065==    by 0x404B5A: parse_var (variables.c:15)
+==27065==    by 0x401D2B: execute (eggshell.c:31)
+==27065==    by 0x40212D: runScript (eggshell.c:131)
+==27065==    by 0x401B24: main (main.c:17)
+==27065== 
+==27065== 390 bytes in 8 blocks are definitely lost in loss record 24 of 38
+==27065==    at 0x4C2DB8F: malloc (in /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so)
+==27065==    by 0x4EC5489: strdup (strdup.c:42)
+==27065==    by 0x402010: runScript (eggshell.c:106)
+==27065==    by 0x401B24: main (main.c:17)
+==27065== 
+==27065== LEAK SUMMARY:
+==27065==    definitely lost: 400 bytes in 9 blocks
+==27065==    indirectly lost: 0 bytes in 0 blocks
+==27065==      possibly lost: 0 bytes in 0 blocks
+==27065==    still reachable: 62,648 bytes in 93 blocks
+==27065==         suppressed: 0 bytes in 0 blocks
+==27065== Reachable blocks (those to which a pointer was found) are not shown.
+==27065== To see them, rerun with: --leak-check=full --show-leak-kinds=all
+==27065== 
+==27065== For counts of detected and suppressed errors, rerun with: -v
+==27065== ERROR SUMMARY: 2 errors from 2 contexts (suppressed: 0 from 0)
+==27084== 
+==27084== HEAP SUMMARY:
+==27084==     in use at exit: 66,770 bytes in 122 blocks
+==27084==   total heap usage: 931 allocs, 809 frees, 1,437,953 bytes allocated
+==27084== 
+==27084== 32 bytes in 3 blocks are definitely lost in loss record 12 of 42
+==27084==    at 0x4C2DB8F: malloc (in /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so)
+==27084==    by 0x4EC5489: strdup (strdup.c:42)
+==27084==    by 0x404B5A: parse_var (variables.c:15)
+==27084==    by 0x401D2B: execute (eggshell.c:31)
+==27084==    by 0x40212D: runScript (eggshell.c:131)
+==27084==    by 0x401B24: main (main.c:17)
+==27084== 
+==27084== 484 bytes in 16 blocks are definitely lost in loss record 27 of 42
+==27084==    at 0x4C2DB8F: malloc (in /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so)
+==27084==    by 0x4EC5489: strdup (strdup.c:42)
+==27084==    by 0x402010: runScript (eggshell.c:106)
+==27084==    by 0x401B24: main (main.c:17)
+==27084== 
+==27084== LEAK SUMMARY:
+==27084==    definitely lost: 516 bytes in 19 blocks
+==27084==    indirectly lost: 0 bytes in 0 blocks
+==27084==      possibly lost: 0 bytes in 0 blocks
+==27084==    still reachable: 66,254 bytes in 103 blocks
+==27084==         suppressed: 0 bytes in 0 blocks
+==27084== Reachable blocks (those to which a pointer was found) are not shown.
+==27084== To see them, rerun with: --leak-check=full --show-leak-kinds=all
+==27084== 
+==27084== For counts of detected and suppressed errors, rerun with: -v
+==27084== ERROR SUMMARY: 2 errors from 2 contexts (suppressed: 0 from 0)
+==27089== 
+==27089== HEAP SUMMARY:
+==27089==     in use at exit: 66,762 bytes in 122 blocks
+==27089==   total heap usage: 1,057 allocs, 935 frees, 1,480,524 bytes allocated
+==27089== 
+==27089== 32 bytes in 3 blocks are definitely lost in loss record 12 of 42
+==27089==    at 0x4C2DB8F: malloc (in /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so)
+==27089==    by 0x4EC5489: strdup (strdup.c:42)
+==27089==    by 0x404B5A: parse_var (variables.c:15)
+==27089==    by 0x401D2B: execute (eggshell.c:31)
+==27089==    by 0x40212D: runScript (eggshell.c:131)
+==27089==    by 0x401B24: main (main.c:17)
+==27089== 
+==27089== 484 bytes in 16 blocks are definitely lost in loss record 27 of 42
+==27089==    at 0x4C2DB8F: malloc (in /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so)
+==27089==    by 0x4EC5489: strdup (strdup.c:42)
+==27089==    by 0x402010: runScript (eggshell.c:106)
+==27089==    by 0x401B24: main (main.c:17)
+==27089== 
+==27089== LEAK SUMMARY:
+==27089==    definitely lost: 516 bytes in 19 blocks
+==27089==    indirectly lost: 0 bytes in 0 blocks
+==27089==      possibly lost: 0 bytes in 0 blocks
+==27089==    still reachable: 66,246 bytes in 103 blocks
+==27089==         suppressed: 0 bytes in 0 blocks
+==27089== Reachable blocks (those to which a pointer was found) are not shown.
+==27089== To see them, rerun with: --leak-check=full --show-leak-kinds=all
+==27089== 
+==27089== For counts of detected and suppressed errors, rerun with: -v
+==27089== ERROR SUMMARY: 2 errors from 2 contexts (suppressed: 0 from 0)
+==27063== 
+==27063== HEAP SUMMARY:
+==27063==     in use at exit: 12,711 bytes in 56 blocks
+==27063==   total heap usage: 1,101 allocs, 1,045 frees, 1,490,148 bytes allocated
+==27063== 
+==27063== 32 bytes in 3 blocks are definitely lost in loss record 11 of 32
+==27063==    at 0x4C2DB8F: malloc (in /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so)
+==27063==    by 0x4EC5489: strdup (strdup.c:42)
+==27063==    by 0x404B5A: parse_var (variables.c:15)
+==27063==    by 0x401D2B: execute (eggshell.c:31)
+==27063==    by 0x40212D: runScript (eggshell.c:131)
+==27063==    by 0x401B24: main (main.c:17)
+==27063== 
+==27063== 487 bytes in 17 blocks are definitely lost in loss record 23 of 32
+==27063==    at 0x4C2DB8F: malloc (in /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so)
+==27063==    by 0x4EC5489: strdup (strdup.c:42)
+==27063==    by 0x402010: runScript (eggshell.c:106)
+==27063==    by 0x401B24: main (main.c:17)
+==27063== 
+==27063== LEAK SUMMARY:
+==27063==    definitely lost: 519 bytes in 20 blocks
+==27063==    indirectly lost: 0 bytes in 0 blocks
+==27063==      possibly lost: 0 bytes in 0 blocks
+==27063==    still reachable: 12,192 bytes in 36 blocks
+==27063==         suppressed: 0 bytes in 0 blocks
+==27063== Reachable blocks (those to which a pointer was found) are not shown.
+==27063== To see them, rerun with: --leak-check=full --show-leak-kinds=all
+==27063== 
+==27063== For counts of detected and suppressed errors, rerun with: -v
+==27063== ERROR SUMMARY: 2 errors from 2 contexts (suppressed: 0 from 0)

@@ -143,6 +143,14 @@ int pipe_executer(char **commands){
                 _exit(-1);
             }
         }
+        else if(pid > 0){
+            int status;
+            waitpid(pid, &status, WNOHANG);
+
+            if(WIFEXITED(status)){
+                setExitcode(WEXITSTATUS(status));
+            }
+        }
 
             for(int i = 0; i < argc; i++){
                 free(args[i]);
@@ -169,6 +177,8 @@ int pipe_executer(char **commands){
     for(int i = 0; i < pipeAmnt+1; i++){
         wait(&status);
     }
+
+    setExitcode(status);
 
     return 0;
 }

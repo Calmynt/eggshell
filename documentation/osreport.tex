@@ -3,6 +3,7 @@
 
 \setlength{\parskip}{1em}
 \setlength{\parindent}{0em}
+\setcounter{tocdepth}{1}
 
 \begin{document}
     \begin{titlepage}
@@ -949,6 +950,100 @@
                 As a result, only two functions are present, one for
                 the parsing, and another for the actual piping mechanic.
 
-            \mysubsect{}{}
+            \mysubsect{\tx{int pipe\_parser}}{\tx{(char *line)}}
+                This function parses a line to detect any piping symbols,
+                and uses the specialized \tx{piping execute} function
+                if such symbols are detected.
+
+                The detection is as simple as using \tx{strstr} to detect
+                \tx{|}, returning \tx{1} if the function returns a null pointer.
+                If it doesn't fail however, the line given will then be split
+                according to the pipe symbols, placing them in an array of 
+                strings which are then passed onto the \tx{execute} function.
+
+                The parse function aids the execution function as well, in that
+                it sets global variables, showing how many pipes/commands there
+                are within the line.
+                \clearpage
+
+            \mysubsect{\tx{int pipe\_executer}}{\tx{(char **commands)}}
+                This function requires an array of commands given by the \tx{parsing}
+                function. One could fake an array, but the function will still fail
+                due to the global variables not being initialized.
+
+                \begingroup
+                \fontsize{10pt}{10pt}\selectfont
+                \Ccode[firstline=59, lastline=67]{../src/pipe_manager.c}
+                \endgroup
+
+                The following crafts an array of integers, which will be used to 
+                initialize pipes using the \tx{pipe} function. An array of specialized
+                \tx{pipeAmnt*2} is required due to every pipe requiring an \ii{input}
+                and an \ii{output}. Meaning that for a command with 3 pipes, an array
+                of six integers is crafted, \tx{piping} every two spaces.
+
+                After this, three important variables are declared.
+                \tx{j} is used to iterate through all the commands,
+                \tx{p} is used to iterate through all the pipes within the array,
+                and \tx{pid} is used to store the process id of the current process.
+
+                The first loop then starts, used to iterate through all the commands.
+                What follows is then command specific - the current command is split into
+                the command itself and its arguments, which are placed in a single string.
+                After this, the string is copied into a seperate variable, before being
+                split up and stored in a string array to be used as arguments.
+
+                A process is then forked, and a conditional loop follows that seperates 
+                the child from the parent.
+
+                \clearpage
+
+                \bb{\myul{Child --- Forking}}
+
+                \begingroup
+                \fontsize{10pt}{10pt}\selectfont
+                \Ccode[firstline=106, lastline=127]{../src/pipe_manager.c}
+                \endgroup
+
+                The following blocks are complicated. Firstly, the command is checked
+                to be either the \bb{first} or the \bb{last} command in the array.
+                If it is the \ii{first}, then only its pipe's output is wired to its \tx{stdout}.
+                If it is the \ii{last}, then only the previous's pipe's input is wired to its \tx{stdin}.
+                If it is neither, then both of these steps occur.
+
+                To explain further, lets say we have 3 commands, \tx{a, b} and \tx{c}.
+
+                a outputs \tx{\quot Hello World! \quot}. This is wired to the \tx{stdout} of \tx{PIPE 1}.
+                b takes the input, and repeats it. It gathers its input from the \tx{stdin} of \tx{PIPE 1},
+                and places it into the \tx{stdout} of \tx{PIPE 2}. In the previous pipe, \tx{\quot Hello World! \quot}
+                remains, so that is used as input. c then takes the input, and displays how many characters there
+                are. It gathers the input from \tx{PIPE 2}, which contains the output of \tx{b}.
+
+                This is effectively how the piping mechanism presented works. However, after the
+                \tx{stdout} and \tx{stdin} of the current process are set to the pipes, the pipes are
+                now no longer relevant to the process. As a result, they are now \bb{closed.}
+                \clearpage
+
+                After this, the command is then executed. Since the command could also be any
+                of our internal commands, the command is then parsed through to check whether
+                it is internal. If it is, then the prospective function is run as a result.
+                If it isn't however, \tx{execve} is used to execute the external command.
+                
+                The parent block only waits until the status of the current child is gathered,
+                at which point the \tx{\$EXITCODE} shell variable is set to it.
+
+                Before exiting the loop, two things happen. The array of arguments, and the array
+                of paths are both freed, as they were only useful for the execution of the current
+                function, and the \tx{p} variable is incremented by 2, hence moving onto the next pipe.
+
+                Once the loop exits, all the pipes are then closed, as the piping has stopped, and
+                the \tx{wait} function is used in order to wait for any remaining processes that are
+                still active.
+
+    \chapter{Testing the \ii{eggshell}}
+
+
+
+
 
 \end{document}
