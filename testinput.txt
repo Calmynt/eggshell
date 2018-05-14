@@ -20,7 +20,7 @@ print "$VAR"
 chdir src
 chdir ..
 source new.txt
- 
+
 # External command tests
 echo whoowhee
 ls
