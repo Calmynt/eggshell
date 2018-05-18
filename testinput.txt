@@ -11,20 +11,15 @@ vars
 VAR=value
 NOSPACE = BADASSIGN
 bad=ERROR
-A=B
 CURRENTUSER=$USER
-print nice
+NONEXIST=$NULL
 print hello there bud
 print $VAR
-print "$VAR"
+print $NULL
+print "$VAR" $VAR
 chdir src
 chdir ..
 source new.txt
-
-# External command tests
-echo whoowhee
-ls
-dir
 
 # Redirection tests
 echo nice > createfile.txt
@@ -32,16 +27,12 @@ echo append >> createfile.txt
 cat < createfile.txt
 
 # Piping tests
-ls | wc
-dir | wc | wc
-ls | figlet
+echo testing | figlet
 dir | wc | figlet | wc
 
 # Combo test
 echo echo this is in a new source file > newscript.txt
 source newscript.txt | figlet
 cat newscript.txt | figlet
-source newscript.txt | wc
-cat newscript.txt | wc
 
 # NEWLINE

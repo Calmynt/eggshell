@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.18 (TeX Live 2017) (preloaded format=pdflatex 2018.4.16)  14 MAY 2018 14:06
+This is pdfTeX, Version 3.14159265-2.6-1.40.18 (TeX Live 2017) (preloaded format=pdflatex 2018.4.16)  18 MAY 2018 16:25
 entering extended mode
  \write18 enabled.
  file:line:error style messages enabled.
@@ -1149,7 +1149,7 @@ LaTeX Font Info:    Font shape `OT1/artemisia/m/n' will be
 
 {/usr/local/texlive/2017/texmf-var/fonts/map/pdftex/updmap/pdftex.map}]
 LaTeX Font Info:    Font shape `OT1/artemisia/bx/n' will be
-(Font)              scaled to size 23.13821pt on input line 19.
+(Font)              scaled to size 23.13821pt on input line 18.
  (./osreport.toc
 LaTeX Font Info:    Font shape `OT1/artemisia/bx/n' will be
 (Font)              scaled to size 11.15991pt on input line 2.
@@ -1189,81 +1189,81 @@ File: ot1txtt.fd 2000/12/15 v3.1
 )
 LaTeX Font Info:    Font shape `OT1/artemisia/bx/it' will be
 (Font)              scaled to size 11.15991pt on input line 49.
-)
-\tf@toc=\write8
-\openout8 = `osreport.toc'.
-
 pdfTeX warning (ext4): destination with the same identifier (name{page.1}) has 
 been already used, duplicate ignored
 <to be read again> 
                    \relax 
-l.21     \clearpage
-                    [1
+l.57 ...{\numberline {4}Conclusion}{40}{chapter.4}
+                                                   [1
 
-]
+])
+\tf@toc=\write8
+\openout8 = `osreport.toc'.
+
+ [2]
 Chapter 1.
 LaTeX Font Info:    Font shape `OT1/artemisia/bx/n' will be
-(Font)              scaled to size 16.07027pt on input line 26.
+(Font)              scaled to size 16.07027pt on input line 25.
 
-Overfull \hbox (3.10098pt too wide) in paragraph at lines 44--49
+Overfull \hbox (3.10098pt too wide) in paragraph at lines 43--48
 []\OT1/artemisia/m/n/12 The Make-file nec-es-sary to gen-er-ate the ex-e-cutabl
 e.
  []
 
-[2
+[3
 
 
 ]
-Overfull \hbox (7.77696pt too wide) in paragraph at lines 63--66
+Overfull \hbox (7.77696pt too wide) in paragraph at lines 62--65
 []\OT1/artemisia/m/n/12 Files that are unim-por-tant to the project
  []
 
-[3] [4]
+[4] [5]
 Chapter 2.
 LaTeX Font Info:    Font shape `OT1/txtt/bx/n' in size <17.28> not available
-(Font)              Font shape `OT1/txtt/b/n' tried instead on input line 123.
+(Font)              Font shape `OT1/txtt/b/n' tried instead on input line 122.
 LaTeX Font Info:    Font shape `OT1/artemisia/m/n' will be
-(Font)              scaled to size 13.39188pt on input line 124.
+(Font)              scaled to size 13.39188pt on input line 123.
 LaTeX Font Info:    Font shape `OT1/artemisia/bx/n' will be
-(Font)              scaled to size 13.39188pt on input line 124.
+(Font)              scaled to size 13.39188pt on input line 123.
 LaTeX Font Info:    Font shape `OT1/txtt/bx/n' in size <14.4> not available
-(Font)              Font shape `OT1/txtt/b/n' tried instead on input line 124.
+(Font)              Font shape `OT1/txtt/b/n' tried instead on input line 123.
 
-Overfull \hbox (15.13422pt too wide) in paragraph at lines 125--129
+Overfull \hbox (15.13422pt too wide) in paragraph at lines 124--128
 \OT1/artemisia/m/n/12 This code is mainly used in or-der to pro-duce an ex-e-cu
 table us-ing the  \OT1/txtt/m/n/12 eggshell.
  []
 
 LaTeX Font Info:    Font shape `OT1/artemisia/m/it' will be
-(Font)              scaled to size 11.15991pt on input line 135.
-contour: Using 16 copies for `Note:' on input line 145.
+(Font)              scaled to size 11.15991pt on input line 134.
+contour: Using 16 copies for `Note:' on input line 144.
 
-Overfull \hbox (14.71104pt too wide) in paragraph at lines 145--148
+Overfull \hbox (14.71104pt too wide) in paragraph at lines 144--147
 []|   [][]  \OT1/artemisia/m/n/12 In or-der to test the first part of the pro-g
 ram, which loads  \OT1/txtt/m/n/12 testinput.txt
  []
 
-[5
+[6
 
 
 ]
 LaTeX Font Info:    Font shape `OT1/artemisia/bx/n' will be
-(Font)              scaled to size 9.29993pt on input line 161.
+(Font)              scaled to size 9.29993pt on input line 160.
 LaTeX Font Info:    Font shape `OT1/txtt/bx/n' in size <10> not available
-(Font)              Font shape `OT1/txtt/b/n' tried instead on input line 161.
+(Font)              Font shape `OT1/txtt/b/n' tried instead on input line 160.
 LaTeX Font Info:    Font shape `OT1/artemisia/m/n' will be
-(Font)              scaled to size 9.29993pt on input line 177.
+(Font)              scaled to size 9.29993pt on input line 176.
 \openout3 = `osreport.pyg'.
 
  (./_minted-osreport/default-pyg-prefix.pygstyle)
 (./_minted-osreport/default.pygstyle)
 (./_minted-osreport/72EA5B400B3AF22E23A90870B96CE16E4C53C941137E20DE918E6991A51
-B4432.pygtex) [6
+B4432.pygtex) [7
 
 
 ]
-contour: Using 16 copies for `Important Note:' on input line 215.
-[7
+contour: Using 16 copies for `Important Note:' on input line 214.
+[8
 
 ]
 (./_minted-osreport/FDD2EA1C191F377D3A0C6F11A4E0F99754639585201AEC4E8460A6D0C01
@@ -1272,7 +1272,7 @@ LaTeX Font Info:    Font shape `OT1/txtt/m/it' in size <10> not available
 (Font)              Font shape `OT1/txtt/m/sl' tried instead on input line 31.
 )
 (./_minted-osreport/FDD2EA1C191F377D3A0C6F11A4E0F997863D0776C29F2C5EC632EAEDD55
-A7745.pygtex) [8
+A7745.pygtex) [9
 
 ]
 (./_minted-osreport/FDD2EA1C191F377D3A0C6F11A4E0F9978468E367D54A4129756B6EDC0BB
@@ -1283,42 +1283,42 @@ LaTeX Font Info:    Font shape `OT1/artemisia/m/n' will be
 (./_minted-osreport/FDD2EA1C191F377D3A0C6F11A4E0F997569C17E2A184007BDAABD798437
 A00FE.pygtex)
 (./_minted-osreport/FDD2EA1C191F377D3A0C6F11A4E0F99770BB4A4D4AF7EC77C57C052C784
-950B0.pygtex) [9
+950B0.pygtex) [10
 
-] [10]
+] [11]
 LaTeX Font Info:    Try loading font information for U+artemisianums on input l
-ine 343.
+ine 342.
 
 (/usr/local/texlive/2017/texmf-dist/tex/latex/gfsartemisia/uartemisianums.fd)
 LaTeX Font Info:    Font shape `U/artemisianums/m/tabnums' will be
-(Font)              scaled to size 11.15991pt on input line 343.
+(Font)              scaled to size 11.15991pt on input line 342.
 
-[11
+[12
 
 ]
-Underfull \hbox (badness 10000) in paragraph at lines 376--379
+Underfull \hbox (badness 10000) in paragraph at lines 375--378
 
  []
 
 
 (./_minted-osreport/837564D8B05AD8A732D44A5693F560FA08DF11A46BD3376ADC3E666C5A9
-58D62.pygtex) [12
+58D62.pygtex) [13
 
 ]
 LaTeX Font Info:    Font shape `OT1/txtt/m/it' in size <12> not available
-(Font)              Font shape `OT1/txtt/m/sl' tried instead on input line 406.
+(Font)              Font shape `OT1/txtt/m/sl' tried instead on input line 405.
 
- [13
+ [14
 
 ]
 (./_minted-osreport/CF81B9CDD6FD57665F4C596F32A90ABAEEB0E72ECFA5B7D3D7139457397
-10C83.pygtex) [14]
-Overfull \hbox (2.51585pt too wide) in paragraph at lines 478--480
+10C83.pygtex) [15]
+Overfull \hbox (2.51585pt too wide) in paragraph at lines 477--479
 []\OT1/artemisia/m/n/12 This ends up set-ting the file-name to what-ever is af-
 ter the sym-bol, as whichever
  []
 
-[15]
+[16]
 (./_minted-osreport/CF81B9CDD6FD57665F4C596F32A90ABA694B06B3DE762B39C34F10C3144
 0EA5D.pygtex
 LaTeX Font Info:    Try loading font information for TS1+txtt on input line 88.
@@ -1328,86 +1328,106 @@ File: ts1txtt.fd 2000/12/15 v3.1
 )
 LaTeX Font Info:    Font shape `TS1/txtt/m/it' in size <10> not available
 (Font)              Font shape `TS1/txtt/m/sl' tried instead on input line 88.
-) [16
+) [17
 
-] [17
+] [18
 
 ]
 (./_minted-osreport/801DCCA446D60860B08E7F338EBF13A31BBA0DC10AA4FE455FAF4F9892B
-B59F6.pygtex) [18
+B59F6.pygtex) [19
 
 ]
 (./_minted-osreport/801DCCA446D60860B08E7F338EBF13A3A9E867826FBDDF7EAF4C9BD208C
 972AE.pygtex)
-Underfull \hbox (badness 10000) in paragraph at lines 615--617
+Underfull \hbox (badness 10000) in paragraph at lines 614--616
 
  []
 
-[19]
+[20]
 LaTeX Font Info:    Font shape `OT1/txtt/bx/n' in size <12> not available
-(Font)              Font shape `OT1/txtt/b/n' tried instead on input line 621.
+(Font)              Font shape `OT1/txtt/b/n' tried instead on input line 620.
 
-Overfull \hbox (6.05907pt too wide) in paragraph at lines 645--648
+Overfull \hbox (6.05907pt too wide) in paragraph at lines 644--647
 []\OT1/artemisia/m/n/12 The fol-low-ing loop then splits  \OT1/txtt/m/n/12 vara
 rgs  \OT1/artemisia/m/n/12 into  \OT1/txtt/m/n/12 args  \OT1/artemisia/m/n/12 u
 s-ing the  \OT1/txtt/m/n/12 arg_delimiter
  []
 
-[20]
+[21]
 (./_minted-osreport/801DCCA446D60860B08E7F338EBF13A3858F1E51C3502668140A4503CD5
-D2F84.pygtex) [21]
-contour: Using 16 copies for `Note:' on input line 719.
-[22
+D2F84.pygtex) [22]
+contour: Using 16 copies for `Note:' on input line 718.
+[23
 
 ]
 (./_minted-osreport/93FA4F3020D933967F3266C4F3E71C95EF2DBDD2A392E12BCF870317D0C
-17CB1.pygtex) [23
+17CB1.pygtex) [24
 
-] [24] [25] [26
-
-] [27
+] [25] [26] [27
 
 ] [28
 
 ] [29
 
+] [30
+
 ]
 (./_minted-osreport/F4E663D3F68F955B39F755219D1B51FD47994E6B3745F8529CAA6DD5C43
-B7128.pygtex) [30
+B7128.pygtex) [31
 
 ]
-contour: Using 16 copies for `Child --- Forking' on input line 1002.
+contour: Using 16 copies for `Child --- Forking' on input line 1001.
 
 (./_minted-osreport/F4E663D3F68F955B39F755219D1B51FDF7785EDB4CD7C35245DFA3903B4
-DC6C7.pygtex) [31
+DC6C7.pygtex) [32
 
-] [32
+] [33
 
 ]
 Chapter 3.
 LaTeX Font Info:    Font shape `OT1/artemisia/bx/it' will be
-(Font)              scaled to size 23.13821pt on input line 1044.
-[33
+(Font)              scaled to size 23.13821pt on input line 1043.
+[34
+
+] [35] [36
 
 ]
-Package atveryend Info: Empty hook `BeforeClearDocument' on input line 1050.
-Package atveryend Info: Empty hook `AfterLastShipout' on input line 1050.
+(./_minted-osreport/68C5ADFDB36E2634E2A761EABC1DABA775900862B081FD0A7E601D4263B
+C67DB.pygtex) [37
+
+]
+contour: Using 16 copies for `Output of  \texttt {./eggshell test} ' on input l
+ine 1151.
+
+(./_minted-osreport/9D90DA8D9D0CD13F8FB1307B6B12FD872F22B2FB609091C0C9C8FBBD05C
+0A927.pygtex [38
+
+])
+contour: Using 16 copies for `NOTE:' on input line 1157.
+[39]
+Chapter 4.
+[40
+
+
+]
+Package atveryend Info: Empty hook `BeforeClearDocument' on input line 1190.
+Package atveryend Info: Empty hook `AfterLastShipout' on input line 1190.
  (./osreport.aux)
-Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 1050.
-Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 1050.
+Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 1190.
+Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 1190.
 
 Package rerunfilecheck Info: File `osreport.out' has not changed.
-(rerunfilecheck)             Checksum: E967D9779286BC7C749319C7A523A723;828.
+(rerunfilecheck)             Checksum: 9C6CFDEF692FF76D07488FB339883436;1053.
 runsystem(rm osreport.pyg)...executed.
 
-Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 1050.
+Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 1190.
  ) 
 Here is how much of TeX's memory you used:
- 23481 strings out of 492982
- 434442 string characters out of 6132512
- 537586 words of memory out of 5000000
- 26444 multiletter control sequences out of 15000+600000
- 38693 words of font info for 102 fonts, out of 8000000 for 9000
+ 23517 strings out of 492982
+ 435474 string characters out of 6132512
+ 539752 words of memory out of 5000000
+ 26457 multiletter control sequences out of 15000+600000
+ 38992 words of font info for 103 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
  62i,12n,56p,988b,689s stack positions out of 5000i,500n,10000p,200000b,80000s
 {/usr/local/texlive/2017/texmf-dist/fonts/enc/dvips/base/8r.enc}{/usr/local/t
@@ -1419,15 +1439,16 @@ emisia-BoldItalic.pfb></usr/local/texlive/2017/texmf-dist/fonts/type1/public/gf
 sartemisia/GFSArtemisia-Italic.pfb></usr/local/texlive/2017/texmf-dist/fonts/ty
 pe1/public/gfsartemisia/GFSArtemisia-Regular.pfb></usr/local/texlive/2017/texmf
 -dist/fonts/type1/public/txfonts/rtxmi.pfb></usr/local/texlive/2017/texmf-dist/
-fonts/type1/public/txfonts/txbtt.pfb></usr/local/texlive/2017/texmf-dist/fonts/
-type1/public/txfonts/txsy.pfb></usr/local/texlive/2017/texmf-dist/fonts/type1/p
-ublic/txfonts/txtt.pfb></usr/local/texlive/2017/texmf-dist/fonts/type1/public/t
-xfonts/txtt.pfb></usr/local/texlive/2017/texmf-dist/fonts/type1/urw/times/utmr8
-a.pfb>
-Output written on osreport.pdf (34 pages, 215554 bytes).
+fonts/type1/public/txfonts/tcxtt.pfb></usr/local/texlive/2017/texmf-dist/fonts/
+type1/public/txfonts/txbtt.pfb></usr/local/texlive/2017/texmf-dist/fonts/type1/
+public/txfonts/txsy.pfb></usr/local/texlive/2017/texmf-dist/fonts/type1/public/
+txfonts/txtt.pfb></usr/local/texlive/2017/texmf-dist/fonts/type1/public/txfonts
+/txtt.pfb></usr/local/texlive/2017/texmf-dist/fonts/type1/urw/times/utmr8a.pfb>
+
+Output written on osreport.pdf (41 pages, 231598 bytes).
 PDF statistics:
- 323 PDF objects out of 1000 (max. 8388607)
- 274 compressed objects within 3 object streams
- 83 named destinations out of 1000 (max. 500000)
- 125 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 388 PDF objects out of 1000 (max. 8388607)
+ 330 compressed objects within 4 object streams
+ 99 named destinations out of 1000 (max. 500000)
+ 157 words of extra memory for PDF output out of 10000 (max. 10000000)
 

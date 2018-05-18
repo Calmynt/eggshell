@@ -1,0 +1,40 @@
+\begin{Verbatim}[commandchars=\\\{\}]
+\PYG{c+cp}{\PYGZsh{} All scripts for the eggshell have commenting support}
+\PYG{c+cp}{\PYGZsh{} In order to indicate a comment, one should start a line with \PYGZsq{}\PYGZsh{}\PYGZsq{}}
+\PYG{c+cp}{\PYGZsh{} Newlines are also ignored, so leave as many as you like.}
+\PYG{c+cp}{\PYGZsh{} There is one rule that all scripts should abide by however.}
+\PYG{c+cp}{\PYGZsh{} And that is that all scripts should end with a newline. Otherwise bugs\PYGZsq{}ll appear.}
+
+\PYG{c+cp}{\PYGZsh{} Internal commands test}
+\PYG{n}{source} \PYG{n}{testinput}\PYG{p}{.}\PYG{n}{txt}
+\PYG{n}{all}
+\PYG{n}{vars}
+\PYG{n}{VAR}\PYG{o}{=}\PYG{n}{value}
+\PYG{n}{NOSPACE} \PYG{o}{=} \PYG{n}{BADASSIGN}
+\PYG{n}{bad}\PYG{o}{=}\PYG{n}{ERROR}
+\PYG{n}{CURRENTUSER}\PYG{o}{=}\PYG{err}{\PYGZdl{}}\PYG{n}{USER}
+\PYG{n}{NONEXIST}\PYG{o}{=}\PYG{err}{\PYGZdl{}}\PYG{n+nb}{NULL}
+\PYG{n}{print} \PYG{n}{hello} \PYG{n}{there} \PYG{n}{bud}
+\PYG{n}{print} \PYG{err}{\PYGZdl{}}\PYG{n}{VAR}
+\PYG{n}{print} \PYG{err}{\PYGZdl{}}\PYG{n+nb}{NULL}
+\PYG{n}{print} \PYG{l+s}{\PYGZdq{}\PYGZdl{}VAR\PYGZdq{}} \PYG{err}{\PYGZdl{}}\PYG{n}{VAR}
+\PYG{n}{chdir} \PYG{n}{src}
+\PYG{n}{chdir} \PYG{p}{..}
+\PYG{n}{source} \PYG{n}{new}\PYG{p}{.}\PYG{n}{txt}
+
+\PYG{c+cp}{\PYGZsh{} Redirection tests}
+\PYG{n}{echo} \PYG{n}{nice} \PYG{o}{\PYGZgt{}} \PYG{n}{createfile}\PYG{p}{.}\PYG{n}{txt}
+\PYG{n}{echo} \PYG{n}{append} \PYG{o}{\PYGZgt{}\PYGZgt{}} \PYG{n}{createfile}\PYG{p}{.}\PYG{n}{txt}
+\PYG{n}{cat} \PYG{o}{\PYGZlt{}} \PYG{n}{createfile}\PYG{p}{.}\PYG{n}{txt}
+
+\PYG{c+cp}{\PYGZsh{} Piping tests}
+\PYG{n}{echo} \PYG{n}{testing} \PYG{o}{|} \PYG{n}{figlet}
+\PYG{n}{dir} \PYG{o}{|} \PYG{n}{wc} \PYG{o}{|} \PYG{n}{figlet} \PYG{o}{|} \PYG{n}{wc}
+
+\PYG{c+cp}{\PYGZsh{} Combo test}
+\PYG{n}{echo} \PYG{n}{echo} \PYG{n}{this} \PYG{n}{is} \PYG{n}{in} \PYG{n}{a} \PYG{n}{new} \PYG{n}{source} \PYG{n}{file} \PYG{o}{\PYGZgt{}} \PYG{n}{newscript}\PYG{p}{.}\PYG{n}{txt}
+\PYG{n}{source} \PYG{n}{newscript}\PYG{p}{.}\PYG{n}{txt} \PYG{o}{|} \PYG{n}{figlet}
+\PYG{n}{cat} \PYG{n}{newscript}\PYG{p}{.}\PYG{n}{txt} \PYG{o}{|} \PYG{n}{figlet}
+
+\PYG{c+cp}{\PYGZsh{} NEWLINE}
+\end{Verbatim}

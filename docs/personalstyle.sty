@@ -93,6 +93,10 @@
 
 \definecolor{mintedbackground}{rgb}{0.95,0.95,0.95}
 
+\makeatletter
+\def\dontdofcolorbox{\renewcommand\fcolorbox[4][]{##4}}
+\makeatother
+
 \newmintedfile[Ccode]{C}{
   bgcolor=mintedbackground,
   breaklines=true,

@@ -1,0 +1,101 @@
+\begin{Verbatim}[commandchars=\\\{\}]
+Before init...
+\PYGZlt{}Welcome to Eggshell\PYGZgt{} \PYGZdl{} source testinput.txt
+Detected recursive loop \PYGZhy{} skipping line...
+\PYGZlt{}Welcome to Eggshell\PYGZgt{} \PYGZdl{} all
+CWD=/home/textman/osProject
+PATH=/usr/local/texlive/2017/bin/x86\PYGZus{}64\PYGZhy{}linux: /usr/local/texlive/2017/bin/x86\PYGZus{}64\PYGZhy{}linux: /home/textman/bin:/home/textman/.local/bin: /usr/local/sbin: /usr/local/bin:/usr/sbin: /usr/bin: /sbin: /bin
+PROMPT=\PYGZlt{}Welcome to Eggshell\PYGZgt{} \PYGZdl{} 
+USER=textman
+HOME=/home/textman
+TERMINAL=/dev/pts/2
+SHELL=/home/textman/osProject/eggshell 
+EXITCODE=0 
+\PYGZlt{} Executing script... \PYGZhy{} [0] \PYGZgt{} \PYGZdl{} vars
+\PYGZhy{}\PYGZhy{}\PYGZhy{} VARIABLES \PYGZhy{}\PYGZhy{}\PYGZhy{}
+\PYGZlt{} Executing script... \PYGZhy{} [0] \PYGZgt{} \PYGZdl{} VAR=value
+\PYGZlt{} Executing script... \PYGZhy{} [0] \PYGZgt{} \PYGZdl{} NOSPACE = BADASSIGN
+execve: No such file or directory
+\PYGZlt{} Executing script... \PYGZhy{} [255] \PYGZgt{} \PYGZdl{} bad=ERROR
+execve: No such file or directory
+\PYGZlt{} Executing script... \PYGZhy{} [255] \PYGZgt{} \PYGZdl{} CURRENTUSER=\PYGZdl{}USER
+\PYGZlt{} Executing script... \PYGZhy{} [0] \PYGZgt{} \PYGZdl{} NONEXIST=\PYGZdl{}NULL
+Variable does not exist!
+\PYGZlt{} Executing script... \PYGZhy{} [0] \PYGZgt{} \PYGZdl{} print hello there bud
+hello there bud 
+\PYGZlt{} Executing script... \PYGZhy{} [0] \PYGZgt{} \PYGZdl{} print \PYGZdl{}VAR
+value 
+\PYGZlt{} Executing script... \PYGZhy{} [0] \PYGZgt{} \PYGZdl{} print \PYGZdl{}NULL
+\PYGZdl{}NULL 
+\PYGZlt{} Executing script... \PYGZhy{} [0] \PYGZgt{} \PYGZdl{} print \PYGZdq{}\PYGZdl{}VAR\PYGZdq{} \PYGZdl{}VAR
+\PYGZdl{}VAR value 
+\PYGZlt{} Executing script... \PYGZhy{} [0] \PYGZgt{} \PYGZdl{} chdir src
+Current directory is now \PYGZsq{}/home/textman/osProject/src\PYGZsq{}
+\PYGZlt{} Executing script... \PYGZhy{} [0] \PYGZgt{} \PYGZdl{} chdir ..
+Current directory is now \PYGZsq{}/home/textman/osProject\PYGZsq{}
+\PYGZlt{} Executing script... \PYGZhy{} [0] \PYGZgt{} \PYGZdl{} source new.txt
+No file \PYGZsq{}new.txt\PYGZsq{} found!\PYGZlt{} Executing script... \PYGZhy{} [\PYGZhy{}1] \PYGZgt{} \PYGZdl{} echo nice \PYGZgt{} createfile.txt
+\PYGZlt{} Executing script... \PYGZhy{} [0] \PYGZgt{} \PYGZdl{} echo append \PYGZgt{}\PYGZgt{} createfile.txt
+\PYGZlt{} Executing script... \PYGZhy{} [0] \PYGZgt{} \PYGZdl{} cat \PYGZlt{} createfile.txt
+nice
+append
+\PYGZlt{} Executing script... \PYGZhy{} [0] \PYGZgt{} \PYGZdl{} echo testing | figlet
+ \PYGZus{}            \PYGZus{}   \PYGZus{}             
+| |\PYGZus{} \PYGZus{}\PYGZus{}\PYGZus{}  \PYGZus{}\PYGZus{}\PYGZus{}| |\PYGZus{}(\PYGZus{})\PYGZus{} \PYGZus{}\PYGZus{}   \PYGZus{}\PYGZus{} \PYGZus{} 
+| \PYGZus{}\PYGZus{}/ \PYGZus{} \PYGZbs{}/ \PYGZus{}\PYGZus{}| \PYGZus{}\PYGZus{}| | \PYGZsq{}\PYGZus{} \PYGZbs{} / \PYGZus{}` |
+| ||  \PYGZus{}\PYGZus{}/\PYGZbs{}\PYGZus{}\PYGZus{} \PYGZbs{} |\PYGZus{}| | | | | (\PYGZus{}| |
+ \PYGZbs{}\PYGZus{}\PYGZus{}\PYGZbs{}\PYGZus{}\PYGZus{}\PYGZus{}||\PYGZus{}\PYGZus{}\PYGZus{}/\PYGZbs{}\PYGZus{}\PYGZus{}|\PYGZus{}|\PYGZus{}| |\PYGZus{}|\PYGZbs{}\PYGZus{}\PYGZus{}, |
+                          |\PYGZus{}\PYGZus{}\PYGZus{}/ 
+\PYGZlt{} Executing script... \PYGZhy{} [0] \PYGZgt{} \PYGZdl{} dir | wc | figlet | wc
+      6      47     318
+\PYGZlt{} Executing script... \PYGZhy{} [0] \PYGZgt{} \PYGZdl{} echo echo this is in a new source file \PYGZgt{} newscript.txt
+\PYGZlt{} Executing script... \PYGZhy{} [0] \PYGZgt{} \PYGZdl{} source newscript.txt | figlet
+  \PYGZus{}\PYGZus{}  \PYGZus{}\PYGZus{}\PYGZus{}\PYGZus{}\PYGZus{}                     \PYGZus{}   \PYGZus{}             
+ / / | \PYGZus{}\PYGZus{}\PYGZus{}\PYGZus{}|\PYGZus{}  \PYGZus{}\PYGZus{}\PYGZus{}\PYGZus{}\PYGZus{}  \PYGZus{}\PYGZus{}\PYGZus{} \PYGZus{}   \PYGZus{}| |\PYGZus{}(\PYGZus{})\PYGZus{} \PYGZus{}\PYGZus{}   \PYGZus{}\PYGZus{} \PYGZus{} 
+/ /  |  \PYGZus{}| \PYGZbs{} \PYGZbs{}/ / \PYGZus{} \PYGZbs{}/ \PYGZus{}\PYGZus{}| | | | \PYGZus{}\PYGZus{}| | \PYGZsq{}\PYGZus{} \PYGZbs{} / \PYGZus{}` |
+\PYGZbs{} \PYGZbs{}  | |\PYGZus{}\PYGZus{}\PYGZus{} \PYGZgt{}  \PYGZlt{}  \PYGZus{}\PYGZus{}/ (\PYGZus{}\PYGZus{}| |\PYGZus{}| | |\PYGZus{}| | | | | (\PYGZus{}| |
+ \PYGZbs{}\PYGZus{}\PYGZbs{} |\PYGZus{}\PYGZus{}\PYGZus{}\PYGZus{}\PYGZus{}/\PYGZus{}/\PYGZbs{}\PYGZus{}\PYGZbs{}\PYGZus{}\PYGZus{}\PYGZus{}|\PYGZbs{}\PYGZus{}\PYGZus{}\PYGZus{}|\PYGZbs{}\PYGZus{}\PYGZus{},\PYGZus{}|\PYGZbs{}\PYGZus{}\PYGZus{}|\PYGZus{}|\PYGZus{}| |\PYGZus{}|\PYGZbs{}\PYGZus{}\PYGZus{}, |
+                                            |\PYGZus{}\PYGZus{}\PYGZus{}/ 
+               \PYGZus{}       \PYGZus{}                   \PYGZus{}\PYGZus{} \PYGZus{}\PYGZus{}\PYGZus{} \PYGZus{}\PYGZus{}  \PYGZus{}\PYGZus{}     \PYGZus{}  
+ \PYGZus{}\PYGZus{}\PYGZus{}  \PYGZus{}\PYGZus{}\PYGZus{} \PYGZus{} \PYGZus{}\PYGZus{}(\PYGZus{})\PYGZus{} \PYGZus{}\PYGZus{} | |\PYGZus{}                | \PYGZus{}/ \PYGZus{} \PYGZbs{}\PYGZus{} | \PYGZbs{} \PYGZbs{}   | | 
+/ \PYGZus{}\PYGZus{}|/ \PYGZus{}\PYGZus{}| \PYGZsq{}\PYGZus{}\PYGZus{}| | \PYGZsq{}\PYGZus{} \PYGZbs{}| \PYGZus{}\PYGZus{}|        \PYGZus{}\PYGZus{}\PYGZus{}\PYGZus{}\PYGZus{}  | | | | | |  \PYGZbs{} \PYGZbs{} / \PYGZus{}\PYGZus{})
+\PYGZbs{}\PYGZus{}\PYGZus{} \PYGZbs{} (\PYGZus{}\PYGZus{}| |  | | |\PYGZus{}) | |\PYGZus{} \PYGZus{} \PYGZus{} \PYGZus{}  |\PYGZus{}\PYGZus{}\PYGZus{}\PYGZus{}\PYGZus{}| | | |\PYGZus{}| | |  / / \PYGZbs{}\PYGZus{}\PYGZus{} \PYGZbs{}
+|\PYGZus{}\PYGZus{}\PYGZus{}/\PYGZbs{}\PYGZus{}\PYGZus{}\PYGZus{}|\PYGZus{}|  |\PYGZus{}| .\PYGZus{}\PYGZus{}/ \PYGZbs{}\PYGZus{}\PYGZus{}(\PYGZus{}|\PYGZus{}|\PYGZus{})         | |\PYGZbs{}\PYGZus{}\PYGZus{}\PYGZus{}/| | /\PYGZus{}/  (   /
+                |\PYGZus{}|                       |\PYGZus{}\PYGZus{}|   |\PYGZus{}\PYGZus{}|       |\PYGZus{}| 
+           \PYGZus{}             \PYGZus{}   \PYGZus{}     \PYGZus{}       \PYGZus{}       \PYGZus{}               
+  \PYGZus{}\PYGZus{}\PYGZus{}  \PYGZus{}\PYGZus{}\PYGZus{}| |\PYGZus{}\PYGZus{}   \PYGZus{}\PYGZus{}\PYGZus{}   | |\PYGZus{}| |\PYGZus{}\PYGZus{} (\PYGZus{})\PYGZus{}\PYGZus{}\PYGZus{}  (\PYGZus{})\PYGZus{}\PYGZus{}\PYGZus{}  (\PYGZus{})\PYGZus{} \PYGZus{}\PYGZus{}     \PYGZus{}\PYGZus{} \PYGZus{} 
+ / \PYGZus{} \PYGZbs{}/ \PYGZus{}\PYGZus{}| \PYGZsq{}\PYGZus{} \PYGZbs{} / \PYGZus{} \PYGZbs{}  | \PYGZus{}\PYGZus{}| \PYGZsq{}\PYGZus{} \PYGZbs{}| / \PYGZus{}\PYGZus{}| | / \PYGZus{}\PYGZus{}| | | \PYGZsq{}\PYGZus{} \PYGZbs{}   / \PYGZus{}` |
+|  \PYGZus{}\PYGZus{}/ (\PYGZus{}\PYGZus{}| | | | (\PYGZus{}) | | |\PYGZus{}| | | | \PYGZbs{}\PYGZus{}\PYGZus{} \PYGZbs{} | \PYGZbs{}\PYGZus{}\PYGZus{} \PYGZbs{} | | | | | | (\PYGZus{}| |
+ \PYGZbs{}\PYGZus{}\PYGZus{}\PYGZus{}|\PYGZbs{}\PYGZus{}\PYGZus{}\PYGZus{}|\PYGZus{}| |\PYGZus{}|\PYGZbs{}\PYGZus{}\PYGZus{}\PYGZus{}/   \PYGZbs{}\PYGZus{}\PYGZus{}|\PYGZus{}| |\PYGZus{}|\PYGZus{}|\PYGZus{}\PYGZus{}\PYGZus{}/ |\PYGZus{}|\PYGZus{}\PYGZus{}\PYGZus{}/ |\PYGZus{}|\PYGZus{}| |\PYGZus{}|  \PYGZbs{}\PYGZus{}\PYGZus{},\PYGZus{}|
+                                                                   
+                                                       \PYGZus{}\PYGZus{} \PYGZus{} \PYGZus{}      
+ \PYGZus{} \PYGZus{}\PYGZus{}   \PYGZus{}\PYGZus{}\PYGZus{}\PYGZus{}\PYGZus{}      \PYGZus{}\PYGZus{}  \PYGZus{}\PYGZus{}\PYGZus{}  \PYGZus{}\PYGZus{}\PYGZus{}  \PYGZus{}   \PYGZus{} \PYGZus{} \PYGZus{}\PYGZus{} \PYGZus{}\PYGZus{}\PYGZus{} \PYGZus{}\PYGZus{}\PYGZus{}   / \PYGZus{}(\PYGZus{}) | \PYGZus{}\PYGZus{}\PYGZus{} 
+| \PYGZsq{}\PYGZus{} \PYGZbs{} / \PYGZus{} \PYGZbs{} \PYGZbs{} /\PYGZbs{} / / / \PYGZus{}\PYGZus{}|/ \PYGZus{} \PYGZbs{}| | | | \PYGZsq{}\PYGZus{}\PYGZus{}/ \PYGZus{}\PYGZus{}/ \PYGZus{} \PYGZbs{} | |\PYGZus{}| | |/ \PYGZus{} \PYGZbs{}
+| | | |  \PYGZus{}\PYGZus{}/\PYGZbs{} V  V /  \PYGZbs{}\PYGZus{}\PYGZus{} \PYGZbs{} (\PYGZus{}) | |\PYGZus{}| | | | (\PYGZus{}|  \PYGZus{}\PYGZus{}/ |  \PYGZus{}| | |  \PYGZus{}\PYGZus{}/
+|\PYGZus{}| |\PYGZus{}|\PYGZbs{}\PYGZus{}\PYGZus{}\PYGZus{}| \PYGZbs{}\PYGZus{}/\PYGZbs{}\PYGZus{}/   |\PYGZus{}\PYGZus{}\PYGZus{}/\PYGZbs{}\PYGZus{}\PYGZus{}\PYGZus{}/ \PYGZbs{}\PYGZus{}\PYGZus{},\PYGZus{}|\PYGZus{}|  \PYGZbs{}\PYGZus{}\PYGZus{}\PYGZus{}\PYGZbs{}\PYGZus{}\PYGZus{}\PYGZus{}| |\PYGZus{}| |\PYGZus{}|\PYGZus{}|\PYGZbs{}\PYGZus{}\PYGZus{}\PYGZus{}|
+                                                                   
+ \PYGZus{}   \PYGZus{}     \PYGZus{}       \PYGZus{}       \PYGZus{}                                     
+| |\PYGZus{}| |\PYGZus{}\PYGZus{} (\PYGZus{})\PYGZus{}\PYGZus{}\PYGZus{}  (\PYGZus{})\PYGZus{}\PYGZus{}\PYGZus{}  (\PYGZus{})\PYGZus{} \PYGZus{}\PYGZus{}     \PYGZus{}\PYGZus{} \PYGZus{}   \PYGZus{} \PYGZus{}\PYGZus{}   \PYGZus{}\PYGZus{}\PYGZus{}\PYGZus{}\PYGZus{}      \PYGZus{}\PYGZus{}
+| \PYGZus{}\PYGZus{}| \PYGZsq{}\PYGZus{} \PYGZbs{}| / \PYGZus{}\PYGZus{}| | / \PYGZus{}\PYGZus{}| | | \PYGZsq{}\PYGZus{} \PYGZbs{}   / \PYGZus{}` | | \PYGZsq{}\PYGZus{} \PYGZbs{} / \PYGZus{} \PYGZbs{} \PYGZbs{} /\PYGZbs{} / /
+| |\PYGZus{}| | | | \PYGZbs{}\PYGZus{}\PYGZus{} \PYGZbs{} | \PYGZbs{}\PYGZus{}\PYGZus{} \PYGZbs{} | | | | | | (\PYGZus{}| | | | | |  \PYGZus{}\PYGZus{}/\PYGZbs{} V  V / 
+ \PYGZbs{}\PYGZus{}\PYGZus{}|\PYGZus{}| |\PYGZus{}|\PYGZus{}|\PYGZus{}\PYGZus{}\PYGZus{}/ |\PYGZus{}|\PYGZus{}\PYGZus{}\PYGZus{}/ |\PYGZus{}|\PYGZus{}| |\PYGZus{}|  \PYGZbs{}\PYGZus{}\PYGZus{},\PYGZus{}| |\PYGZus{}| |\PYGZus{}|\PYGZbs{}\PYGZus{}\PYGZus{}\PYGZus{}| \PYGZbs{}\PYGZus{}/\PYGZbs{}\PYGZus{}/  
+                                                                 
+                                 \PYGZus{}\PYGZus{} \PYGZus{} \PYGZus{}      
+ \PYGZus{}\PYGZus{}\PYGZus{}  \PYGZus{}\PYGZus{}\PYGZus{}  \PYGZus{}   \PYGZus{} \PYGZus{} \PYGZus{}\PYGZus{} \PYGZus{}\PYGZus{}\PYGZus{} \PYGZus{}\PYGZus{}\PYGZus{}   / \PYGZus{}(\PYGZus{}) | \PYGZus{}\PYGZus{}\PYGZus{} 
+/ \PYGZus{}\PYGZus{}|/ \PYGZus{} \PYGZbs{}| | | | \PYGZsq{}\PYGZus{}\PYGZus{}/ \PYGZus{}\PYGZus{}/ \PYGZus{} \PYGZbs{} | |\PYGZus{}| | |/ \PYGZus{} \PYGZbs{}
+\PYGZbs{}\PYGZus{}\PYGZus{} \PYGZbs{} (\PYGZus{}) | |\PYGZus{}| | | | (\PYGZus{}|  \PYGZus{}\PYGZus{}/ |  \PYGZus{}| | |  \PYGZus{}\PYGZus{}/
+|\PYGZus{}\PYGZus{}\PYGZus{}/\PYGZbs{}\PYGZus{}\PYGZus{}\PYGZus{}/ \PYGZbs{}\PYGZus{}\PYGZus{},\PYGZus{}|\PYGZus{}|  \PYGZbs{}\PYGZus{}\PYGZus{}\PYGZus{}\PYGZbs{}\PYGZus{}\PYGZus{}\PYGZus{}| |\PYGZus{}| |\PYGZus{}|\PYGZus{}|\PYGZbs{}\PYGZus{}\PYGZus{}\PYGZus{}|
+                                             
+\PYGZlt{} Executing script... \PYGZhy{} [0] \PYGZgt{} \PYGZdl{} cat newscript.txt | figlet
+           \PYGZus{}             \PYGZus{}   \PYGZus{}     \PYGZus{}       \PYGZus{}       \PYGZus{}               
+  \PYGZus{}\PYGZus{}\PYGZus{}  \PYGZus{}\PYGZus{}\PYGZus{}| |\PYGZus{}\PYGZus{}   \PYGZus{}\PYGZus{}\PYGZus{}   | |\PYGZus{}| |\PYGZus{}\PYGZus{} (\PYGZus{})\PYGZus{}\PYGZus{}\PYGZus{}  (\PYGZus{})\PYGZus{}\PYGZus{}\PYGZus{}  (\PYGZus{})\PYGZus{} \PYGZus{}\PYGZus{}     \PYGZus{}\PYGZus{} \PYGZus{} 
+ / \PYGZus{} \PYGZbs{}/ \PYGZus{}\PYGZus{}| \PYGZsq{}\PYGZus{} \PYGZbs{} / \PYGZus{} \PYGZbs{}  | \PYGZus{}\PYGZus{}| \PYGZsq{}\PYGZus{} \PYGZbs{}| / \PYGZus{}\PYGZus{}| | / \PYGZus{}\PYGZus{}| | | \PYGZsq{}\PYGZus{} \PYGZbs{}   / \PYGZus{}` |
+|  \PYGZus{}\PYGZus{}/ (\PYGZus{}\PYGZus{}| | | | (\PYGZus{}) | | |\PYGZus{}| | | | \PYGZbs{}\PYGZus{}\PYGZus{} \PYGZbs{} | \PYGZbs{}\PYGZus{}\PYGZus{} \PYGZbs{} | | | | | | (\PYGZus{}| |
+ \PYGZbs{}\PYGZus{}\PYGZus{}\PYGZus{}|\PYGZbs{}\PYGZus{}\PYGZus{}\PYGZus{}|\PYGZus{}| |\PYGZus{}|\PYGZbs{}\PYGZus{}\PYGZus{}\PYGZus{}/   \PYGZbs{}\PYGZus{}\PYGZus{}|\PYGZus{}| |\PYGZus{}|\PYGZus{}|\PYGZus{}\PYGZus{}\PYGZus{}/ |\PYGZus{}|\PYGZus{}\PYGZus{}\PYGZus{}/ |\PYGZus{}|\PYGZus{}| |\PYGZus{}|  \PYGZbs{}\PYGZus{}\PYGZus{},\PYGZus{}|
+                                                                   
+                                                       \PYGZus{}\PYGZus{} \PYGZus{} \PYGZus{}      
+ \PYGZus{} \PYGZus{}\PYGZus{}   \PYGZus{}\PYGZus{}\PYGZus{}\PYGZus{}\PYGZus{}      \PYGZus{}\PYGZus{}  \PYGZus{}\PYGZus{}\PYGZus{}  \PYGZus{}\PYGZus{}\PYGZus{}  \PYGZus{}   \PYGZus{} \PYGZus{} \PYGZus{}\PYGZus{} \PYGZus{}\PYGZus{}\PYGZus{} \PYGZus{}\PYGZus{}\PYGZus{}   / \PYGZus{}(\PYGZus{}) | \PYGZus{}\PYGZus{}\PYGZus{} 
+| \PYGZsq{}\PYGZus{} \PYGZbs{} / \PYGZus{} \PYGZbs{} \PYGZbs{} /\PYGZbs{} / / / \PYGZus{}\PYGZus{}|/ \PYGZus{} \PYGZbs{}| | | | \PYGZsq{}\PYGZus{}\PYGZus{}/ \PYGZus{}\PYGZus{}/ \PYGZus{} \PYGZbs{} | |\PYGZus{}| | |/ \PYGZus{} \PYGZbs{}
+| | | |  \PYGZus{}\PYGZus{}/\PYGZbs{} V  V /  \PYGZbs{}\PYGZus{}\PYGZus{} \PYGZbs{} (\PYGZus{}) | |\PYGZus{}| | | | (\PYGZus{}|  \PYGZus{}\PYGZus{}/ |  \PYGZus{}| | |  \PYGZus{}\PYGZus{}/
+|\PYGZus{}| |\PYGZus{}|\PYGZbs{}\PYGZus{}\PYGZus{}\PYGZus{}| \PYGZbs{}\PYGZus{}/\PYGZbs{}\PYGZus{}/   |\PYGZus{}\PYGZus{}\PYGZus{}/\PYGZbs{}\PYGZus{}\PYGZus{}\PYGZus{}/ \PYGZbs{}\PYGZus{}\PYGZus{},\PYGZus{}|\PYGZus{}|  \PYGZbs{}\PYGZus{}\PYGZus{}\PYGZus{}\PYGZbs{}\PYGZus{}\PYGZus{}\PYGZus{}| |\PYGZus{}| |\PYGZus{}|\PYGZus{}|\PYGZbs{}\PYGZus{}\PYGZus{}\PYGZus{}|
+\end{Verbatim}

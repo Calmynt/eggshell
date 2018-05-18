@@ -12,3 +12,7 @@
 \BOOKMARK [1][-]{section.2.7}{ variables.c }{chapter.2}% 12
 \BOOKMARK [1][-]{section.2.8}{ pipe\137manager.c }{chapter.2}% 13
 \BOOKMARK [0][-]{chapter.3}{Testing the \040eggshell }{}% 14
+\BOOKMARK [1][-]{section.3.1}{Introduction}{chapter.3}% 15
+\BOOKMARK [1][-]{section.3.2}{Tests}{chapter.3}% 16
+\BOOKMARK [0][-]{chapter.4}{Conclusion}{}% 17
+\BOOKMARK [1][-]{section.4.1}{Compilation, and more}{chapter.4}% 18

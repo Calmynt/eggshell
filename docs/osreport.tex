@@ -15,7 +15,6 @@
         \Large{Andre' Jenkins}\\
         \small{76999M}
     \end{titlepage}
-
     \tableofcontents
 
     \clearpage
@@ -1042,17 +1041,150 @@
                 still active.
 
     \chapter{Testing the \ii{eggshell}}
-        \section{\tx{./eggshell test}}
-            The main file that uses the eggshell has support for this additional
-            parameter when running the program. If the \tx{test} argument is 
-            detected when running \tx{eggshell}, the program will immediately
-            \tx{source testinput.txt}, running it, before exiting. 
+        \section{Introduction}
+            To test the eggshell, two types of tests were carried out 
+            in two methods, totalling around 4 tests for each element of
+            the site. The types included \ii{memory} and \ii{debugging}.
+            The methods included \ii{manual}, and \ii{scripted}.
 
-            The file mentioned contains multiple commands, testing almost every
-            aspect of the \tx{eggshell} apart from the signal handling. This is 
-            because signals cannot be 
+            \subsection{Scripted method}
+                The scripted method utilised a command that was built in
+                the \tx{main} file of the eggshell, and can be tested by
+                running the eggshell using the command \tx{./eggshell test}.
+
+                This will launch the eggshell and immediately source whatever
+                is in the file \tx{testinput.txt}, after which the eggshell
+                will terminate. This was done for a very quick and easy way
+                of testing multiple commands at once, without user input slowing
+                it down. 
+
+            \subsection{Manual method}
+                The manual method was carried out by running the eggshell 
+                normally, and entering the commands manually. 
+
+                This was important, as it would be how the user interacts 
+                with the eggshell. With this method, all inputs were tested,
+                along with the code that would not be hit by the scripted 
+                method, but would be hit with the manual method. The signal
+                handling could also be tested using the manual method, as 
+                there was no way that sending a signal could be emulated 
+                within a script, without requiring any user input.
+
+            \subsection{Debugging tests}
+                These were tests used to check that the commands ran well.
+                Meaning that said tests checked that the eggshell was fully
+                \bb{functional}. These were the most important tests, as if
+                these failed, then the eggshell would have something wrong 
+                with it, such as lack of error handling, a critical logical
+                error within the code, etc.
+
+                In order to debug the code, \tx{gdb} was used.
+
+            \subsection{Memory tests}
+                These were tests done after the debugging tests, and as such
+                they are mostly secondary, although they are still significantly
+                important. What these tests do, is check for any issues with 
+                \bb{memory} within the eggshell, such as memory leaks, using 
+                unaccessible memory, etc. These tests also actively helped with
+                narrowing down what the issue was, so if a debugging test failed,
+                then the next course of action would be to use memory tests in 
+                order to check whether the problem was related with memory.
+
+                The tool used for these tests was \tx{valgrind}.
+
+            \clearpage
+        \section{Tests}
+            These following aspects of the eggshell were tested vigorously:
+            \begin{itemize}
+                \item Process management
+                    \begin{itemize}
+                        \item Launching a process
+                        \item Signal handling - Suspending/Interrupting
+                        \item Multiple suspended programs and restorations
+                        \item Background processes
+                    \end{itemize}
+                \item Piping
+                    \begin{itemize}
+                        \item Using a single pipe with 2 commands
+                        \item Using multiple pipes with multiple commands.
+                    \end{itemize}
+                \item Printing
+                    \begin{itemize}
+                        \item Print a normal line
+                        \item Print with an existing variable.
+                        \item Print with a non-existent variable.
+                        \item Print with an escaped variable, and a normal variable.
+                    \end{itemize}
+                \item Redirection
+                    \begin{itemize}
+                        \item Redirect outward - append to file and overwrite file
+                        \item Redirect inward - use file as input and use here string as input
+                        \item Redirect inward - with an invalid filename
+                    \end{itemize}
+                \item Variables
+                    \begin{itemize}
+                        \item Creating a variable with new value \& existing variable value
+                        \item Modifying an existing variable
+                        \item Setting a variable value to a non-existent variable
+                        \item Surround equal sign in spaces \& try assignment with non capitalised variable name
+                    \end{itemize}
+                        
+                
+                
+            \end{itemize}
+
+            \clearpage
+
+            \subsection{\tx{testinput.txt}}
+            \begingroup
+                \fontsize{10pt}{10pt}\selectfont
+                \Ccode{../testinput.txt}
+            \endgroup
+
+                The following file covers most of the tests,
+                including piping, redirection, printing, and
+                variable assignment. It also covers other internal commands
+                such as \tx{all}, \tx{vars}, \tx{chdir}, and \tx{source}.
+
+                \clearpage
+
+                \bb{\myul{Output of \tx{./eggshell test}}}
+                \begingroup
+                    \fontsize{10pt}{10pt}\selectfont
+                    \inputminted[breaklines]{text}{../output.txt}
+                \endgroup
+
+                \bb{\myul{NOTE:}} Output for manual testing is omitted due to
+                it being identical to the scripted testing, apart from signal
+                handling which does not return much output.
+
+                \clearpage
 
 
+    \chapter{Conclusion}
+        There are minor limitations with the eggshell in its current state.
+        For example, you cannot pipe while also doing input redirection, for
+        example 
+        
+        \tx{ls | figlet > nice.txt}. 
+        
+        will skip the output redirection and only do piping.
+        There are also some minor memory leaks \tx{[<300 bytes]} that were left
+        in due to their cause being unknown, or complicated to solve.
+
+        However, as it is now, all the features are complete and mostly memory
+        efficient, leaving it as a pretty efficient and feature-filled shell.
+
+        \section{Compilation, and more}
+        
+        The default makefile in the project uses the \tx{clang} compiler. If 
+        you do not have said compiler, you could run \tx{./switch.sh} which 
+        will automatically switch the makefile with one that uses the default
+        \tx{gcc} compiler. 
+
+        Since this project is also stored as a git repository, it can also be found
+        \href{https://github.com/MasterTextman/eggshell}{here.} 
+        \ii{(If the link doesn't work, this is the URL:\\ \tx{https://github.com/MasterTextman/eggshell})}
 
 
 \end{document}
